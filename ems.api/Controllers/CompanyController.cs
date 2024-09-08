@@ -1,15 +1,14 @@
-﻿using ems.application.Features.Employee.Queries;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ems.api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class EmployeeController : ControllerBase
+public class CompanyController : ControllerBase
 {
     private readonly IMediator _mediator;
-    public EmployeeController(IMediator mediator)
+    public CompanyController(IMediator mediator)
     {
         _mediator = mediator;
     }
@@ -17,7 +16,6 @@ public class EmployeeController : ControllerBase
     [HttpGet("{firstname}/{lastname}")]
     public async Task<IActionResult> Get(string firstname, string lastname)
     {
-        var result = await _mediator.Send(new GetAllEmployeeQuery(firstname, lastname));
-        return Ok($"{result}");
+       return Ok();
     }
-}   
+}
