@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Interfaces.Repositories
+namespace ems.application.Interfaces.IRepositories
 {
     public interface ICompanyRepository
     {

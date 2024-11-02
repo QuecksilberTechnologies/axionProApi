@@ -14,15 +14,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ems.domain\ems.domain.csproj" />
+    <Folder Include="Enums\" />
+    <Folder Include="Features\Company\Commands\" />
+    <Folder Include="Features\UserLogin\Commands\" />
+    <Folder Include="Features\UserLogin\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="DTOs\" />
-    <Folder Include="Enums\" />
-    <Folder Include="Features\Company\Commands\" />
-    <Folder Include="Features\Employee\Commands\" />
-    <Folder Include="Mappings\" />
+    <ProjectReference Include="..\ems.domain\ems.domain.csproj" />
   </ItemGroup>
 
 </Project>

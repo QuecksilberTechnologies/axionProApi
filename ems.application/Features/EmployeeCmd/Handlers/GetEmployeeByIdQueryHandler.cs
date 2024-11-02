@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Interfaces.Context
+namespace ems.application.Features.EmployeeCmd.Handlers
 {
-    public interface IEmsDbContext
+    internal class GetEmployeeByIdQueryHandler
     {
-          
     }
 }

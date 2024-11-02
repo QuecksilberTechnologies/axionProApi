@@ -3,7 +3,7 @@ using ems.application.Wrappers;
 using System.Net;
 using System.Text.Json;
 
-namespace ems.api
+namespace ems.api.Middlewares
 {
     public class ErrorHandlerMiddleware
     {

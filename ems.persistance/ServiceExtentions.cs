@@ -1,11 +1,11 @@
-﻿using ems.application.Interfaces.Context;
-using ems.application.Interfaces.Repositories;
-using ems.application.Interfaces.UnitOfWork;
+﻿using ems.application.Interfaces;
+using ems.application.Interfaces.IContext;
+using ems.application.Interfaces.IRepositories;
+using ems.persistance.Data.Context;
 using ems.persistance.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Persistance.Context;
 
 namespace ems.persistance
 {
@@ -21,7 +21,8 @@ namespace ems.persistance
             services.AddScoped<IUnitOfWork,UnitOfWork.UnitOfWork>();
             
             services.AddTransient<IEmployeeRepository, EmployeeRepository>();
-            services.AddTransient<ICompanyRepository, CompanyRepository>();
+           // services.AddTransient<ICompanyRepository, CompanyRepository>();
+
 
             //services.AddIdentityCore<ApplicationUser>()
             //    .AddRoles<ApplicationRole>()

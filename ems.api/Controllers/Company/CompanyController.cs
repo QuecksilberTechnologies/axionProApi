@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ems.api.Controllers;
+namespace ems.api.Controllers.Company;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -16,6 +16,6 @@ public class CompanyController : ControllerBase
     [HttpGet("{firstname}/{lastname}")]
     public async Task<IActionResult> Get(string firstname, string lastname)
     {
-       return Ok();
+        return Ok();
     }
 }

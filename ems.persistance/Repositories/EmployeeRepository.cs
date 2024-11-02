@@ -1,20 +1,57 @@
-﻿using ems.application.Interfaces.Repositories;
-using Persistance.Context;
+﻿using ems.application.Interfaces.IRepositories;
+using ems.domain.Entity.EmployeeModule;
+using ems.persistance.Data.Context;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ems.persistance.Repositories
 {
-
-    public class EmployeeRepository:IEmployeeRepository
+    public class EmployeeRepository : IEmployeeRepository
     {
-        protected readonly EmsDbContext _context;
+        private EmsDbContext context;
+
         public EmployeeRepository(EmsDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
-        public void GetAll()
+        public async Task<Employee> AddAsync(Employee entity)
+        {
+            // Entity ko DbSet mein add karte hain
+            await context.AddAsync(entity);
+
+            // Changes ko save karte hain database mein
+            await context.SaveChangesAsync();
+
+            // Added entity ko return karte hain
+            return entity;
+        }
+
+        public Task<IEnumerable<Employee>> GetAllEmployeesAsync()
         {
             throw new NotImplementedException();
         }
+
+        public Task<Employee> GetEmployeeByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+ 
     }
 }
+
+
+
+
+ 
+ 
+
+
+
+
+
+

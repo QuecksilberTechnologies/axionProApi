@@ -1,10 +1,10 @@
-﻿using ems.application.Interfaces.Repositories;
-using ems.application.Interfaces.UnitOfWork;
+﻿using ems.application.Interfaces;
+using ems.application.Interfaces.IRepositories;
 using MediatR;
 
-namespace ems.application.Features.Employee.Queries;
+namespace ems.application.Features.EmployeeCmd.Queries;
 
-public class GetAllEmployeeQuery :IRequest<string>
+public class GetAllEmployeeQuery : IRequest<string>
 {
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
@@ -20,12 +20,12 @@ public class GetAllEmployeeQueryHandler : IRequestHandler<GetAllEmployeeQuery, s
     private readonly IUnitOfWork _unitOfWork;
     public GetAllEmployeeQueryHandler(IUnitOfWork unitOfWork)
     {
-        _unitOfWork= unitOfWork;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<string> Handle(GetAllEmployeeQuery request, CancellationToken cancellationToken)
     {
-        _unitOfWork.Employees.GetAll();
+        // _unitOfWork.Employees.GetAll();
 
         return $"{request.FirstName} {request.LastName}";
     }
