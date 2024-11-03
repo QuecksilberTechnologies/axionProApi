@@ -11,7 +11,7 @@ namespace ems.persistance.Data.Configurations.LoginDetailConfig
 {
     public class LoginDetailConfiguration
     {
-        public LoginDetailConfiguration(EntityTypeBuilder<LoginDetail> entity)
+        public LoginDetailConfiguration(EntityTypeBuilder<LoginCredential> entity)
         {
             // entity.Property(e => e.Id).HasColumnName("ID");
             // Other mappings...

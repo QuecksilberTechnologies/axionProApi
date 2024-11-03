@@ -9,15 +9,15 @@ namespace ems.application.DTOs.EmployeeDTO
     
         public class CreateEmployeeDTO
     {
-            public string EmployementCode { get; set; }
-            public string FirstName { get; set; }
-            public string LastName { get; set; }
-            public string OfficialEmail { get; set; }
-            public DateTime DateOfBirth { get; set; }
-            public DateTime DateOfOnBoarding { get; set; }
-            public int DepartmentId { get; set; }
-            // Add more fields as per your requirement
-        }
+           
+        
+        public long EmployeeDocumentId { get; set; }
+        public string EmployementCode { get; set; } = null!;
+        public string LastName { get; set; } = null!;
+        public string? MiddleName { get; set; }
+        public string FirstName { get; set; } = null!;
+        // Add more fields as per your requirement
+    }
     
     
 

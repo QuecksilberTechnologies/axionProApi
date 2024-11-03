@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,8 +8,8 @@ using System.Threading.Tasks;
 namespace ems.domain.Entity.EmployeeModule
 {
     // ems.domain/Entity/Employee.cs
-  
-        public class Employee
+    [Table("Employee")]
+    public class Employee
         {
             public long Id { get; set; }
             public long EmployeeDocumentId { get; set; }

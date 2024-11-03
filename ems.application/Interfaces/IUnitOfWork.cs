@@ -4,10 +4,12 @@ namespace ems.application.Interfaces;
 
 public interface IUnitOfWork : IDisposable
 {
+    // Repositories
     IEmployeeRepository Employees { get; }
+    IUserLoginReopsitory UserLoginReopsitory { get; }   
+    // Aap apne aur repositories ko yahan add kar sakte hain
+    // ICompanyRepository Companies { get; }
 
-    // ICompanyRepository Companys { get; }
-
-    int Complete();
-
+    // Save changes asynchronously
+    Task<int> CommitAsync();
 }

@@ -18,24 +18,62 @@ namespace ems.application.Features.EmployeeCmd.Handlers
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository, IMapper mapper)
+        public CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository, IMapper mapper, IUnitOfWork unitOfWork)
         {
             _employeeRepository = employeeRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         
         public async Task<EmployeeDTO> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
         {
-            // DTO to Entity Mapping - Ensure to map from EmployeeCreateDto to Employee
-            var employeeEntity = _mapper.Map<Employee>(request.EmployeeDTO);
+           try
+            {
+                // DTO to Entity Mapping - Ensure to map from EmployeeCreateDto to Employee
+              //  var employeeEntity = _mapper.Map<Employee>(request.EmployeeDTO);
 
-            // Database insert
-            var createdEmployee = await _employeeRepository.AddAsync(employeeEntity);
+                var employee = new Employee
+                {
+                    
+                    EmployeeDocumentId = 11,
+                    EmployementCode = "EMP25",
+                    LastName = "yadav",
+                    MiddleName = "A",
+                    FirstName = "ranjeet",
+                    DateOfBirth = new DateOnly(1990, 5, 15),
+                    DateOfOnBoarding = new DateOnly(2023, 8, 1),
+                    DateOfExit = null,  // Employee is still active
+                    SpecializationId = 12,
+                    DesignationId = 3,
+                    EmployeeTypeId = 1,
+                    DepartmentId = 5,
+                    OfficialEmail = "ranjeet.doe@example.com",
+                    HasPermanent = true,
+                    IsActive = true,
+                    FunctionalId = 7,
+                    ReferalCode = "REF12345",
+                    AddedById = 1001,
+                    AddedDateTime = DateTime.Now,
+                    UpdatedById = 1001,
+                    UpdatedDateTime = DateTime.Now
+                };
 
+
+                // Database insert
+                var createdEmployee = await _employeeRepository.AddAsync(employee);
+            await _unitOfWork.CommitAsync();
             // Entity to DTO Mapping for Response - Ensure this maps Employee to EmployeeDTO
             return _mapper.Map<EmployeeDTO>(createdEmployee);
+
+            
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred: {ex.Message}", ex);
+            }
         }
 
     }
