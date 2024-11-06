@@ -1,6 +1,7 @@
 ﻿using ems.application.Interfaces;
 using ems.application.Interfaces.IContext;
 using ems.application.Interfaces.IRepositories;
+using ems.application.Interfaces.ITokenService;
 using ems.persistance.Data.Context;
 using ems.persistance.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -17,12 +18,15 @@ namespace ems.persistance
             services.AddDbContext<EmsDbContext>(option => option.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection")
                 ));
-            services.AddTransient<IEmsDbContext, EmsDbContext>();
-            services.AddScoped<IUnitOfWork,UnitOfWork.UnitOfWork>();
-            
+
+             services.AddTransient<IEmsDbContext, EmsDbContext>();
+             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            //  services.AddScoped<IUnitOfWork,UnitOfWork.UnitOfWork>();
+
             services.AddTransient<IEmployeeRepository, EmployeeRepository>();
             services.AddTransient<IUserLoginReopsitory, UserLoginReopsitory>();
-          
+            services.AddTransient<ICommonMenuRepository, CommonMenuRepository>();
+            
             // services.AddTransient<ICompanyRepository, CompanyRepository>();
 
 

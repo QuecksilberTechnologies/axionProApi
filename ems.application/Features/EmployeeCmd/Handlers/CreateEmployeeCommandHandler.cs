@@ -33,38 +33,38 @@ namespace ems.application.Features.EmployeeCmd.Handlers
            try
             {
                 // DTO to Entity Mapping - Ensure to map from EmployeeCreateDto to Employee
-              //  var employeeEntity = _mapper.Map<Employee>(request.EmployeeDTO);
+                //  var employeeEntity = _mapper.Map<Employee>(request.EmployeeDTO);
 
-                var employee = new Employee
+                Employee employee = new Employee
                 {
-                    
-                    EmployeeDocumentId = 11,
-                    EmployementCode = "EMP25",
-                    LastName = "yadav",
-                    MiddleName = "A",
-                    FirstName = "ranjeet",
-                    DateOfBirth = new DateOnly(1990, 5, 15),
-                    DateOfOnBoarding = new DateOnly(2023, 8, 1),
-                    DateOfExit = null,  // Employee is still active
-                    SpecializationId = 12,
-                    DesignationId = 3,
-                    EmployeeTypeId = 1,
-                    DepartmentId = 5,
-                    OfficialEmail = "ranjeet.doe@example.com",
+                 
+                    EmployeeDocumentId = 123456,
+                    EmployementCode = "EMP001",
+                    LastName = "Yadav",
+                    MiddleName = "",
+                    FirstName = "Yadav",
+                    DateOfBirth = new DateOnly(1990, 1, 15), // January 15, 1990
+                    DateOfOnBoarding = new DateOnly(2023, 5, 1), // May 1, 2023
+                    DateOfExit = null, // Still employed
+                    SpecializationId = 2, // Assuming this ID corresponds to a specialization
+                    DesignationId = 3, // Assuming this ID corresponds to a designation
+                    EmployeeTypeId = 1, // Assuming this ID corresponds to a type of employee
+                    DepartmentId = 5, // Assuming this ID corresponds to a department
+                    OfficialEmail = "john.doe@example.com",
                     HasPermanent = true,
                     IsActive = true,
-                    FunctionalId = 7,
-                    ReferalCode = "REF12345",
-                    AddedById = 1001,
-                    AddedDateTime = DateTime.Now,
-                    UpdatedById = 1001,
-                    UpdatedDateTime = DateTime.Now
+                    FunctionalId = 4, // Assuming this ID corresponds to a functional area
+                    ReferalCode = "REF123",
+                    Remark = "New hire in the IT department.",
+                    AddedById = 1001, // ID of the user who added the record
+                    AddedDateTime = DateTime.Now, // Current date and time
+                    UpdatedById = null, // No updates yet
+                    UpdatedDateTime = null // No updates yet
                 };
-
 
                 // Database insert
                 var createdEmployee = await _employeeRepository.AddAsync(employee);
-            await _unitOfWork.CommitAsync();
+               await _unitOfWork.CommitAsync();
             // Entity to DTO Mapping for Response - Ensure this maps Employee to EmployeeDTO
             return _mapper.Map<EmployeeDTO>(createdEmployee);
 

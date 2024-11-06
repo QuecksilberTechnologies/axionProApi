@@ -2,6 +2,7 @@
 using ems.domain.Entity.EmployeeModule;
 using ems.persistance.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,10 +14,12 @@ namespace ems.persistance.Repositories
     public class EmployeeRepository : IEmployeeRepository
     {
         private EmsDbContext context;
+        private ILogger _logger;
 
         public EmployeeRepository(EmsDbContext context)
         {
             this.context = context;
+          //  this._logger = logger;  
         }
 
         public async Task<Employee> AddAsync(Employee entity)

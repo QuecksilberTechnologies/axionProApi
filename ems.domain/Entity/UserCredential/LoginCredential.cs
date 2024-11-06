@@ -1,25 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ems.domain.Common;
+using System;
 
 namespace ems.domain.Entity.UserCredential
 {
-    public class LoginCredential
+    public class LoginCredential: BaseEntity
     {
-        public long Id { get; set; }
-        public long EmployeeId { get; set; }
-        public string LoginId { get; set; }
-        public string Password { get; set; }
-        public bool HasFirstLogin { get; set; }
-        public string MacAddress { get; set; }
-        public string IpAddress { get; set; }
-        public bool IsActive { get; set; }
-        public long AddedById { get; set; }
-        public DateTime AddedDateTime { get; set; }
-        public long? UpdatedById { get; set; }
-        public DateTime? UpdatedDateTime { get; set; }
+        public long Id { get; set; }                        // bigint -> long
+        public string EmployeeId { get; set; }              // nvarchar(255) -> string
+        public string LoginId { get; set; }                 // nvarchar(255) -> string
+        public string Password { get; set; }                // nvarchar(255) -> string
+        public bool HasFirstLogin { get; set; }             // bit -> bool
+        public string MacAddress { get; set; }              // nvarchar(255) -> string
+        public string IpAddress { get; set; }               // nvarchar(255) -> string
+        public bool IsActive { get; set; }                  // bit -> bool
+        public string Remark { get; set; }                  // nvarchar(255) -> string
+        public double Latitude { get; set; }                 // float -> float
+        public double Longitude { get; set; }                // float -> float
+        public int LoginDevice { get; set; }                // int -> int
+           // datetime -> DateTime (nullable)
     }
-
 }

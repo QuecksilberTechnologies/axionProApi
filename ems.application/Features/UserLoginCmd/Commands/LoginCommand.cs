@@ -1,4 +1,5 @@
-﻿using ems.application.DTOs.UserLogin;
+﻿using ems.application.DTOs.EmployeeDTO;
+using ems.application.DTOs.UserLogin;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -10,13 +11,11 @@ namespace ems.application.Features.UserLoginCmd.Commands
 {
     public class LoginCommand : IRequest<LoginResponseDTO>
     {
-        public string LoginId { get; set; }
-        public string Password { get; set; }
+        public LoginRequestDTO RequestLoginDTO { get; set; }
 
-        public LoginCommand(string loginId, string password)
+        public LoginCommand(LoginRequestDTO loginRequestDTO )
         {
-            LoginId = loginId;
-            Password = password;
+            RequestLoginDTO= loginRequestDTO;
         }
     }
 

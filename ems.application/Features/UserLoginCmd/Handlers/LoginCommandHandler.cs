@@ -10,6 +10,9 @@ using System.Text;
 using System.Threading.Tasks;
 using ems.application.Interfaces.IRepositories;
 using AutoMapper;
+using ems.application.Interfaces.ITokenService;
+using ems.domain.Entity.CommonMenu;
+using ems.application.DTOs.CommonAndRoleBaseMenu;
 
 namespace ems.application.Features.UserLoginCmd.Handlers
 {
@@ -19,12 +22,14 @@ namespace ems.application.Features.UserLoginCmd.Handlers
         private readonly IUserLoginReopsitory _userLoginRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ITokenService _tokenService;
 
-        public LoginCommandHandler(IUserLoginReopsitory userLoginRepository, IMapper mapper, IUnitOfWork unitOfWork)
+        public LoginCommandHandler(IUserLoginReopsitory userLoginRepository, IMapper mapper, IUnitOfWork unitOfWork, ITokenService tokenService)
         {
             _userLoginRepository = userLoginRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _tokenService = tokenService;
         }
 
         public async Task<LoginResponseDTO> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -32,8 +37,8 @@ namespace ems.application.Features.UserLoginCmd.Handlers
             // Map LoginCommand to LoginRequestDTO
             var loginRequest = new LoginRequestDTO
             {
-                LoginId = request.LoginId,
-                Password = request.Password
+                LoginId = request.RequestLoginDTO.LoginId,
+                Password = request.RequestLoginDTO.Password
             };
 
             // Fetch user details based on LoginId and Password
@@ -47,20 +52,26 @@ namespace ems.application.Features.UserLoginCmd.Handlers
             }
 
             // Generate JWT token
-            string token = GenerateJwtToken(user);
-
+            string token = GenerateJwtToken(loginRequest);
+            // Fetch the CommonMenus based on the user or role (you can filter it according to your business logic)
+            var commonMenus = await _unitOfWork.CommonMenuRepository.GetMenusByUserAndDeviceAsync(1, 1);
+            var commonMenuDTOs = _mapper.Map<List<CommonMenuDTO>>(commonMenus);
             return new LoginResponseDTO
             {
                 Success = true,
                 Token = token,
-                Message = "Login successful"
+                Message = "Login successful",
+                CommonMenus = commonMenuDTOs   
             };
         }
 
-        private string GenerateJwtToken(LoginResponseDTO user)
+        private string GenerateJwtToken(LoginRequestDTO user)
         {
             // JWT token generation logic goes here
-            return "sdfsldfsld32423lffw32@#@sdfsdfsSDCSV@#$R@!13eWFSDCSCSDRGWERDWSF#@#@$@#$WDFSDVSDVJMSDJMFCASJMFMSDVMDSXVMCDSV";
+            var token = _tokenService.GenerateToken(user);
+
+
+                return token;
         }
     }
 

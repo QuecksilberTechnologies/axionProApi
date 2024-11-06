@@ -8,9 +8,7 @@ namespace ems.application.DTOs.EmployeeDTO
 {
     
         public class CreateEmployeeDTO
-    {
-           
-        
+         {
         public long EmployeeDocumentId { get; set; }
         public string EmployementCode { get; set; } = null!;
         public string LastName { get; set; } = null!;
