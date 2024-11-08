@@ -13,6 +13,8 @@ using AutoMapper;
 using ems.application.Interfaces.ITokenService;
 using ems.domain.Entity.CommonMenu;
 using ems.application.DTOs.CommonAndRoleBaseMenu;
+using ems.application.DTOs.RoleDTO;
+using ems.domain.Entity.UserRoleModule;
 
 namespace ems.application.Features.UserLoginCmd.Handlers
 {
@@ -51,17 +53,27 @@ namespace ems.application.Features.UserLoginCmd.Handlers
                 return new LoginResponseDTO { Success = false, Message = "Invalid credentials" };
             }
 
+
             // Generate JWT token
             string token = GenerateJwtToken(loginRequest);
             // Fetch the CommonMenus based on the user or role (you can filter it according to your business logic)
-            var commonMenus = await _unitOfWork.CommonMenuRepository.GetMenusByUserAndDeviceAsync(1, 1);
+            var commonMenus = await _unitOfWork.CommonMenuRepository.GetMenusByUserAndDeviceAsync(1, 2);
             var commonMenuDTOs = _mapper.Map<List<CommonMenuDTO>>(commonMenus);
+
+            var userRoll = await _unitOfWork.UserRoleRepository.GetUsersRoleByIdAsync(1);
+            
+            var roles = await _unitOfWork.RoleRepository.GetRoleByIdAsync(1);
+            
+           // var rolesDto = _mapper.Map<List<GetRoleByIdDTO>>(roles);
+            var rolesDto = _mapper.Map<GetRoleByIdDTO>(roles); // Change List<GetRoleByIdDTO> to GetRoleByIdDTO
+
             return new LoginResponseDTO
             {
                 Success = true,
                 Token = token,
                 Message = "Login successful",
-                CommonMenus = commonMenuDTOs   
+                CommonMenus = commonMenuDTOs,
+                UserRole = rolesDto
             };
         }
 

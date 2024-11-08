@@ -3,21 +3,24 @@ using ems.application.Interfaces;
 using ems.persistance.Data.Context;
 using ems.persistance.Repositories;
 using Microsoft.Extensions.Logging;
-using FluentValidation;
+using System;
+using System.Threading.Tasks;
 
 public class UnitOfWork : IUnitOfWork
 {
     private readonly EmsDbContext _context;
-    private readonly ILogger<UnitOfWork> _logger; // Add the logger here
+    private readonly ILoggerFactory _loggerFactory;
 
     private IEmployeeRepository? _employeeRepository;
     private ICommonMenuRepository? _commonMenuRepository;
     private IUserLoginReopsitory? _userLoginReopsitory;
+    private IUserRoleRepository? _userRoleRepository;
+    private IRoleRepository? _roleRepository;
 
-    public UnitOfWork(EmsDbContext context)
+    public UnitOfWork(EmsDbContext context, ILoggerFactory loggerFactory)
     {
-        this._context = context;
-      //  this._logger = logger;
+        _context = context;
+        _loggerFactory = loggerFactory;
     }
 
     public IUserLoginReopsitory UserLoginReopsitory
@@ -32,7 +35,7 @@ public class UnitOfWork : IUnitOfWork
     {
         get
         {
-            return _employeeRepository ??= new EmployeeRepository(_context); // Pass the logger here
+            return _employeeRepository ??= new EmployeeRepository(_context);
         }
     }
 
@@ -40,10 +43,25 @@ public class UnitOfWork : IUnitOfWork
     {
         get
         {
-            return _commonMenuRepository ??= new CommonMenuRepository(_context); // Pass the logger here as well
+            return _commonMenuRepository ??= new CommonMenuRepository(_context, _loggerFactory.CreateLogger<CommonMenuRepository>());
         }
     }
 
+    public IUserRoleRepository UserRoleRepository
+    {
+        get
+        {
+            return _userRoleRepository ??= new UserRoleRepository(_context, _loggerFactory.CreateLogger < UserRoleRepository>());
+        }
+    }
+
+    public IRoleRepository RoleRepository
+    {
+        get
+        {
+            return _roleRepository ??= new RoleRepository(_context, _loggerFactory.CreateLogger<RoleRepository>());
+        }
+    }
     public async Task<int> CommitAsync()
     {
         return await _context.SaveChangesAsync();
@@ -59,4 +77,3 @@ public class UnitOfWork : IUnitOfWork
         _context.Dispose();
     }
 }
- 

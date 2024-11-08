@@ -19,11 +19,23 @@
   <ItemGroup>
     <Folder Include="Enums\" />
     <Folder Include="Features\Company\Commands\" />
+    <Folder Include="Features\EmployeeCmd\NewFolder\Commands\" />
+    <Folder Include="Features\EmployeeCmd\NewFolder\Handlers\" />
+    <Folder Include="Features\EmployeeCmd\NewFolder\Queries\" />
+    <Folder Include="Features\RoleCmd\Commands\" />
     <Folder Include="Features\UserLoginCmd\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ems.domain\ems.domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\codebase\employeemanagement\ems.application\DTOs\RoleDTO\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\codebase\employeemanagement\ems.application\DTOs\RoleDTO\.editorconfig" />
   </ItemGroup>
 
 </Project>

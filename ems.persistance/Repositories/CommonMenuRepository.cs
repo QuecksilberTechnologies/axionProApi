@@ -1,4 +1,6 @@
-﻿using ems.application.Interfaces.IRepositories;
+﻿using ems.application.Constants;
+using ems.application.DTOs.CommonAndRoleBaseMenu;
+using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity.CommonMenu;
 using ems.persistance.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -14,32 +16,42 @@ namespace ems.persistance.Repositories
     public class CommonMenuRepository : ICommonMenuRepository
     {
         private readonly EmsDbContext _context;
-        private readonly ILogger<CommonMenuRepository> _logger;
+        private readonly ILogger _logger;
 
-        
 
-        public CommonMenuRepository(EmsDbContext context)
+
+        public CommonMenuRepository(EmsDbContext context, ILogger<CommonMenuRepository> logger)
         {
             _context = context;
-            //_logger = logger;
+            _logger = logger;
         }
 
-        public EmsDbContext Context { get; }
-
+     
         public async Task<IEnumerable<CommonMenu>> GetMenusByUserAndDeviceAsync(long userId, int deviceType)
         {
-         //   _logger.LogInformation("Fetching menu list for User ID: {UserId} on Device Type: {DeviceType}", userId, deviceType);
+         //   _logger.LogInformation("Fetching menu list for User ID: {UserId} on Device Ty0pe: {DeviceType}", userId, deviceType);
 
             try
             {
+                var query = _context.CommonMenus.AsQueryable();
+                // Check login device and filter accordingly
+                if (deviceType == AppConstants.DeviceTypeWeb)
+                {
+                    query = query.Where(m => m.ForPlatform== AppConstants.DeviceTypeWeb && (m.HasAccess && m.IsActive)); // Assuming `IsForWeb` denotes web-specific menus
+                }
+                else if (deviceType == AppConstants.DeviceTypeMobile)
+                {
+                    query = query.Where(m => m.ForPlatform == AppConstants.DeviceTypeMobile && (m.HasAccess && m.IsActive)); // Assuming `IsForMobile` denotes mobile-specific menus
+                }
+                else
+                {
+                    // If no specific platform (deviceType = 0), fetch all active menus with access
+                    query = query.Where(m => m.HasAccess && m.IsActive && (m.ForPlatform == AppConstants.DeviceTypeWeb || m.ForPlatform == AppConstants.DeviceTypeMobile));
+                }
 
+                var menus = await query.ToListAsync();
 
-                var menus = await _context.CommonMenus
-                    .Where(menu => menu.IsActive && menu.HasAccess &&
-                        (menu.ForPlatform == deviceType || menu.ForPlatform == null))
-                    .ToListAsync();
-
-               // _logger.LogInformation("Fetched {MenuCount} menus for User ID: {UserId}", menus.Count, userId);
+                 _logger.LogInformation("Fetched... {MenuCount} menus for User ID: {UserId}", menus.Count, userId);
                 return menus;
             }
             catch (Exception ex)

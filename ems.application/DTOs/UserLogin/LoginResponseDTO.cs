@@ -1,4 +1,5 @@
 ﻿using ems.application.DTOs.CommonAndRoleBaseMenu;
+using ems.application.DTOs.RoleDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace ems.application.DTOs.UserLogin
         public string Token { get; set; }
         public string Message { get; set; }
         public List<CommonMenuDTO> CommonMenus { get; set; } = new List<CommonMenuDTO>();
-        //public List<RolesPermissionDTO> RolesPermissions { get; set; } = new List<RolesPermissionDTO>();
+        public GetRoleByIdDTO UserRole { get; set; } = new GetRoleByIdDTO();
+
+        public List<RolesPermissionDTO> RolesPermissions { get; set; } = new List<RolesPermissionDTO>();
     }
 }

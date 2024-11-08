@@ -20,13 +20,15 @@ namespace ems.persistance
                 ));
 
              services.AddTransient<IEmsDbContext, EmsDbContext>();
+            // Register UnitOfWork with Scoped lifetime
              services.AddScoped<IUnitOfWork, UnitOfWork>();
-            //  services.AddScoped<IUnitOfWork,UnitOfWork.UnitOfWork>();
 
+            // Register repositories
             services.AddTransient<IEmployeeRepository, EmployeeRepository>();
             services.AddTransient<IUserLoginReopsitory, UserLoginReopsitory>();
             services.AddTransient<ICommonMenuRepository, CommonMenuRepository>();
-            
+            services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<IUserRoleRepository, UserRoleRepository>();
             // services.AddTransient<ICompanyRepository, CompanyRepository>();
 
 

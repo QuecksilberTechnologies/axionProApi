@@ -16,6 +16,7 @@ public partial class CommonMenu : BaseEntity
         public int? ParentMenuId { get; set; }
 
         public string Remark { get; set; } = null!;
+        public byte[]? ImageIcon { get; set; }
 
         public int? ForPlatform { get; set; }
 

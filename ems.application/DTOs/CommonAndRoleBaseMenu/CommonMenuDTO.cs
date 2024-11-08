@@ -14,6 +14,7 @@ namespace ems.application.DTOs.CommonAndRoleBaseMenu
         public string? MenuUrl { get; set; }
         public int? ParentMenuId { get; set; }
         public int? ForPlatform { get; set; }
+        public byte[]? ImageIcon { get; set; }
         public bool IsMenuDisplayInUi { get; set; }
         public bool IsSubMenu { get; set; }
         public bool IsDisplayable { get; set; }

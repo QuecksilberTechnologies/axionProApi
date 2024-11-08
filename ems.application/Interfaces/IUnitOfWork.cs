@@ -8,6 +8,9 @@ public interface IUnitOfWork : IDisposable
     IEmployeeRepository Employees { get; }
     IUserLoginReopsitory UserLoginReopsitory { get; }   
     ICommonMenuRepository CommonMenuRepository { get; }
+    IUserRoleRepository UserRoleRepository { get; }
+   
+    IRoleRepository RoleRepository {  get; }
     // Aap apne aur repositories ko yahan add kar sakte hain
     // ICompanyRepository Companies { get; }
 

@@ -1,9 +1,13 @@
 ﻿using ems.application.Interfaces.IContext;
 using ems.domain.Entity.CommonMenu;
 using ems.domain.Entity.EmployeeModule;
+using ems.domain.Entity.Masters.RoleInfo;
 using ems.domain.Entity.UserCredential;
-using ems.persistance.Data.Configurations.CommonMenuConfig;
+using ems.domain.Entity.UserRoleModule;
+using ems.persistance.Data.Configurations.CommonAndRoleBaseMenuConfig;
+ 
 using ems.persistance.Data.Configurations.LoginDetailConfig;
+using ems.persistance.Data.Configurations.UserRollConfig;
 using Microsoft.EntityFrameworkCore;
 
 namespace ems.persistance.Data.Context
@@ -13,7 +17,10 @@ namespace ems.persistance.Data.Context
         public DbSet<Employee> Employees { get; set; }
         public DbSet<LoginCredential> LoginCredentials { get; set; } // New DbSet for LoginCredential
         public DbSet<CommonMenu> CommonMenus { get; set; } // New DbSet for LoginCredential
+      //  public DbSet<UserRole> UserRoll { get; set; } // New DbSet for LoginCredential
+        public DbSet<UserRole> UserRoles { get; set; }
 
+        public DbSet<Role> Roles { get; set; }
         public EmsDbContext(DbContextOptions<EmsDbContext> options) : base(options)
         {
 
@@ -27,6 +34,8 @@ namespace ems.persistance.Data.Context
             // Configure LoginCredential entity
             modelBuilder.ApplyConfiguration(new LoginCredentialConfiguration());
             modelBuilder.ApplyConfiguration(new CommonMenuConfig());
+            modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleConfiguration());
         }
 
         public async Task<int> SaveChangesAsync()

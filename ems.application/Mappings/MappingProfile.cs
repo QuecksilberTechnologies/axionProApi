@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using ems.application.DTOs.CommonAndRoleBaseMenu;
 using ems.application.DTOs.EmployeeDTO;
+using ems.application.DTOs.RoleDTO;
 using ems.application.DTOs.UserLogin;
 using ems.domain.Entity.CommonMenu;
 using ems.domain.Entity.EmployeeModule;
+using ems.domain.Entity.Masters.RoleInfo;
 using ems.domain.Entity.UserCredential;
 using FluentValidation;
 using System;
@@ -31,10 +33,9 @@ namespace ems.application.Mappings
             CreateMap<LoginRequestDTO, LoginCredential>();
 
             CreateMap<CommonMenu, CommonMenuDTO>();
-                CreateMap<CommonMenuDTO,CommonMenu>();
-                CreateMap<LoginCredential, LoginRequestDTO>();
+            CreateMap<Role, GetRoleByIdDTO>(); // `Role` to `GetRoleByIdDTO` mapping
             // Agar reverse mapping bhi chahiye toh isko bhi add kar sakte hain
-              
+
         }
 
     }

@@ -1,4 +1,6 @@
 ﻿using ems.domain.Common;
+using ems.domain.Entity.UserCredential;
+using ems.domain.Entity.UserRoleModule;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -50,8 +52,10 @@ namespace ems.domain.Entity.EmployeeModule
         public string? ReferalCode { get; set; }
 
         public string? Remark { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 
-        
+        public virtual ICollection<LoginCredential> LoginCredentials { get; set; } = new List<LoginCredential>();
+
     }
 
 
