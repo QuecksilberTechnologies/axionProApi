@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5F31AE8B-0942-4578-958E-9D07283B98D0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{45822CEF-D39F-4790-96D2-09719FF8D026}"
+	ProjectSection(SolutionItems) = preProject
+		SqlQuery_1.sql = SqlQuery_1.sql
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "presentation", "presentation", "{DA1C66C3-238A-497F-85B9-ECE750F76930}"
 EndProject
@@ -15,15 +18,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "application", "application"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "domain", "domain", "{29CFD33C-098F-4A60-B472-8FA3069B23D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ems.application", "ems.application\ems.application.csproj", "{82FC2533-72EC-4A3B-ADF9-3A538EDA2AE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ems.application", "ems.application\ems.application.csproj", "{82FC2533-72EC-4A3B-ADF9-3A538EDA2AE1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ems.domain", "ems.domain\ems.domain.csproj", "{3AE2B1A9-B35F-4CEC-A82E-865C8C9D7FFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ems.domain", "ems.domain\ems.domain.csproj", "{3AE2B1A9-B35F-4CEC-A82E-865C8C9D7FFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ems.infrastructure", "ems.infrastructure\ems.infrastructure.csproj", "{A0076AF1-A220-4759-9284-BFC7F3D8B36A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ems.infrastructure", "ems.infrastructure\ems.infrastructure.csproj", "{A0076AF1-A220-4759-9284-BFC7F3D8B36A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ems.persistance", "ems.persistance\ems.persistance.csproj", "{3143840C-C1C0-4B1B-94F1-7FBEFE2D253F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ems.persistance", "ems.persistance\ems.persistance.csproj", "{3143840C-C1C0-4B1B-94F1-7FBEFE2D253F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ems.api", "ems.api\ems.api.csproj", "{934462B6-5F70-44C7-8346-B3C2E992297E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ems.api", "ems.api\ems.api.csproj", "{934462B6-5F70-44C7-8346-B3C2E992297E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

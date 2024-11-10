@@ -19,6 +19,7 @@ Log.Logger = new LoggerConfiguration()
 try
 {
     var builder = WebApplication.CreateBuilder(args);
+    builder.WebHost.UseIISIntegration(); // UseIISIntegration ko builder ke saath use karna
 
     // JWT settings ko configuration se read karna
     var jwtSettings = builder.Configuration.GetSection("JWTSettings");
@@ -47,6 +48,16 @@ try
 
     // Add services to the container.
     builder.Services.AddControllers();
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowReactApp", policy =>
+        {
+            policy.WithOrigins("http://localhost:3001", "http://localhost:3000", "http://localhost:3002") // React app URL
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
+        });
+    });
+   
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddApplication();
@@ -55,6 +66,7 @@ try
     builder.Services.AddHttpContextAccessor();
 
     var app = builder.Build();
+    app.UseCors("AllowReactApp");
     app.UseAuthentication();
     app.UseAuthorization();
 
@@ -85,34 +97,4 @@ finally
 
 
 
-/*
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure();
-builder.Services.AddPersistance(builder.Configuration);
-builder.Services.AddHttpContextAccessor();
-
-
-var app = builder.Build();
-   builder.Host.UseSerilog();
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
-app.UseMiddleware<ErrorHandlerMiddleware>();
-app.MapControllers();
-app.Run();
-*/
+ 
