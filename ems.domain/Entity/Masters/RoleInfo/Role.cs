@@ -1,5 +1,5 @@
 ﻿using ems.domain.Common;
-using ems.domain.Entity.RolesPermissionModule;
+using ems.domain.Entity.RoleModulePermission;
 using ems.domain.Entity.UserRoleModule;
 using System;
 using System.Collections.Generic;
@@ -26,6 +26,9 @@ namespace ems.domain.Entity.Masters.RoleInfo
         public long? UpdatedById { get; set; }
 
         public DateTime? UpdatedDateTime { get; set; }
+       // public ICollection<UserRole> UserRolesR { get; set; }
+          public ICollection<RoleModuleAndPermission> RolesPermR { get; set; }
+
 
     }
 

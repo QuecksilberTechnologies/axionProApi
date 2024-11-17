@@ -5,11 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.DTOs.CommonAndRoleBaseMenu
+namespace ems.application.DTOs.BasicAndRoleBaseMenuDTO
 {
-    public class CommonMenuDTO:BaseEntity
+    public class BasicMenuDTO : BaseEntity
     {
         public int Id { get; set; }
+        public string EmployeeType { get; set; }
         public string MenuName { get; set; }
         public string? MenuUrl { get; set; }
         public int? ParentMenuId { get; set; }
@@ -22,6 +23,6 @@ namespace ems.application.DTOs.CommonAndRoleBaseMenu
         public bool HasAccess { get; set; }
     }
 
-  
+
 
 }

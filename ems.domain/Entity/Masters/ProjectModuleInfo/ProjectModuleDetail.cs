@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.domain.Entity.Masters.ModuleInfo
+namespace ems.domain.Entity.Masters.ProjectModuleInfo
 {
 
-    public partial class ModuleDetail
+    public partial class ProjectModuleDetail
     {
         public int Id { get; set; }
 
@@ -33,9 +33,9 @@ namespace ems.domain.Entity.Masters.ModuleInfo
 
         public DateTime? UpdatedDateTime { get; set; }
 
-        public virtual ICollection<ModuleDetail> InverseParentModule { get; set; } = new List<ModuleDetail>();
+        public virtual ICollection<ProjectModuleDetail> InverseParentModule { get; set; } = new List<ProjectModuleDetail>();
 
-        public virtual ModuleDetail? ParentModule { get; set; }
+        public virtual ProjectModuleDetail? ParentModule { get; set; }
 
         //public virtual ICollection<RolesPermission> RolesPermissions { get; set; } = new List<RolesPermission>();
     }

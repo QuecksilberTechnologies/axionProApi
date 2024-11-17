@@ -1,5 +1,5 @@
 ﻿using ems.domain.Common;
-using ems.domain.Entity.Masters.ModuleInfo;
+using ems.domain.Entity.Masters.ProjectModuleInfo;
 using ems.domain.Entity.Masters.ModuleOperation;
 using ems.domain.Entity.Masters.RoleInfo;
 using System;
@@ -7,10 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ems.domain.Entity.BasicMenuInfo;
 
-namespace ems.domain.Entity.RolesPermissionModule
+namespace ems.domain.Entity.RoleModulePermission
 {
-    public partial class RolesPermission
+    public partial class RoleModuleAndPermission
     {
         public int Id { get; set; }
 
@@ -36,11 +37,10 @@ namespace ems.domain.Entity.RolesPermissionModule
 
         public DateTime? UpdateDateTime { get; set; }
 
-        public virtual ModuleDetail Module { get; set; } = null!;
+        public virtual ProjectModuleDetail ModuleRMP { get; set; } = null!;
+        public virtual BasicMenu CommonMenuRMP { get; set; } = null!;
 
-        public virtual Operation Operation { get; set; } = null!;
-
-        public virtual Role Role { get; set; } = null!;
+      
     }
 
 

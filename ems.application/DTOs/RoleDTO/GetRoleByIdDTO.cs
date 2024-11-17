@@ -7,20 +7,15 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.RoleDTO
 {
-    public class GetRoleByIdDTO
+    public class RoleInfoDTO
     {
         public int Id { get; set; }
+        public long EmployeeId { get; set; }
 
         public string RoleName { get; set; } = string.Empty;
 
-        public string? Remark { get; set; }
-
-        public bool IsActive { get; set; }
-
-        // Agar `AddedDateTime` aur `UpdatedDateTime` bhi chahiye, toh unhe bhi include kar sakte hain
-        public DateTime AddedDateTime { get; set; }
-
-        public DateTime? UpdatedDateTime { get; set; }
+        public string? Description { get; set; }
+         
     }
 
 }

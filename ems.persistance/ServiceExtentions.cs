@@ -26,9 +26,10 @@ namespace ems.persistance
             // Register repositories
             services.AddTransient<IEmployeeRepository, EmployeeRepository>();
             services.AddTransient<IUserLoginReopsitory, UserLoginReopsitory>();
-            services.AddTransient<ICommonMenuRepository, CommonMenuRepository>();
+            services.AddTransient<IBasicMenuRepository, BasicMenuRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<IUserRoleRepository, UserRoleRepository>();
+            services.AddTransient<IEmployeeTypeRepository, EmployeeTypeRepository>();
             // services.AddTransient<ICompanyRepository, CompanyRepository>();
 
 

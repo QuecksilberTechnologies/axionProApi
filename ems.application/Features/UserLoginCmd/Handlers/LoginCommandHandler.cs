@@ -1,25 +1,24 @@
 ﻿using ems.application.DTOs.UserLogin;
 using ems.application.Features.UserLoginCmd.Commands;
 using ems.application.Interfaces;
-using ems.domain.Entity.UserCredential;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ems.application.Interfaces.IRepositories;
 using AutoMapper;
 using ems.application.Interfaces.ITokenService;
-using ems.domain.Entity.CommonMenu;
-using ems.application.DTOs.CommonAndRoleBaseMenu;
+using ems.application.Wrappers;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using ems.application.Constants;
+using ems.application.DTOs.BasicAndRoleBaseMenuDTO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using ems.application.DTOs.RoleDTO;
-using ems.domain.Entity.UserRoleModule;
+using ems.domain.Entity.Masters.RoleInfo;
+using ems.application.DTOs.EmployeeDTO;
 
 namespace ems.application.Features.UserLoginCmd.Handlers
 {
-
-    public class LoginCommandHandler : IRequestHandler<LoginCommand, LoginResponseDTO>
+    public class LoginCommandHandler : IRequestHandler<LoginCommand, ApiResponse<LoginResponseDTO>>
     {
         private readonly IUserLoginReopsitory _userLoginRepository;
         private readonly IMapper _mapper;
@@ -34,60 +33,74 @@ namespace ems.application.Features.UserLoginCmd.Handlers
             _tokenService = tokenService;
         }
 
-        public async Task<LoginResponseDTO> Handle(LoginCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<LoginResponseDTO>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
-            // Map LoginCommand to LoginRequestDTO
+            // Step 1: Map LoginCommand to LoginRequestDTO
             var loginRequest = new LoginRequestDTO
             {
                 LoginId = request.RequestLoginDTO.LoginId,
                 Password = request.RequestLoginDTO.Password
             };
 
-            // Fetch user details based on LoginId and Password
-             var user = await _unitOfWork.UserLoginReopsitory.AuthenticateUser(loginRequest);
-           // var user = await context.LoginCredentials.FirstOrDefaultAsync(u => u.LoginId == loginRequest.LoginId);
-
-
-            if (user == null || user.Success == false)
-            {
-                return new LoginResponseDTO { Success = false, Message = "Invalid credentials" };
+            // Step 2: Authenticate User
+            var user = await _unitOfWork.UserLoginReopsitory.AuthenticateUser(loginRequest);
+            if (user == null || !user.Success)
+            {                
+                return new ApiResponse<LoginResponseDTO>(null, ConstantValues.invalidCredential,ConstantValues.fail );
             }
-
-
-            // Generate JWT token
-            string token = GenerateJwtToken(loginRequest);
-            // Fetch the CommonMenus based on the user or role (you can filter it according to your business logic)
-            var commonMenus = await _unitOfWork.CommonMenuRepository.GetMenusByUserAndDeviceAsync(1, 2);
-            var commonMenuDTOs = _mapper.Map<List<CommonMenuDTO>>(commonMenus);
-
-            var userRoll = await _unitOfWork.UserRoleRepository.GetUsersRoleByIdAsync(1);
-            
-            var roles = await _unitOfWork.RoleRepository.GetRoleByIdAsync(1);
-            
-           // var rolesDto = _mapper.Map<List<GetRoleByIdDTO>>(roles);
-            var rolesDto = _mapper.Map<GetRoleByIdDTO>(roles); // Change List<GetRoleByIdDTO> to GetRoleByIdDTO
-
-            return new LoginResponseDTO
+            // Step 3: Fetch User Roles and Employee Details
+           //  var userRoll = await _unitOfWork.UserRoleRepository.GetUsersRolesWithDetailsByIdAsync(user.Id);
+             
+               var employee = await _unitOfWork.Employees.GetEmployeeByIdAsync(user.Id);
+            // var employeeType = await _unitOfWork.EmployeeTypeRepository.GetEmployeeTypeByIdAsync(employee.EmployeeTypeId);
+           // var employeeInfo = _mapper.Map<LoginEmployeeInfoDTO>(employee);
+            // Map Employee to LoginEmployeeInfoDTO with LoginId
+            var employeeInfo = _mapper.Map<LoginEmployeeInfoDTO>(employee, opt =>
             {
-                Success = true,
+                opt.Items["LoginId"] = loginRequest.LoginId; // Pass LoginId to the context
+            });
+
+
+
+           // var mpr = _mapper.Map<LoginResponseDTO>(employee);
+            // Step 4: Generate JWT Token
+            string token = GenerateJwtToken(loginRequest);
+            string refreshToken = GenerateRfeshToken(loginRequest);
+
+            // Step 5: Fetch Common Menus
+            //   var basicMenus = await _unitOfWork.CommonMenuRepository.GetBasicMenusByUserAndDeviceAsync(1, 1);
+             
+            var expireTime = DateTime.Now.AddMinutes(36);
+            // Step 6: Prepare Response DTO
+            // Step 1: Prepare Login Response DTO
+            var loginResponse = new LoginResponseDTO
+            {
                 Token = token,
-                Message = "Login successful",
-                CommonMenus = commonMenuDTOs,
-                UserRole = rolesDto
+                ExpireWithin = expireTime.ToString("yyyy-MM-dd HH:mm:ss"), // Corrected format
+                RefreshToken = refreshToken,
+                Success = ConstantValues.isSucceeded,  // Make sure success is set to true if login is successful
+                EmployeeInfo = employeeInfo // Bind EmployeeInfo
+                // Ensure message is set to success message
             };
+
+            // Step 2: Return Response wrapped in ApiResponse
+            return new ApiResponse<LoginResponseDTO>(loginResponse, ConstantValues.successMessage, ConstantValues.isSucceeded);
+            // Step 2: Return Response wrapped in ApiResponse
+            // return new ApiResponse<LoginResponseDTO>(loginResponse, ConstantValues.SuccessMessage);
+
+            // Step 7: Wrap Response in ApiResponse
+
+           // return new ApiResponse<LoginResponseDTO>(loginResponse, ConstantValues.SuccessMessage);
+        }
+
+        private string GenerateRfeshToken(LoginRequestDTO loginRequest)
+        {
+            return ("w4lfsd #@@DSsdF@#fsdgfsgfsdklfdsdflksdfl34f$#%#4345463#FEF^$^&#%#Rergfgfsfgfgsfh46trtpoj4opyu40[gshegne;k q3");
         }
 
         private string GenerateJwtToken(LoginRequestDTO user)
         {
-            // JWT token generation logic goes here
-            var token = _tokenService.GenerateToken(user);
-
-
-                return token;
+            return _tokenService.GenerateToken(user);
         }
     }
-
-
-
 }
-

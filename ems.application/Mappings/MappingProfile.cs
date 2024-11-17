@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using ems.application.DTOs.CommonAndRoleBaseMenu;
+using ems.application.DTOs.BasicAndRoleBaseMenuDTO;
 using ems.application.DTOs.EmployeeDTO;
 using ems.application.DTOs.RoleDTO;
 using ems.application.DTOs.UserLogin;
-using ems.domain.Entity.CommonMenu;
+using ems.domain.Entity.BasicMenuInfo;
 using ems.domain.Entity.EmployeeModule;
 using ems.domain.Entity.Masters.RoleInfo;
 using ems.domain.Entity.UserCredential;
@@ -16,7 +16,7 @@ using System.Reflection;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
- 
+
 
 namespace ems.application.Mappings
 {
@@ -30,10 +30,45 @@ namespace ems.application.Mappings
                 CreateMap<Employee, EmployeeDTO>();
                 // Agar reverse mapping chahiye toh, isse bhi add kar sakte hain
                 CreateMap<EmployeeDTO, Employee>();
-            CreateMap<LoginRequestDTO, LoginCredential>();
+            CreateMap<LoginEmployeeInfoDTO, LoginResponseDTO>()
+             .ForMember(dest => dest.EmployeeInfo, opt => opt.MapFrom(src => src));
 
-            CreateMap<CommonMenu, CommonMenuDTO>();
-            CreateMap<Role, GetRoleByIdDTO>(); // `Role` to `GetRoleByIdDTO` mapping
+
+            // Mapping Employee entity to LoginEmployeeInfoDTO
+            CreateMap<Employee, LoginEmployeeInfoDTO>()
+                .ForMember(dest => dest.EmployeeId, opt => opt.MapFrom(src => src.Id)) // Map EmployeeId
+                .ForMember(dest => dest.LoginId, opt => opt.MapFrom((src, dest, _, context) =>
+                    context.Items["LoginId"] as string)) // Map LoginId from context
+
+                .ForMember(dest => dest.EmployeeFirstName, opt => opt.MapFrom(src => src.FirstName)) // Map UserName
+                .ForMember(dest => dest.EmployeeMiddleName, opt => opt.MapFrom(src => src.MiddleName)) // Map UserName
+                .ForMember(dest => dest.EmployeeLastName, opt => opt.MapFrom(src => src.LastName)) // Map UserName
+                .ForMember(dest => dest.EmployeeFullName, opt => opt.MapFrom(src => ((src.FirstName)+ src.MiddleName)+ src.LastName)) // Map UserName
+                .ForMember(dest => dest.EmployeeTypeId, opt => opt.MapFrom(src => src.EmployeeTypeId.ToString())) // Map EmployeeTypeId
+               // .ForMember(dest => dest.EmployeeType, opt => opt.MapFrom(src => src.EmployementType.ToString())) // Map EmployeeTypeId
+                .ForMember(dest => dest.EmployeeType, opt => opt.MapFrom(src => src.EmployementType.TypeName)) // Map EmployeeType Name
+                .ForMember(dest => dest.EmployeeAssignedRoles, opt => opt.MapFrom(src => src.UserRolesEmp.Select(ur => new RoleInfoDTO
+                {
+                    Id = ur.RolesUr.Id,
+                    RoleName = ur.RolesUr.RoleName,
+                    Description = ur.Remark
+                    
+                })));
+
+
+
+
+
+
+            // CreateMap<LoginRequestDTO, LoginCredential>();
+
+            // Map Role to RoleInfoDTO
+            // CreateMap<Role, LoginResponseDTO>().ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+            //   .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.RoleName))
+            //   .ForMember(dest => dest. opt => opt.MapFrom(src => src.IsActive));
+
+
+            // `Role` to `GetRoleByIdDTO` mapping
             // Agar reverse mapping bhi chahiye toh isko bhi add kar sakte hain
 
         }

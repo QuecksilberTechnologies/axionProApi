@@ -56,12 +56,12 @@ namespace ems.persistance.Data.Configurations.UserRollConfig
                 .IsRequired(false);
 
             // Foreign key relationships
+ /*
+            builder.HasOne(ur => ur.Roles)   // UserRole mein ek Role object
+                    .WithMany(r => r.)  // Role mein multiple UserRoles ho sakte hain
+                     .HasForeignKey(ur => ur.RoleId)  // RoleId se foreign key relation set karenge
+                   .OnDelete(DeleteBehavior.Restrict);  // Agar Role delete hota hai toh UserRole ko restrict karega
             
-            builder.HasOne(ur => ur.Employee)
-                .WithMany(e => e.UserRoles) // Assuming `Employee` has a collection of `UserRoles`
-                .HasForeignKey(ur => ur.EmployeeId)
-                .OnDelete(DeleteBehavior.Restrict);
-            /*
             builder.HasOne(ur => ur.Role)
                 .WithMany(r => r.UserRoles) // Assuming `Role` has a collection of `UserRoles`
                 .HasForeignKey(ur => ur.RoleId)

@@ -12,10 +12,11 @@ public class UnitOfWork : IUnitOfWork
     private readonly ILoggerFactory _loggerFactory;
 
     private IEmployeeRepository? _employeeRepository;
-    private ICommonMenuRepository? _commonMenuRepository;
+    private IBasicMenuRepository? _commonMenuRepository;
     private IUserLoginReopsitory? _userLoginReopsitory;
     private IUserRoleRepository? _userRoleRepository;
     private IRoleRepository? _roleRepository;
+    private IEmployeeTypeRepository? _employeeTyperepository;
 
     public UnitOfWork(EmsDbContext context, ILoggerFactory loggerFactory)
     {
@@ -39,13 +40,23 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
-    public ICommonMenuRepository CommonMenuRepository
+    public IEmployeeTypeRepository EmployeeTypeRepository
     {
         get
         {
-            return _commonMenuRepository ??= new CommonMenuRepository(_context, _loggerFactory.CreateLogger<CommonMenuRepository>());
+            return _employeeTyperepository ??= new EmployeeTypeRepository(_context, _loggerFactory.CreateLogger<EmployeeTypeRepository>());
         }
     }
+
+
+    public IBasicMenuRepository CommonMenuRepository
+    {
+        get
+        {
+            return _commonMenuRepository ??= new BasicMenuRepository(_context, _loggerFactory.CreateLogger<BasicMenuRepository>());
+        }
+    }
+
 
     public IUserRoleRepository UserRoleRepository
     {

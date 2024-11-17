@@ -1,4 +1,4 @@
-﻿using ems.domain.Entity.CommonMenu;
+﻿using ems.domain.Entity.BasicMenuInfo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -10,8 +10,9 @@ using System.Threading.Tasks;
 namespace ems.persistance.Data.Configurations.CommonAndRoleBaseMenuConfig
 {
 
-    public class CommonMenuConfig : IEntityTypeConfiguration<CommonMenu>
+    public class CommonMenuConfig : IEntityTypeConfiguration<BasicMenu>
     {
+        /*
         public void Configure(EntityTypeBuilder<CommonMenu> builder)
         {
 
@@ -20,6 +21,12 @@ namespace ems.persistance.Data.Configurations.CommonAndRoleBaseMenuConfig
 
             // Configure primary key
             builder.HasKey(menu => menu.Id);
+            // Configure foreign key relationship with EmployeeType
+            builder.HasOne(menu => menu.EmployeeType)
+                   .WithMany(employeeType => employeeType.BasicMenu) // No error should occur here now
+                   .HasForeignKey(menu => menu.EmployeeTypeId)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("FK_EmployeeType");
 
             // Configure properties with constraints
             builder.Property(menu => menu.MenuName)
@@ -68,6 +75,47 @@ namespace ems.persistance.Data.Configurations.CommonAndRoleBaseMenuConfig
             builder.Property(menu => menu.IsDisplayable)
                    .HasDefaultValue(true);
         }
+    
+    
     }
 
+
+
+
+        }*/
+
+        public void Configure(EntityTypeBuilder<BasicMenu> builder)
+        {
+            // Define table name and schema
+            builder.ToTable("CommonMenu", "emp");
+
+            // Primary Key
+            builder.HasKey(cm => cm.Id);
+
+            // Properties Configuration
+            builder.Property(cm => cm.Id)
+                .ValueGeneratedOnAdd()
+                .IsRequired();
+
+            builder.Property(cm => cm.MenuName)
+                .HasMaxLength(200)
+                .IsRequired();
+
+            builder.Property(cm => cm.MenuUrl)
+                .HasMaxLength(500)
+                .IsRequired(false);
+
+            builder.Property(cm => cm.Remark)
+                .HasMaxLength(500)
+                .IsRequired();
+
+            
+           
+
+            builder.HasOne(cm => cm.ParentMenu)
+                .WithMany(pm => pm.InverseParentMenu)
+                .HasForeignKey(cm => cm.ParentMenuId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+    }
 }

@@ -39,11 +39,35 @@ namespace ems.persistance.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<Employee> GetEmployeeByIdAsync(int id)
+        public async Task<Employee> GetEmployeeByIdAsync(long employeeId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger?.LogInformation("Fetching employee details for ID: {EmployeeId}", employeeId);
+
+                //var employee = await context.Employees.FirstOrDefaultAsync(e => e.Id == employeeId);
+              //  var employee = await context.Employees.Include(e => e.EmployementType).Include(e => e.UserRolesEmp).ThenInclude(ur => ur.RolesUr)
+                                  
+                //    .FirstOrDefaultAsync(e => e.Id == employeeId);
+                var employee = await context.Employees.Include(e => e.EmployementType).Include(e => e.UserRolesEmp)
+                 .ThenInclude(ur => ur.RolesUr).FirstOrDefaultAsync(e => e.Id == employeeId);
+                if (employee == null)
+                {
+                    _logger?.LogWarning("Employee not found with ID: {EmployeeId}", employeeId);
+                    return null;
+                }
+
+                return employee;
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "An error occurred while fetching employee details for ID: {EmployeeId}", employeeId);
+                throw;
+            }
         }
- 
+
+        // Method to fetch employee type by ID
+      
     }
 }
 

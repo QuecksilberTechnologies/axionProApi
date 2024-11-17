@@ -1,4 +1,6 @@
 ﻿using ems.domain.Common;
+using ems.domain.Entity.BasicMenuInfo;
+using ems.domain.Entity.EmployeeModule;
 using System;
 
 namespace ems.domain.Entity.UserCredential
@@ -28,6 +30,10 @@ namespace ems.domain.Entity.UserCredential
         public double Longitude { get; set; }
 
         public int LoginDevice { get; set; }
+        // Navigation property
+        public Employee EmployeeLC { get; set; }
+
+        public ICollection<BasicMenu> CommonMenusLC { get; set; }
 
         // datetime -> DateTime (nullable)
     }

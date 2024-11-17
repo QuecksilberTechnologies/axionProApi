@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.DTOs.CommonAndRoleBaseMenu
+namespace ems.application.DTOs.BasicAndRoleBaseMenuDTO
 {
-    public class RolesPermissionDTO:BaseEntity
+    public class RolesPermissionDTO : BaseEntity
     {
         public int Id { get; set; }
         public int RoleId { get; set; }

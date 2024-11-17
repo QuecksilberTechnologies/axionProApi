@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using ems.domain.Entity.RoleModulePermission;
 namespace ems.domain.Entity.UserRoleModule
 {
     public partial class UserRole
@@ -34,11 +34,13 @@ namespace ems.domain.Entity.UserRoleModule
 
         public long? UpdatedById { get; set; }
 
-        public DateTime? UpdatedDateTime { get; set; }
+        public DateTime? UpdatedDateTime { get; set; }        
+        public virtual Role RolesUr{ get; set; } = null!;
+        // Navigation properties
+    
 
-        public virtual Employee Employee { get; set; } = null!;
 
-        public virtual Role Role { get; set; } = null!;
+
     }
 
 }

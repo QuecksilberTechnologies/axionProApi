@@ -1,4 +1,5 @@
-﻿using ems.application.DTOs.UserLogin;
+﻿using ems.application.Constants;
+using ems.application.DTOs.UserLogin;
 using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity.UserCredential;
 using ems.persistance.Data.Context;
@@ -6,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -23,17 +25,18 @@ namespace ems.persistance.Repositories
         public async Task<LoginResponseDTO> AuthenticateUser(LoginRequestDTO loginRequest)
         {
             // Fetch user details based on LoginId from the repository
-            var user = await context.LoginCredentials.FirstOrDefaultAsync(u => u.LoginId == loginRequest.LoginId);
-
+                var user = await context.LoginCredentials.FirstOrDefaultAsync(u => u.LoginId == loginRequest.LoginId);
             // name _unitOfWork is not exist error aa rahi hai
+                       
+            var rr = user;
 
-            // Check if user exists and if the password matches
+                        // Check if user exists and if the password matches
             if (user == null || !VerifyPassword(loginRequest.Password, user.Password))
             {
                 return new LoginResponseDTO
                 {
-                    Success = false,
-                    Message = "Invalid credentials"
+                    Success = ConstantValues.fail
+
                 };
             }
 
@@ -43,9 +46,10 @@ namespace ems.persistance.Repositories
             // Return success response with token
             return new LoginResponseDTO
             {
-                Success = true,
-                Token = token,
-                Message = "Login successful"
+                Success = ConstantValues.isSucceeded,
+                Token = token,               
+                Id = user.EmployeeId
+
             };
         }
 

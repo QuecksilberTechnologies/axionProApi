@@ -1,5 +1,6 @@
 ﻿using ems.application.DTOs.EmployeeDTO;
 using ems.application.DTOs.UserLogin;
+using ems.application.Wrappers;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.UserLoginCmd.Commands
 {
-    public class LoginCommand : IRequest<LoginResponseDTO>
+    public class LoginCommand : IRequest<ApiResponse<LoginResponseDTO>>
     {
         public LoginRequestDTO RequestLoginDTO { get; set; }
 
@@ -17,6 +18,9 @@ namespace ems.application.Features.UserLoginCmd.Commands
         {
             RequestLoginDTO= loginRequestDTO;
         }
+
     }
+
+
 
 }

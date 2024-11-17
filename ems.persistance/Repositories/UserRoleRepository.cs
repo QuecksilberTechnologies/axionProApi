@@ -1,4 +1,5 @@
-﻿using ems.application.Interfaces.IRepositories;
+﻿using ems.application.Constants;
+using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity.EmployeeModule;
 using ems.domain.Entity.UserRoleModule;
 using ems.persistance.Data.Context;
@@ -21,29 +22,29 @@ namespace ems.persistance.Repositories
              _logger = logger;
         }
 
-        public async Task<string> GetUsersRoleByIdAsync(int userId)
+        public async Task<IEnumerable<UserRole>> GetUsersRoleByIdAsync(long userId)
         {
             try
             {
-                // _logger.LogInformation("Fetching role for user with ID: {UserId}", userId);
+                _logger?.LogInformation("Fetching roles for user with ID: {UserId}", userId);
 
-                // Fetching the user role with its related role details
-                var userRole = await _context.UserRoles
-                                       .FirstOrDefaultAsync(ur => ur.EmployeeId == userId);
+                    // Fetch all roles for the user with related role details if necessary
+                var userRoles = await _context.UserRoles.Where(ur => ur.EmployeeId == userId)
+                                                .ToListAsync();
 
-
-                // Check if the userRole exists; if not, log and return null
-                if (userRole == null || userRole.Id == null)
+                // If no roles are found, log a warning and return null
+                if (userRoles == null || userRoles.Count == 0)
                 {
-                    _logger.LogWarning("No role found for user with ID: {UserId}", userId);
+                    _logger?.LogWarning("No roles found for user with ID: {UserId}", userId);
                     return null;
                 }
-
-                return userRole.Remark;
+                // Log the total number of roles fetched for the user
+                 _logger?.LogInformation("Fetched {Count} roles for user with ID: {UserId}", userRoles.Count, userId);
+                return userRoles;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while fetching the role for user with ID: {UserId}", userId);
+                _logger?.LogError(ex, "An error occurred while fetching the roles for user with ID: {UserId}", userId);
                 throw;
             }
         }
@@ -80,6 +81,28 @@ namespace ems.persistance.Repositories
             await _context.SaveChangesAsync();
         }
 
-        
+        public async Task<IEnumerable<UserRole>> GetUsersRolesWithDetailsByIdAsync(long employeeId)
+        {
+            _logger?.LogInformation("Fetching roles for user with ID: {EmployeeId}", employeeId);
+
+          
+            
+            var userRoles = await _context.UserRoles
+                                           .Where(ur => ur.EmployeeId == employeeId)
+                                           .Include(ur => ur.RolesUr) // Role details ko include karte hain
+                                           .ToListAsync();
+
+            if (userRoles == null || userRoles.Count == 0)
+            {
+                _logger?.LogWarning("No roles found for user with ID: {EmployeeId}", employeeId);
+                return Enumerable.Empty<UserRole>(); 
+            }
+
+
+            _logger?.LogInformation("Fetched {Count} roles for user with ID: {EmployeeId}", userRoles.Count, employeeId);
+
+            return userRoles;
+        }
+
     }
 }

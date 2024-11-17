@@ -49,13 +49,14 @@ namespace ems.domain.Entity.EmployeeModule
 
         public int? FunctionalId { get; set; }
 
-        public string? ReferalCode { get; set; }
+        public int? ReferalId { get; set; }
 
         public string? Remark { get; set; }
-        public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 
-        public virtual ICollection<LoginCredential> LoginCredentials { get; set; } = new List<LoginCredential>();
-
+        public EmployeeType? EmployementType { get; set; } = null;
+  
+        public ICollection<UserRole>? UserRolesEmp { get; set; } // One-to-many relationship with UserRole
+      
     }
 
 

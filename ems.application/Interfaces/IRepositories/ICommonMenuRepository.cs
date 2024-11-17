@@ -1,4 +1,4 @@
-﻿using ems.domain.Entity.CommonMenu;
+﻿using ems.domain.Entity.BasicMenuInfo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace ems.application.Interfaces.IRepositories
 {
-    public interface ICommonMenuRepository
+    public interface IBasicMenuRepository
     {
-        Task<IEnumerable<CommonMenu>> GetMenusByUserAndDeviceAsync(long userId, int deviceType);
+        Task<IEnumerable<BasicMenu>> GetBasicMenusByUserAndDeviceAsync(long userId, int deviceType);
         
     }
 }

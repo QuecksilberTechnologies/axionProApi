@@ -54,7 +54,7 @@ namespace ems.application.Features.EmployeeCmd.Handlers
                     HasPermanent = true,
                     IsActive = true,
                     FunctionalId = 4, // Assuming this ID corresponds to a functional area
-                    ReferalCode = "REF123",
+                    ReferalId = 1,
                     Remark = "New hire in the IT department.",
                     AddedById = 1001, // ID of the user who added the record
                     AddedDateTime = DateTime.Now, // Current date and time

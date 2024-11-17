@@ -29,13 +29,15 @@ namespace ems.api.Controllers.Login
             _logger.LogInfo("Received login request for user: {LoginId}" + logindto.LoginId.ToString());
             var command = new LoginCommand(logindto);
             var result = await _mediator.Send(command);
-            if (!result.Success)
+            if (!result.IsSuccecced)
             {
                 return Unauthorized(result);
             }
            return Ok(result);
         }
       
+
+
  
     }
 

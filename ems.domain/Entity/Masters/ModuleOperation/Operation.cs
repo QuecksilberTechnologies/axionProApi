@@ -1,4 +1,4 @@
-﻿using ems.domain.Entity.RolesPermissionModule;
+﻿using ems.domain.Entity.RoleModulePermission;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +25,7 @@ namespace ems.domain.Entity.Masters.ModuleOperation
 
         public DateTime? UpdateDateTime { get; set; }
 
-        public virtual ICollection<RolesPermission> RolesPermissions { get; set; } = new List<RolesPermission>();
+        public virtual ICollection<RoleModuleAndPermission> RolesPermissions { get; set; } = new List<RoleModuleAndPermission>();
     }
 
 }
