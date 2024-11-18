@@ -1,5 +1,4 @@
 ﻿using ems.application.DTOs.UserLogin;
-using ems.application.Features.UserLoginCmd.Commands;
 using ems.application.Interfaces;
 using MediatR;
 using ems.application.Interfaces.IRepositories;
@@ -15,8 +14,9 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using ems.application.DTOs.RoleDTO;
 using ems.domain.Entity.Masters.RoleInfo;
 using ems.application.DTOs.EmployeeDTO;
+using ems.application.Features.UserLoginAndDashboardCmd.Commands;
 
-namespace ems.application.Features.UserLoginCmd.Handlers
+namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 {
     public class LoginCommandHandler : IRequestHandler<LoginCommand, ApiResponse<LoginResponseDTO>>
     {
@@ -45,15 +45,15 @@ namespace ems.application.Features.UserLoginCmd.Handlers
             // Step 2: Authenticate User
             var user = await _unitOfWork.UserLoginReopsitory.AuthenticateUser(loginRequest);
             if (user == null || !user.Success)
-            {                
-                return new ApiResponse<LoginResponseDTO>(null, ConstantValues.invalidCredential,ConstantValues.fail );
+            {
+                return new ApiResponse<LoginResponseDTO>(null, ConstantValues.invalidCredential, ConstantValues.fail);
             }
             // Step 3: Fetch User Roles and Employee Details
-           //  var userRoll = await _unitOfWork.UserRoleRepository.GetUsersRolesWithDetailsByIdAsync(user.Id);
-             
-               var employee = await _unitOfWork.Employees.GetEmployeeByIdAsync(user.Id);
+            //  var userRoll = await _unitOfWork.UserRoleRepository.GetUsersRolesWithDetailsByIdAsync(user.Id);
+
+            var employee = await _unitOfWork.Employees.GetEmployeeByIdAsync(user.Id);
             // var employeeType = await _unitOfWork.EmployeeTypeRepository.GetEmployeeTypeByIdAsync(employee.EmployeeTypeId);
-           // var employeeInfo = _mapper.Map<LoginEmployeeInfoDTO>(employee);
+            // var employeeInfo = _mapper.Map<LoginEmployeeInfoDTO>(employee);
             // Map Employee to LoginEmployeeInfoDTO with LoginId
             var employeeInfo = _mapper.Map<LoginEmployeeInfoDTO>(employee, opt =>
             {
@@ -62,14 +62,14 @@ namespace ems.application.Features.UserLoginCmd.Handlers
 
 
 
-           // var mpr = _mapper.Map<LoginResponseDTO>(employee);
+            // var mpr = _mapper.Map<LoginResponseDTO>(employee);
             // Step 4: Generate JWT Token
             string token = GenerateJwtToken(loginRequest);
             string refreshToken = GenerateRfeshToken(loginRequest);
 
             // Step 5: Fetch Common Menus
             //   var basicMenus = await _unitOfWork.CommonMenuRepository.GetBasicMenusByUserAndDeviceAsync(1, 1);
-             
+
             var expireTime = DateTime.Now.AddMinutes(36);
             // Step 6: Prepare Response DTO
             // Step 1: Prepare Login Response DTO
@@ -90,12 +90,12 @@ namespace ems.application.Features.UserLoginCmd.Handlers
 
             // Step 7: Wrap Response in ApiResponse
 
-           // return new ApiResponse<LoginResponseDTO>(loginResponse, ConstantValues.SuccessMessage);
+            // return new ApiResponse<LoginResponseDTO>(loginResponse, ConstantValues.SuccessMessage);
         }
 
         private string GenerateRfeshToken(LoginRequestDTO loginRequest)
         {
-            return ("w4lfsd #@@DSsdF@#fsdgfsgfsdklfdsdflksdfl34f$#%#4345463#FEF^$^&#%#Rergfgfsfgfgsfh46trtpoj4opyu40[gshegne;k q3");
+            return "w4lfsd #@@DSsdF@#fsdgfsgfsdklfdsdflksdfl34f$#%#4345463#FEF^$^&#%#Rergfgfsfgfgsfh46trtpoj4opyu40[gshegne;k q3";
         }
 
         private string GenerateJwtToken(LoginRequestDTO user)

@@ -9,7 +9,7 @@ public interface IUnitOfWork : IDisposable
    
     IEmployeeTypeRepository  EmployeeTypeRepository { get; }
     IUserLoginReopsitory UserLoginReopsitory { get; }   
-    IBasicMenuRepository CommonMenuRepository { get; }
+  //  IBasicMenuRepository CommonMenuRepository { get; }
     IUserRoleRepository UserRoleRepository { get; }
    
     IRoleRepository RoleRepository {  get; }

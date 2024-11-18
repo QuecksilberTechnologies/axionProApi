@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.persistance.Data.Configurations.CommonAndRoleBaseMenuConfig
+namespace ems.persistance.Data.Configurations.BasicAndRoleBaseMenuConfig
 {
     public class ProjectModuleDetailConfiguration : IEntityTypeConfiguration<ProjectModuleDetail>
     {

@@ -1,7 +1,7 @@
 ﻿using ems.application.Interfaces.ILogger;
 using ems.application.Interfaces.ITokenService;
+using ems.infrastructure.Logging;
 using ems.infrastructure.Security;
-using ems.infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

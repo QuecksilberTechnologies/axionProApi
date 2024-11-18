@@ -3,69 +3,74 @@ using ems.application.Interfaces.ITokenService;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace ems.infrastructure.Security
+public class TokenService : ITokenService
 {
-    public class TokenService : ITokenService
+    private readonly IConfiguration _configuration;
+    private readonly ILogger<TokenService> _logger;
+
+    public TokenService(IConfiguration configuration, ILogger<TokenService> logger)
     {
-        private readonly IConfiguration _configuration;
-        private readonly ILogger<TokenService> _logger;
+        _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+    }
 
-        public TokenService(IConfiguration configuration, ILogger<TokenService> logger)
+    public string GenerateToken(LoginRequestDTO loginRequestDTO)
+    {
+        try
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-        }
+            var tokenHandler = new JwtSecurityTokenHandler();
 
-        public string GenerateToken(LoginRequestDTO loginRequestDTO)
-        {
-            try
+            // Ensure the secret key is retrieved correctly
+            var jwtKey = _configuration["JWTSettings:Secret"];
+            if (string.IsNullOrEmpty(jwtKey))
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-
-                // Ensure the secret key is retrieved correctly
-                var jwtKey = _configuration["JWTSettings:Secret"];
-                if (string.IsNullOrEmpty(jwtKey))
-                {
-                    throw new ArgumentNullException("JWTSettings:Secret", "JWT key cannot be null or empty.");
-                }
-
-                var key = Encoding.UTF8.GetBytes(jwtKey);
-
-                // Check if the key size is sufficient
-                if (key.Length < 32) // HMAC SHA-256 requires a key of at least 256 bits (32 bytes)
-                {
-                    throw new ArgumentException("JWT key must be at least 32 bytes long for HMAC SHA-256.");
-                }
-
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new[]
-                    {
-                        new Claim(ClaimTypes.NameIdentifier, loginRequestDTO.LoginId.ToString()),
-                        // Add additional claims here if necessary
-                    }),
-                    Expires = DateTime.UtcNow.AddHours(1),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
-
-                var token = tokenHandler.CreateToken(tokenDescriptor);
-                return tokenHandler.WriteToken(token);
+                throw new ArgumentNullException("JWTSettings:Secret", "JWT key cannot be null or empty.");
             }
-            catch (Exception ex)
+
+            var key = Encoding.UTF8.GetBytes(jwtKey);
+
+            // Check if the key size is sufficient
+            if (key.Length < 32) // HMAC SHA-256 requires a key of at least 256 bits (32 bytes)
             {
-                _logger.LogError(ex, "Token generation failed for LoginId: {LoginId}", loginRequestDTO.LoginId);
-                return null; // If token generation fails, return null
+                throw new ArgumentException("JWT key must be at least 32 bytes long for HMAC SHA-256.");
             }
-        }
 
-        public bool ValidateToken(string token)
-        {
-            throw new NotImplementedException();
+            // Adding issuer and audience claims
+            var issuer = _configuration["JWTSettings:Issuer"];
+            var audience = _configuration["JWTSettings:Audience"];
+
+            // Parse the TokenLifetime from the config (in TimeSpan format)
+            var tokenLifetime = TimeSpan.Parse(_configuration["JWTSettings:TokenLifetime"]);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.NameIdentifier, loginRequestDTO.LoginId.ToString()),
+                    // Add any other claims here as needed
+                }),
+                Expires = DateTime.UtcNow.Add(tokenLifetime), // Set token expiry
+                Issuer = issuer, // Set issuer
+                Audience = audience, // Set audience
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Token generation failed for LoginId: {LoginId}", loginRequestDTO.LoginId);
+            return null; // If token generation fails, return null
+        }
+    }
+
+    public bool ValidateToken(string token)
+    {
+        throw new NotImplementedException();
     }
 }

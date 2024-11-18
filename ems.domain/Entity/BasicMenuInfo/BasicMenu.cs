@@ -6,9 +6,9 @@ using System.Collections.Generic;
 
 namespace ems.domain.Entity.BasicMenuInfo;
 
-public partial class BasicMenu : BaseEntity
-{
 
+public partial class BasicMenu
+{
     public int Id { get; set; }
 
     public string MenuName { get; set; } = null!;
@@ -37,4 +37,3 @@ public partial class BasicMenu : BaseEntity
 
     public virtual BasicMenu? ParentMenu { get; set; }
 }
-

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace ems.infrastructure.Utilities
+namespace ems.infrastructure.Security.Utilities
 {
     public static class SecurityUtils
     {

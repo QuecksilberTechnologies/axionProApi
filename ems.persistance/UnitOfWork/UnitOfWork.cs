@@ -12,7 +12,7 @@ public class UnitOfWork : IUnitOfWork
     private readonly ILoggerFactory _loggerFactory;
 
     private IEmployeeRepository? _employeeRepository;
-    private IBasicMenuRepository? _commonMenuRepository;
+    private IBasicMenuRepository? _basicMenuRepository;
     private IUserLoginReopsitory? _userLoginReopsitory;
     private IUserRoleRepository? _userRoleRepository;
     private IRoleRepository? _roleRepository;
@@ -49,13 +49,7 @@ public class UnitOfWork : IUnitOfWork
     }
 
 
-    public IBasicMenuRepository CommonMenuRepository
-    {
-        get
-        {
-            return _commonMenuRepository ??= new BasicMenuRepository(_context, _loggerFactory.CreateLogger<BasicMenuRepository>());
-        }
-    }
+    
 
 
     public IUserRoleRepository UserRoleRepository

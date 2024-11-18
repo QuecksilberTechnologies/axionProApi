@@ -2,7 +2,7 @@
 using ems.application.Interfaces.ILogger;
 using Microsoft.Extensions.Logging;
 
-namespace ems.infrastructure.Services
+namespace ems.infrastructure.Logging
 {
     public class LoggerService : ILoggerService
     {

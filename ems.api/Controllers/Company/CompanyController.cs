@@ -1,5 +1,6 @@
 ﻿using ems.application.Interfaces.ILogger;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ems.api.Controllers.Company;
@@ -19,6 +20,7 @@ public class CompanyController : ControllerBase
    
 
     [HttpGet("{firstname}/{lastname}")]
+    [Authorize]
     public async Task<IActionResult> Get(string firstname, string lastname)
     {
         _logger.LogInfo("Company is created");

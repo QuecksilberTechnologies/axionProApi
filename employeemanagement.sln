@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5F31AE8B-094
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{45822CEF-D39F-4790-96D2-09719FF8D026}"
 	ProjectSection(SolutionItems) = preProject
+		ems.persistance\Repositories\BasicMenuRepository.txt = ems.persistance\Repositories\BasicMenuRepository.txt
 		SqlQuery_1.sql = SqlQuery_1.sql
 	EndProjectSection
 EndProject
