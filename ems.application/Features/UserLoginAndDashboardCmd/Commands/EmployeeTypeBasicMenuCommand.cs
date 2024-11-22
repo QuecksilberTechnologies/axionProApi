@@ -12,11 +12,11 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.UserLoginAndDashboardCmd.Commands
 {
-    public class AccessDetailCommand : IRequest<ApiResponse<AccessDetailResponseDTO>>
+    public class EmployeeTypeBasicMenuCommand : IRequest<ApiResponse<AccessDetailResponseDTO>>
     {
        
         public AccessDetailRequestDTO AccessDetailDTO { get; set; }
-        public AccessDetailCommand(AccessDetailRequestDTO accessRequestDTO)
+        public EmployeeTypeBasicMenuCommand(AccessDetailRequestDTO accessRequestDTO)
         {
             AccessDetailDTO = accessRequestDTO;
         }

@@ -20,14 +20,14 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 {
     public class LoginCommandHandler : IRequestHandler<LoginCommand, ApiResponse<LoginResponseDTO>>
     {
-        private readonly IUserLoginReopsitory _userLoginRepository;
+         
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ITokenService _tokenService;
 
         public LoginCommandHandler(IUserLoginReopsitory userLoginRepository, IMapper mapper, IUnitOfWork unitOfWork, ITokenService tokenService)
         {
-            _userLoginRepository = userLoginRepository;
+ 
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
@@ -80,17 +80,12 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 RefreshToken = refreshToken,
                 Success = ConstantValues.isSucceeded,  // Make sure success is set to true if login is successful
                 EmployeeInfo = employeeInfo // Bind EmployeeInfo
-                // Ensure message is set to success message
+              
             };
 
             // Step 2: Return Response wrapped in ApiResponse
             return new ApiResponse<LoginResponseDTO>(loginResponse, ConstantValues.successMessage, ConstantValues.isSucceeded);
-            // Step 2: Return Response wrapped in ApiResponse
-            // return new ApiResponse<LoginResponseDTO>(loginResponse, ConstantValues.SuccessMessage);
-
-            // Step 7: Wrap Response in ApiResponse
-
-            // return new ApiResponse<LoginResponseDTO>(loginResponse, ConstantValues.SuccessMessage);
+            
         }
 
         private string GenerateRfeshToken(LoginRequestDTO loginRequest)

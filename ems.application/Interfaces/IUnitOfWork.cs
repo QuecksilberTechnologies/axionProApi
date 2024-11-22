@@ -13,6 +13,10 @@ public interface IUnitOfWork : IDisposable
     IUserRoleRepository UserRoleRepository { get; }
    
     IRoleRepository RoleRepository {  get; }
+
+    IEmployeeTypeBasicMenuRepository EmployeeTypeBasicMenuRepository { get; }
+    IUserRolesPermissionOnModuleRepository UserRolesPermissionOnModuleRepository { get; }   
+    // IAccessDetailRepository AccessDetailRepository {  get; }
     // Aap apne aur repositories ko yahan add kar sakte hain
     // ICompanyRepository Companies { get; }
 

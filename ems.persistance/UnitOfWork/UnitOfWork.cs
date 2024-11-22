@@ -10,14 +10,15 @@ public class UnitOfWork : IUnitOfWork
 {
     private readonly EmsDbContext _context;
     private readonly ILoggerFactory _loggerFactory;
-
-    private IEmployeeRepository? _employeeRepository;
-    private IBasicMenuRepository? _basicMenuRepository;
+    private IEmployeeRepository? _employeeRepository;  
     private IUserLoginReopsitory? _userLoginReopsitory;
     private IUserRoleRepository? _userRoleRepository;
     private IRoleRepository? _roleRepository;
     private IEmployeeTypeRepository? _employeeTyperepository;
+    private IEmployeeTypeBasicMenuRepository? _employeeTypeBasicMenurepository;
+    private IUserRolesPermissionOnModuleRepository? _userRolesPermissionOnModuleRepository;
 
+  //  private IAccessDetailRepository? _accessDetailRepository;
     public UnitOfWork(EmsDbContext context, ILoggerFactory loggerFactory)
     {
         _context = context;
@@ -40,6 +41,13 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
+     public IEmployeeTypeBasicMenuRepository EmployeeTypeBasicMenuRepository
+    {
+        get
+        {
+            return _employeeTypeBasicMenurepository ??= new EmployeeTypeBasicMenuRepository(_context, _loggerFactory.CreateLogger<EmployeeTypeBasicMenuRepository>());
+        }
+    }
     public IEmployeeTypeRepository EmployeeTypeRepository
     {
         get
@@ -47,9 +55,9 @@ public class UnitOfWork : IUnitOfWork
             return _employeeTyperepository ??= new EmployeeTypeRepository(_context, _loggerFactory.CreateLogger<EmployeeTypeRepository>());
         }
     }
-
-
     
+
+
 
 
     public IUserRoleRepository UserRoleRepository
@@ -59,7 +67,13 @@ public class UnitOfWork : IUnitOfWork
             return _userRoleRepository ??= new UserRoleRepository(_context, _loggerFactory.CreateLogger < UserRoleRepository>());
         }
     }
-
+    public IUserRolesPermissionOnModuleRepository UserRolesPermissionOnModuleRepository
+    {
+        get
+        {
+            return _userRolesPermissionOnModuleRepository ??= new UserRolesPermissionOnModuleRepository(_context, _loggerFactory.CreateLogger<UserRolesPermissionOnModuleRepository>());
+        }
+    }
     public IRoleRepository RoleRepository
     {
         get

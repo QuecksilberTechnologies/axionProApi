@@ -35,7 +35,7 @@ namespace ems.domain.Entity.RoleModulePermission
 
         public DateTime? UpdatedDateTime { get; set; }
 
-        public virtual BasicMenu BasicMenu { get; set; } = null!;
+        public virtual BasicMenu? BasicMenu { get; set; } = null!;
 
         public virtual EmployeeType EmployeeType { get; set; } = null!;
     }

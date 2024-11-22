@@ -16,14 +16,9 @@ namespace ems.application.DTOs.BasicAndRoleBaseMenuDTO
         public string? ParentMenuName { get; set; }
         public int? ForPlatform { get; set; }
         public byte[]? ImageIcon { get; set; }
-        public bool IsMenuDisplayInUi { get; set; }
-        public bool IsSubMenu { get; set; }
-        public bool IsDisplayable { get; set; }
-        public List<BasicMenuDTO> Menus { get; set; } = new List<BasicMenuDTO>();
-
-        // You can also add TotalCount if needed
-        public int TotalCount { get; set; }
-
+        public bool IsMenuDisplayInUi { get; set; }        
+        public bool IsDisplayable { get; set; }      
+    
     }
 
 

@@ -11,7 +11,7 @@ public partial class BasicMenu
 {
     public int Id { get; set; }
 
-    public string MenuName { get; set; } = null!;
+    public string? MenuName { get; set; } = null!;
 
     public string? MenuUrl { get; set; }
 
@@ -31,7 +31,7 @@ public partial class BasicMenu
 
     public DateTime? UpdatedDateTime { get; set; }
 
-    public virtual ICollection<EmployeeTypeBasicMenu> EmployeeTypeBasicMenus { get; set; } = new List<EmployeeTypeBasicMenu>();
+  //  public virtual ICollection<EmployeeTypeBasicMenu> EmployeeTypeBasicMenus { get; set; } = new List<EmployeeTypeBasicMenu>();
 
     public virtual ICollection<BasicMenu> InverseParentMenu { get; set; } = new List<BasicMenu>();
 

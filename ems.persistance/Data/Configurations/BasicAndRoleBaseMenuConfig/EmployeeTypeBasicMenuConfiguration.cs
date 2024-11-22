@@ -35,10 +35,10 @@ namespace ems.persistance.Data.Configurations.BasicAndRoleBaseMenuConfig
                 .HasColumnType("datetime");
 
             // Configure relationships
-            builder.HasOne(d => d.BasicMenu)
-                .WithMany(p => p.EmployeeTypeBasicMenus)
-                .HasForeignKey(d => d.BasicMenuId)
-                .HasConstraintName("FK_EmployeeTypeBasicMenu_BasicMenu");
+           // builder.HasOne(d => d.BasicMenu)
+           //     .WithMany(p => p.EmployeeTypeBasicMenus)
+            //    .HasForeignKey(d => d.BasicMenuId)
+             //   .HasConstraintName("FK_EmployeeTypeBasicMenu_BasicMenu");
 
           
         }

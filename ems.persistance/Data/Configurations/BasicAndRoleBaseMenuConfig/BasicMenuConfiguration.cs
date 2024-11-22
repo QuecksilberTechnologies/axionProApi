@@ -1,51 +1,41 @@
-﻿using ems.domain.Entity.BasicMenuInfo;
-using Microsoft.EntityFrameworkCore;
+﻿using ems.domain.Entity.RoleModulePermission;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ems.domain.Entity.BasicMenuInfo;
 
 namespace ems.persistance.Data.Configurations.BasicAndRoleBaseMenuConfig
 {
-
     public class BasicMenuConfiguration : IEntityTypeConfiguration<BasicMenu>
     {
-         
-
         public void Configure(EntityTypeBuilder<BasicMenu> builder)
         {
-            // Define table name and schema
+            // Set the table name and schema
+            builder.HasKey(e => e.Id).HasName("PK_BasicMenu_Id");
+
             builder.ToTable("BasicMenu", "emp");
 
-            // Primary Key
-            builder.HasKey(cm => cm.Id);
+            builder.Property(e => e.AddedDateTime)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            builder.Property(e => e.IsActive).HasDefaultValue(true);
+            builder.Property(e => e.MenuName).HasMaxLength(100);
+            builder.Property(e => e.MenuUrl)
+                .HasMaxLength(255)
+                .HasColumnName("MenuURL");
+            builder.Property(e => e.Remark).HasMaxLength(200);
+            builder.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
 
-            // Properties Configuration
-            builder.Property(cm => cm.Id)
-                .ValueGeneratedOnAdd()
-                .IsRequired();
-
-            builder.Property(cm => cm.MenuName)
-                .HasMaxLength(200)
-                .IsRequired();
-
-            builder.Property(cm => cm.MenuUrl)
-                .HasMaxLength(500)
-                .IsRequired(false);
-
-            builder.Property(cm => cm.Remark)
-                .HasMaxLength(500)
-                .IsRequired();
+            builder.HasOne(d => d.ParentMenu).WithMany(p => p.InverseParentMenu)
+                .HasForeignKey(d => d.ParentMenuId)
+                .HasConstraintName("FK_BasicMenu_ParentMenu");
 
 
 
-
-            builder.HasOne(cm => cm.ParentMenu)
-                .WithMany(pm => pm.InverseParentMenu)
-                .HasForeignKey(cm => cm.ParentMenuId)
-                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

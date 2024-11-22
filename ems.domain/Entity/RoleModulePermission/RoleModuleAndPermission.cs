@@ -11,13 +11,14 @@ using ems.domain.Entity.BasicMenuInfo;
 
 namespace ems.domain.Entity.RoleModulePermission
 {
+
     public partial class RoleModuleAndPermission
     {
         public int Id { get; set; }
 
         public int RoleId { get; set; }
 
-        public int ModuleId { get; set; }
+        public int SubModuleId { get; set; }
 
         public int OperationId { get; set; }
 
@@ -29,18 +30,19 @@ namespace ems.domain.Entity.RoleModulePermission
 
         public byte[]? ImageIcon { get; set; }
 
-        public long? AddedById { get; set; }
+        public long AddedById { get; set; }
 
         public DateTime AddedDateTime { get; set; }
 
         public long? UpdatedById { get; set; }
 
-        public DateTime? UpdateDateTime { get; set; }
+        public DateTime? UpdatedDateTime { get; set; }
 
-        public virtual ProjectModuleDetail ModuleRMP { get; set; } = null!;
-        public virtual BasicMenu CommonMenuRMP { get; set; } = null!;
+        public virtual ProjectSubModuleDetail SubModule { get; set; } = null!;
 
-      
+        public virtual Operation Operations { get; set; } = null!;
+
+        public virtual Role Role { get; set; } = null!;
     }
 
 

@@ -11,7 +11,8 @@ namespace ems.application.DTOs.UserLogin
     {
         public long EmployeeId { get; set; }
         public int? ForPlatform { get; set; }
-        public IEnumerable<BasicMenuDTO> Menus { get; set; } = new List<BasicMenuDTO>();
+        public IEnumerable<BasicMenuDTO>? BasicMenus { get; set; } = new List<BasicMenuDTO>();
+        public IEnumerable<UserRolesPermissionOnModuleDTO>? UserRolesPermissionOnModule { get; set; } = new List<UserRolesPermissionOnModuleDTO>();
     }
 
 }

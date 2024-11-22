@@ -1,6 +1,7 @@
 ﻿using ems.application.Interfaces.IContext;
 using ems.domain.Entity.BasicMenuInfo;
 using ems.domain.Entity.EmployeeModule;
+using ems.domain.Entity.Masters.ModuleOperation;
 using ems.domain.Entity.Masters.ProjectModuleInfo;
 using ems.domain.Entity.Masters.RoleInfo;
 using ems.domain.Entity.RoleModulePermission;
@@ -11,6 +12,7 @@ using ems.persistance.Data.Configurations.BasicAndRoleBaseMenuConfig;
 using ems.persistance.Data.Configurations.EmployeeConfig;
 using ems.persistance.Data.Configurations.EmployeeTypeConfig;
 using ems.persistance.Data.Configurations.LoginDetailConfig;
+using ems.persistance.Data.Configurations.OperationConfig;
 using ems.persistance.Data.Configurations.UserRollConfig;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,9 +22,9 @@ namespace ems.persistance.Data.Context
     {
         public DbSet<Employee> Employees { get; set; }
         public DbSet<EmployeeType> EmployeeTypes { get; set; }
+        public DbSet<EmployeeTypeBasicMenu> EmployeeTypeBasicsMenus { get; set; }
         public DbSet<LoginCredential> LoginCredentials { get; set; } // New DbSet for LoginCredential
-        public DbSet<EmployeeTypeBasicMenu> ETBasicMenuAccess { get; set; } // New DbSet for LoginCredential
-        public DbSet<EmployeeTypeBasicMenu> BasicMenuAccess { get; set; } // New DbSet for LoginCredential
+
           // New DbSet for LoginCredential
       //  public DbSet<UserRole> UserRoll { get; set; } // New DbSet for LoginCredential
         public DbSet<UserRole> UserRoles { get; set; }
@@ -32,6 +34,8 @@ namespace ems.persistance.Data.Context
         public DbSet<Role> Roles { get; set; }
         
         public DbSet<ProjectModuleDetail> ProjectModuleDetails { get; set; }
+        public DbSet<ProjectSubModuleDetail> ProjectSubModuleDetails { get; set; }
+        public DbSet<Operation> Operations { get; set; }
         public EmsDbContext(DbContextOptions<EmsDbContext> options) : base(options)
         {
 
@@ -51,12 +55,16 @@ namespace ems.persistance.Data.Context
             modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
             modelBuilder.ApplyConfiguration(new EmployeeTypeConfiguration());
             modelBuilder.ApplyConfiguration(new RoleModuleAndPermissionConfiguration());
+            modelBuilder.ApplyConfiguration(new EmployeeTypeBasicMenuConfiguration());
+            modelBuilder.ApplyConfiguration(new BasicMenuConfiguration());
+            modelBuilder.ApplyConfiguration(new OperationConfiguration());
+            modelBuilder.ApplyConfiguration(new ProjectSubModuleDetailConfiguration());
             modelBuilder.ApplyConfiguration(new ProjectModuleDetailConfiguration());
-           modelBuilder.ApplyConfiguration(new EmployeeTypeBasicMenuConfiguration());
-           modelBuilder.ApplyConfiguration(new BasicMenuConfiguration());
-             
+
+
+
         }
-       
+
 
         public async Task<int> SaveChangesAsync()
         {

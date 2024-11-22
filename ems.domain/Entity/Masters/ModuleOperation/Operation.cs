@@ -15,7 +15,7 @@ namespace ems.domain.Entity.Masters.ModuleOperation
 
         public string? Remark { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
 
         public long? AddedById { get; set; }
 
@@ -25,7 +25,8 @@ namespace ems.domain.Entity.Masters.ModuleOperation
 
         public DateTime? UpdateDateTime { get; set; }
 
-        public virtual ICollection<RoleModuleAndPermission> RolesPermissions { get; set; } = new List<RoleModuleAndPermission>();
+        public virtual ICollection<RoleModuleAndPermission> RoleModuleAndPermissions { get; set; } = new List<RoleModuleAndPermission>();
     }
+
 
 }
