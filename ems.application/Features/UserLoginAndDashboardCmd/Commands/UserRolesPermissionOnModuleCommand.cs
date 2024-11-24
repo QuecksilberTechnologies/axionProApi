@@ -12,7 +12,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Commands
 {
     public class UserRolesPermissionOnModuleCommand : IRequest<ApiResponse<IEnumerable<UserRolesPermissionOnModuleDTO>>>
     {
-
+ //till completed
         public AccessDetailRequestDTO AccessDetailDTO { get; set; }
         public UserRolesPermissionOnModuleCommand(AccessDetailRequestDTO accessRequestDTO)
         {

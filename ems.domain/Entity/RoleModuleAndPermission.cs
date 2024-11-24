@@ -1,15 +1,12 @@
 ﻿using ems.domain.Common;
-using ems.domain.Entity.Masters.ProjectModuleInfo;
-using ems.domain.Entity.Masters.ModuleOperation;
-using ems.domain.Entity.Masters.RoleInfo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ems.domain.Entity.BasicMenuInfo;
+ 
 
-namespace ems.domain.Entity.RoleModulePermission
+namespace ems.domain.Entity
 {
 
     public partial class RoleModuleAndPermission

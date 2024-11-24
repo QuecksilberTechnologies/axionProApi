@@ -1,4 +1,5 @@
 ﻿using ems.domain.Entity;
+ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace ems.application.Interfaces.IRepositories
 {
-    public interface IBasicMenuRepository
+    public interface IAttendanceRepository
     {
-        Task<IEnumerable<BasicMenu>> GetBasicMenusByUserAndDeviceAsync(long userId, int deviceType);
-        
+      public  Task<IEnumerable<UserAttendanceSetting>> GetUserAttendanceSettingByIdAsync(long userId, int attendanceDeviceId, int workstationTypeId);
+
     }
 }

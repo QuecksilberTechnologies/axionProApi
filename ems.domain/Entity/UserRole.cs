@@ -1,12 +1,11 @@
-﻿using ems.domain.Entity.EmployeeModule;
-using ems.domain.Entity.Masters.RoleInfo;
+﻿ 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ems.domain.Entity.RoleModulePermission;
-namespace ems.domain.Entity.UserRoleModule
+ 
+namespace ems.domain.Entity
 {
     public partial class UserRole
     {
@@ -34,10 +33,10 @@ namespace ems.domain.Entity.UserRoleModule
 
         public long? UpdatedById { get; set; }
 
-        public DateTime? UpdatedDateTime { get; set; }        
-        public virtual Role RolesUr{ get; set; } = null!;
+        public DateTime? UpdatedDateTime { get; set; }
+        public virtual Role RolesUr { get; set; } = null!;
         // Navigation properties
-    
+
 
 
 

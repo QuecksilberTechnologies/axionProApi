@@ -3,10 +3,8 @@ using ems.application.DTOs.BasicAndRoleBaseMenuDTO;
 using ems.application.DTOs.EmployeeDTO;
 using ems.application.DTOs.RoleDTO;
 using ems.application.DTOs.UserLogin;
-using ems.domain.Entity.BasicMenuInfo;
-using ems.domain.Entity.EmployeeModule;
-using ems.domain.Entity.Masters.RoleInfo;
-using ems.domain.Entity.UserCredential;
+using ems.domain.Entity;
+ 
 using FluentValidation;
 using System;
 using System.Collections.Generic;

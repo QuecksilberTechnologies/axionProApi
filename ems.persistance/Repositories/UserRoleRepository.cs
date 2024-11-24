@@ -1,7 +1,7 @@
 ﻿using ems.application.Constants;
 using ems.application.Interfaces.IRepositories;
-using ems.domain.Entity.EmployeeModule;
-using ems.domain.Entity.UserRoleModule;
+using ems.domain.Entity;
+ 
 using ems.persistance.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

@@ -1,7 +1,7 @@
 ﻿using ems.application.Constants;
 using ems.application.DTOs.UserLogin;
 using ems.application.Interfaces.IRepositories;
-using ems.domain.Entity.UserCredential;
+using ems.domain.Entity;
 using ems.persistance.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using System;

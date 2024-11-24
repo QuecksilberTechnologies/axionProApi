@@ -1,5 +1,5 @@
-﻿ 
-using ems.domain.Entity.EmployeeModule;
+﻿
+using ems.domain.Entity;
 
 namespace ems.application.Interfaces.IRepositories;
 

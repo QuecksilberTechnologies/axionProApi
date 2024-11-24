@@ -1,11 +1,10 @@
-﻿using ems.domain.Entity.RoleModulePermission;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.domain.Entity.Masters.ModuleOperation
+namespace ems.domain.Entity
 {
     public partial class Operation
     {

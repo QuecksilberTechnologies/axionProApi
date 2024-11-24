@@ -3,7 +3,7 @@ using ems.application.DTOs.EmployeeDTO;
 using ems.application.Features.EmployeeCmd.Commands;
 using ems.application.Interfaces;
 using ems.application.Interfaces.IRepositories;
-using ems.domain.Entity.EmployeeModule;
+using ems.domain.Entity;
 using MediatR;
 using System;
 using System.Collections.Generic;

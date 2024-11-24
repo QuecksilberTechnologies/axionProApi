@@ -1,10 +1,9 @@
 ﻿using ems.domain.Common;
-using ems.domain.Entity.EmployeeModule;
-using ems.domain.Entity.RoleModulePermission;
+ 
 using System;
 using System.Collections.Generic;
 
-namespace ems.domain.Entity.BasicMenuInfo;
+namespace ems.domain.Entity;
 
 
 public partial class BasicMenu
@@ -31,7 +30,7 @@ public partial class BasicMenu
 
     public DateTime? UpdatedDateTime { get; set; }
 
-  //  public virtual ICollection<EmployeeTypeBasicMenu> EmployeeTypeBasicMenus { get; set; } = new List<EmployeeTypeBasicMenu>();
+    //  public virtual ICollection<EmployeeTypeBasicMenu> EmployeeTypeBasicMenus { get; set; } = new List<EmployeeTypeBasicMenu>();
 
     public virtual ICollection<BasicMenu> InverseParentMenu { get; set; } = new List<BasicMenu>();
 

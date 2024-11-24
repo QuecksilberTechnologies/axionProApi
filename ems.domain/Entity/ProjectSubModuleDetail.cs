@@ -1,11 +1,10 @@
-﻿using ems.domain.Entity.RoleModulePermission;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.domain.Entity.Masters.ProjectModuleInfo
+namespace ems.domain.Entity
 {
     public partial class ProjectSubModuleDetail
     {
@@ -34,7 +33,7 @@ namespace ems.domain.Entity.Masters.ProjectModuleInfo
         public virtual ProjectModuleDetail Module { get; set; } = null!;
 
         public virtual ICollection<RoleModuleAndPermission> RoleModuleAndPermissions { get; set; } = new List<RoleModuleAndPermission>();
-     
+
     }
 
 }

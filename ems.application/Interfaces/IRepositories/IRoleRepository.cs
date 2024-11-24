@@ -1,4 +1,4 @@
-﻿using ems.domain.Entity.Masters.RoleInfo;
+﻿using ems.domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace ems.application.Interfaces.IRepositories
 {
-   
-    
-        public interface IRoleRepository
+
+
+    public interface IRoleRepository
         {
             // Create a new role
             Task<Role> CreateRoleAsync(Role role);

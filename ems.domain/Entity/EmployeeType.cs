@@ -1,9 +1,5 @@
-﻿using ems.domain.Entity.BasicMenuInfo;
-using ems.domain.Entity.EmployeeModule;
-using ems.domain.Entity.Masters.RoleInfo;
-using ems.domain.Entity.UserCredential;
-using ems.domain.Entity.UserRoleModule;
-
+﻿using ems.domain.Entity;
+ 
 public partial class EmployeeType
 {
     public int Id { get; set; }

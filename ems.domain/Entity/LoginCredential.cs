@@ -1,14 +1,12 @@
 ﻿using ems.domain.Common;
-using ems.domain.Entity.BasicMenuInfo;
-using ems.domain.Entity.EmployeeModule;
 using System;
 
-namespace ems.domain.Entity.UserCredential
+namespace ems.domain.Entity
 {
-    public class LoginCredential: BaseEntity
+    public class LoginCredential : BaseEntity
     {
         public long Id { get; set; }                        // bigint -> long
-    
+
         public long EmployeeId { get; set; }
 
         public string? LoginId { get; set; }

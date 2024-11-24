@@ -1,11 +1,10 @@
-﻿using ems.domain.Entity.RoleModulePermission;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.domain.Entity.Masters.ProjectModuleInfo
+namespace ems.domain.Entity
 {
     public partial class ProjectModuleDetail
     {
@@ -28,7 +27,7 @@ namespace ems.domain.Entity.Masters.ProjectModuleInfo
         public DateTime? UpdatedDateTime { get; set; }
 
         public virtual ICollection<ProjectSubModuleDetail> ProjectSubModuleDetails { get; set; } = new List<ProjectSubModuleDetail>();
-    
+
         public virtual ICollection<RoleModuleAndPermission> RoleModuleAndPermissions { get; set; } = new List<RoleModuleAndPermission>();
 
     }

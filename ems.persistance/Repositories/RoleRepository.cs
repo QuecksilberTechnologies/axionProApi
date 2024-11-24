@@ -1,5 +1,5 @@
 ﻿using ems.application.Interfaces.IRepositories;
-using ems.domain.Entity.Masters.RoleInfo;
+using ems.domain.Entity;
 using ems.persistance.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ems.persistance.Repositories
 {
- public class RoleRepository : IRoleRepository
+    public class RoleRepository : IRoleRepository
     {
         private readonly EmsDbContext? _context;
         private readonly ILogger? _logger;

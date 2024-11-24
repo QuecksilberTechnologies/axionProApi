@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ems.domain.Entity;
-using ems.domain.Entity.BasicMenuInfo;
 
-namespace ems.domain.Entity.RoleModulePermission
+namespace ems.domain.Entity
 {
 
     public partial class EmployeeTypeBasicMenu

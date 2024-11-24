@@ -1,6 +1,5 @@
 ﻿using ems.domain.Common;
-using ems.domain.Entity.UserCredential;
-using ems.domain.Entity.UserRoleModule;
+ 
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.domain.Entity.EmployeeModule
+namespace ems.domain.Entity
 {
     // ems.domain/Entity/Employee.cs
     [Table("Employee")]
- 
+
     public partial class Employee : BaseEntity
     {
         public long Id { get; set; }
@@ -54,9 +53,9 @@ namespace ems.domain.Entity.EmployeeModule
         public string? Remark { get; set; }
 
         public EmployeeType? EmployementType { get; set; } = null;
-  
+
         public ICollection<UserRole>? UserRolesEmp { get; set; } // One-to-many relationship with UserRole
-      
+
     }
 
 
