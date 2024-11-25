@@ -1,4 +1,5 @@
 ﻿using ems.application.Interfaces.IRepositories;
+using ems.domain.Entity;
 using ems.persistance.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -34,8 +35,8 @@ namespace ems.persistance.Repositories
                 _logger?.LogInformation("Fetching employee type for ID: {EmployeeTypeId}", employeeTypeId);
 
                 var employeeType = await _context.EmployeeTypes
-                                         .Include(et => et.RoleInfo)          // Include Role entity
-                                         .Include(et => et.BasicMenu)    // Include CommonMenus collection
+                                         .Include(et => et.Role)          // Include Role entity
+                                         .Include(et => et.EmployeeTypeBasicMenus)    // Include CommonMenus collection
                                          .FirstOrDefaultAsync(et => et.Id == employeeTypeId);
 
                 if (employeeType == null)
@@ -52,6 +53,11 @@ namespace ems.persistance.Repositories
                 throw;
           
             }
+        }
+
+        Task<EmployeeType> IEmployeeTypeRepository.GetEmployeeTypeByIdAsync(int? employeeTypeId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

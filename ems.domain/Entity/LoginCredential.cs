@@ -1,38 +1,41 @@
-﻿using ems.domain.Common;
-using System;
+﻿using System;
+using System.Collections.Generic;
 
-namespace ems.domain.Entity
+namespace ems.domain.Entity;
+
+public partial class LoginCredential
 {
-    public class LoginCredential : BaseEntity
-    {
-        public long Id { get; set; }                        // bigint -> long
+    public long Id { get; set; }
 
-        public long EmployeeId { get; set; }
+    public long EmployeeId { get; set; }
 
-        public string? LoginId { get; set; }
+    public string? LoginId { get; set; }
 
-        public string? Password { get; set; }
+    public string? Password { get; set; }
 
-        public bool? HasFirstLogin { get; set; }
+    public bool? HasFirstLogin { get; set; }
 
-        public string? MacAddress { get; set; }
+    public string? MacAddress { get; set; }
 
-        public string? IpAddress { get; set; }
+    public string? IpAddress { get; set; }
 
-        public bool? IsActive { get; set; }
+    public bool? IsActive { get; set; }
 
-        public string? Remark { get; set; }
+    public string? Remark { get; set; }
 
-        public double Latitude { get; set; }
+    public double Latitude { get; set; }
 
-        public double Longitude { get; set; }
+    public double Longitude { get; set; }
 
-        public int LoginDevice { get; set; }
-        // Navigation property
-        public Employee EmployeeLC { get; set; }
+    public int LoginDevice { get; set; }
 
-        public ICollection<BasicMenu> CommonMenusLC { get; set; }
+    public long? AddedById { get; set; }
 
-        // datetime -> DateTime (nullable)
-    }
+    public DateTime? AddedDateTime { get; set; }
+
+    public long? UpdatedById { get; set; }
+
+    public DateTime? UpdatedDateTime { get; set; }
+
+    public virtual Employee Employee { get; set; } = null!;
 }

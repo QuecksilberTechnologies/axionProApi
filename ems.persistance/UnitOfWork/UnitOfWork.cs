@@ -17,6 +17,7 @@ public class UnitOfWork : IUnitOfWork
     private IEmployeeTypeRepository? _employeeTyperepository;
     private IEmployeeTypeBasicMenuRepository? _employeeTypeBasicMenurepository;
     private IUserRolesPermissionOnModuleRepository? _userRolesPermissionOnModuleRepository;
+    private IAttendanceRepository? _attendanceRepository;
 
   //  private IAccessDetailRepository? _accessDetailRepository;
     public UnitOfWork(EmsDbContext context, ILoggerFactory loggerFactory)
@@ -24,7 +25,14 @@ public class UnitOfWork : IUnitOfWork
         _context = context;
         _loggerFactory = loggerFactory;
     }
-
+    public IAttendanceRepository AttendanceReopsitory
+    {
+        get
+        {
+            return _attendanceRepository ??= new AttendanceRepository(_context, _loggerFactory.CreateLogger<AttendanceRepository>());
+        }
+    }
+    
     public IUserLoginReopsitory UserLoginReopsitory
     {
         get

@@ -18,14 +18,14 @@ using Microsoft.Extensions.Logging;
 
 namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 {
-    public class EmployeeTypeBasicMenuHandler : IRequestHandler<EmployeeTypeBasicMenuCommand, ApiResponse<AccessDetailResponseDTO>>
+    public class AttendanceRequestHandler : IRequestHandler<EmployeeTypeBasicMenuCommand, ApiResponse<AccessDetailResponseDTO>>
     {
         private readonly IEmployeeTypeBasicMenuRepository employeeTypeBasicMenuRepository;
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;
    
         
-        public EmployeeTypeBasicMenuHandler(IEmployeeTypeBasicMenuRepository employeeTypeBasicMenuRepository, IMapper mapper, IUnitOfWork unitOfWork)
+        public AttendanceRequestHandler(IEmployeeTypeBasicMenuRepository employeeTypeBasicMenuRepository, IMapper mapper, IUnitOfWork unitOfWork)
         {
             this.employeeTypeBasicMenuRepository = employeeTypeBasicMenuRepository;
             this.mapper = mapper;

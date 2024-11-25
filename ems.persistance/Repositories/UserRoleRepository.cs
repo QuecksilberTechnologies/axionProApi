@@ -89,7 +89,7 @@ namespace ems.persistance.Repositories
             
             var userRoles = await _context.UserRoles
                                            .Where(ur => ur.EmployeeId == employeeId)
-                                           .Include(ur => ur.RolesUr) // Role details ko include karte hain
+                                           .Include(ur => ur.RoleId) // Role details ko include karte hain
                                            .ToListAsync();
 
             if (userRoles == null || userRoles.Count == 0)

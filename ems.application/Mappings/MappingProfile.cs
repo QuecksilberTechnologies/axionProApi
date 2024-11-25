@@ -44,11 +44,12 @@ namespace ems.application.Mappings
                 .ForMember(dest => dest.EmployeeFullName, opt => opt.MapFrom(src => ((src.FirstName)+ src.MiddleName)+ src.LastName)) // Map UserName
                 .ForMember(dest => dest.EmployeeTypeId, opt => opt.MapFrom(src => src.EmployeeTypeId.ToString())) // Map EmployeeTypeId
                // .ForMember(dest => dest.EmployeeType, opt => opt.MapFrom(src => src.EmployementType.ToString())) // Map EmployeeTypeId
-                .ForMember(dest => dest.EmployeeType, opt => opt.MapFrom(src => src.EmployementType.TypeName)) // Map EmployeeType Name
+                .ForMember(dest => dest.EmployeeType, opt => opt.MapFrom(src => src.EmployeeType.TypeName)) // Map EmployeeType Name
                 .ForMember(dest => dest.EmployeeAssignedRoles, opt => opt.MapFrom(src => src.UserRolesEmp.Select(ur => new RoleInfoDTO
+
                 {
-                    Id = ur.RolesUr.Id,
-                    RoleName = ur.RolesUr.RoleName,
+                    Id = ur.RoleId,
+                    RoleName = ur.role.RoleName,
                     Description = ur.Remark
                     
                 })));

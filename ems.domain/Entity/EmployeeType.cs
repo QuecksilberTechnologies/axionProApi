@@ -1,5 +1,8 @@
-﻿using ems.domain.Entity;
- 
+﻿using System;
+using System.Collections.Generic;
+
+namespace ems.domain.Entity;
+
 public partial class EmployeeType
 {
     public int Id { get; set; }
@@ -22,13 +25,13 @@ public partial class EmployeeType
 
     public DateTime? UpdatedDateTime { get; set; }
 
-    public virtual ICollection<BasicMenu> BasicMenu { get; set; } = new List<BasicMenu>();
-    public ICollection<Employee>? Employees { get; set; } = null;
+    public virtual ICollection<EmployeeStatusHistory> EmployeeStatusHistoryNewEmployeeTypes { get; set; } = new List<EmployeeStatusHistory>();
 
-    // public virtual ICollection<EmployeeStatusHistory> EmployeeStatusHistoryNewEmployeeTypes { get; set; } = new List<EmployeeStatusHistory>();
+    public virtual ICollection<EmployeeStatusHistory> EmployeeStatusHistoryOldEmployeeTypes { get; set; } = new List<EmployeeStatusHistory>();
 
-    // public virtual ICollection<EmployeeStatusHistory> EmployeeStatusHistoryOldEmployeeTypes { get; set; } = new List<EmployeeStatusHistory>();
+    public virtual ICollection<EmployeeTypeBasicMenu> EmployeeTypeBasicMenus { get; set; } = new List<EmployeeTypeBasicMenu>();
 
+    public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 
-    public virtual Role? RoleInfo { get; set; }
+    public virtual Role? Role { get; set; }
 }

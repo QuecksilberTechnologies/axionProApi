@@ -24,6 +24,7 @@ namespace ems.persistance
              services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // Register repositories
+            services.AddTransient<IAttendanceRepository, AttendanceRepository>();
             services.AddTransient<IEmployeeRepository, EmployeeRepository>();
             services.AddTransient<IUserLoginReopsitory, UserLoginReopsitory>();        
             services.AddTransient<IRoleRepository, RoleRepository>();
