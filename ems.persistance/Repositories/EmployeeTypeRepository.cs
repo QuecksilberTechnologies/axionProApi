@@ -15,12 +15,12 @@ namespace ems.persistance.Repositories
     {
        
         private ILogger _logger;
-        private EmsDbContext _context;
+        private WorkforceDbContext _context;
         private ILogger<EmployeeTypeRepository> logger;
 
       
 
-        public EmployeeTypeRepository(EmsDbContext context, ILogger<EmployeeTypeRepository> logger)
+        public EmployeeTypeRepository(WorkforceDbContext context, ILogger<EmployeeTypeRepository> logger)
         {
             this._context = context;
             this.logger = logger;

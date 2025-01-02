@@ -5,20 +5,44 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ems.persistance.Data.Context
 {
-    public class EmsDbContext : DbContext, IEmsDbContext
+    public class WorkforceDbContext : DbContext, IWorkforceDbContext
     {
 
-      
-        public virtual DbSet<AttendanceDeviceType> AttendanceDeviceTypes { get; set; }       
+        public virtual DbSet<Attendance> Attendances { get; set; }
+
+        public virtual DbSet<AttendanceDeviceType> AttendanceDeviceTypes { get; set; }
+
+        public virtual DbSet<AttendanceHistory> AttendanceHistories { get; set; }
+
+        public virtual DbSet<AttendanceRequest> AttendanceRequests { get; set; }
+
         public virtual DbSet<BasicMenu> BasicMenus { get; set; }
+
+        public virtual DbSet<Candidate> Candidates { get; set; }
+
+        public virtual DbSet<CandidateDepartmentModuleSkill> CandidateDepartmentModuleSkills { get; set; }
+
+        public virtual DbSet<CandidateHistory> CandidateHistories { get; set; }
+
+       public virtual DbSet<Department> Departments { get; set; }
+
+        public virtual DbSet<DepartmentModule> DepartmentModules { get; set; }
+
         public virtual DbSet<Employee> Employees { get; set; }
 
         public virtual DbSet<EmployeeDailyAttendance> EmployeeDailyAttendances { get; set; }
+
+        public virtual DbSet<EmployeeStatusHistory> EmployeeStatusHistories { get; set; }
 
         public virtual DbSet<EmployeeType> EmployeeTypes { get; set; }
 
         public virtual DbSet<EmployeeTypeBasicMenu> EmployeeTypeBasicMenus { get; set; }
 
+        public virtual DbSet<InterviewFeedback> InterviewFeedbacks { get; set; }
+
+        public virtual DbSet<InterviewSchedule> InterviewSchedules { get; set; }
+
+       
         public virtual DbSet<LoginCredential> LoginCredentials { get; set; }
 
         public virtual DbSet<Operation> Operations { get; set; }
@@ -31,15 +55,16 @@ namespace ems.persistance.Data.Context
 
         public virtual DbSet<RoleModuleAndPermission> RoleModuleAndPermissions { get; set; }
 
-        public virtual DbSet<UserAttendanceSetting> UserAttendanceSettings { get; set; }
+       public virtual DbSet<UserAttendanceSetting> UserAttendanceSettings { get; set; }
 
         public virtual DbSet<UserRole> UserRoles { get; set; }
 
-        public virtual DbSet<WorkstationType> WorkstationTypes { get; set; }      
+        public virtual DbSet<WorkstationType> WorkstationTypes { get; set; }
         public DbSet<EmployeeTypeBasicMenu> EmployeeTypeBasicsMenus { get; set; }
+        public DbSet<Category> Categories { get; set; }
        
         
-        public EmsDbContext(DbContextOptions<EmsDbContext> options) : base(options)
+        public WorkforceDbContext(DbContextOptions<WorkforceDbContext> options) : base(options)
         {
 
         }
@@ -49,7 +74,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__Attendan__3214EC07DE9CBDF2");
 
-                entity.ToTable("Attendance", "emp");
+                entity.ToTable("Attendance", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
@@ -59,7 +84,7 @@ namespace ems.persistance.Data.Context
 
             modelBuilder.Entity<AttendanceDeviceType>(entity =>
             {
-                entity.ToTable("AttendanceDeviceType", "emp");
+                entity.ToTable("AttendanceDeviceType", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
@@ -74,7 +99,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__Attendan__3214EC07C25A0FE6");
 
-                entity.ToTable("AttendanceHistory", "emp");
+                entity.ToTable("AttendanceHistory", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
@@ -94,12 +119,28 @@ namespace ems.persistance.Data.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_AttendanceHistory_Employee");
             });
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Category__3214EC07747F8170");
 
+                entity.ToTable("Category", "AxionPro");
+
+                entity.Property(e => e.Code).HasMaxLength(50);
+                entity.Property(e => e.Description).HasMaxLength(255);
+                entity.Property(e => e.Name).HasMaxLength(100);
+                entity.Property(e => e.ParentId).HasColumnName("ParentID");
+                entity.Property(e => e.Remark).HasMaxLength(50);
+                entity.Property(e => e.Tags).HasMaxLength(255);
+
+                entity.HasOne(d => d.Parent).WithMany(p => p.InverseParent)
+                    .HasForeignKey(d => d.ParentId)
+                    .HasConstraintName("FK_Category_Parent");
+            });
             modelBuilder.Entity<AttendanceRequest>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Attendan__3214EC07DFF12B49");
 
-                entity.ToTable("AttendanceRequest", "emp");
+                entity.ToTable("AttendanceRequest", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
@@ -113,7 +154,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK_BasicMenu_Id");
 
-                entity.ToTable("BasicMenu", "emp");
+                entity.ToTable("BasicMenu", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
@@ -135,7 +176,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__Departme__3214EC07B823F627");
 
-                entity.ToTable("Department", "emp");
+                entity.ToTable("Department", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
@@ -155,7 +196,7 @@ namespace ems.persistance.Data.Context
             {
                 entity
                     .HasNoKey()
-                    .ToTable("DepartmentModule", "emp");
+                    .ToTable("DepartmentModule", "AxionPro");
 
                 entity.Property(e => e.CreatedDate).HasColumnType("datetime");
                 entity.Property(e => e.ForPlatformRemark)
@@ -189,7 +230,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC07AC087B1D");
 
-                entity.ToTable("Employee", "emp");
+                entity.ToTable("Employee", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.EmployementCode).HasMaxLength(50);
@@ -209,7 +250,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC0703C9A4C1");
 
-                entity.ToTable("EmployeeDailyAttendance", "emp");
+                entity.ToTable("EmployeeDailyAttendance", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.AttendanceDate).HasColumnType("datetime");
@@ -236,7 +277,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC076A652FF6");
 
-                entity.ToTable("EmployeeStatusHistory", "emp");
+                entity.ToTable("EmployeeStatusHistory", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
@@ -268,7 +309,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC0701E8E042");
 
-                entity.ToTable("EmployeeType", "emp");
+                entity.ToTable("EmployeeType", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.Description).HasMaxLength(255);
@@ -285,7 +326,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC07335FD665");
 
-                entity.ToTable("EmployeeTypeBasicMenu", "emp");
+                entity.ToTable("EmployeeTypeBasicMenu", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
@@ -303,11 +344,36 @@ namespace ems.persistance.Data.Context
                     .HasConstraintName("FK_EmployeeTypeBasicMenu_EmployeeType");
             });
 
+            modelBuilder.Entity<InterviewFeedback>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Intervie__3214EC070C3DB2B6");
+
+                entity.ToTable("InterviewFeedback", "AxionPro");
+
+                entity.Property(e => e.CreatedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.Rating).HasColumnType("decimal(3, 1)");
+                entity.Property(e => e.ReapplyAfter).HasColumnType("datetime");
+                entity.Property(e => e.Status).HasMaxLength(50);
+
+                entity.HasOne(d => d.Candidate).WithMany(p => p.InterviewFeedbacks)
+                    .HasForeignKey(d => d.CandidateId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Interview__Candi__0C1BC9F9");
+
+                entity.HasOne(d => d.InterviewSchedule).WithMany(p => p.InterviewFeedbacks)
+                    .HasForeignKey(d => d.InterviewScheduleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Interview__Inter__0B27A5C0");
+            });
+ 
+
             modelBuilder.Entity<LoginCredential>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__LoginCre__3214EC07E4FA9116");
 
-                entity.ToTable("LoginCredential", "emp");
+                entity.ToTable("LoginCredential", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.IpAddress).HasMaxLength(255);
@@ -327,7 +393,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__Operatio__3214EC079906B6BF");
 
-                entity.ToTable("Operation", "emp");
+                entity.ToTable("Operation", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
@@ -342,7 +408,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__ProjectM__3214EC078CBD7460");
 
-                entity.ToTable("ProjectModuleDetail", "emp");
+                entity.ToTable("ProjectModuleDetail", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.ModuleName).HasMaxLength(100);
@@ -357,7 +423,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__ProjectS__3214EC07F684FD7B");
 
-                entity.ToTable("ProjectSubModuleDetail", "emp");
+                entity.ToTable("ProjectSubModuleDetail", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
@@ -383,7 +449,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__Role__3214EC07B617DE9F");
 
-                entity.ToTable("Role", "emp");
+                entity.ToTable("Role", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.Remark).HasMaxLength(200);
@@ -395,7 +461,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK_RoleModuleAndPermission_Id");
 
-                entity.ToTable("RoleModuleAndPermission", "emp");
+                entity.ToTable("RoleModuleAndPermission", "AxionPro");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
@@ -417,7 +483,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__UserAtte__3214EC0740B39058");
 
-                entity.ToTable("UserAttendanceSetting", "emp");
+                entity.ToTable("UserAttendanceSetting", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
@@ -448,7 +514,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK__UserRole__3214EC07DC059E47");
 
-                entity.ToTable("UserRole", "emp");
+                entity.ToTable("UserRole", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
@@ -467,7 +533,7 @@ namespace ems.persistance.Data.Context
             {
                 entity.HasKey(e => e.Id).HasName("PK_WorkstationMode");
 
-                entity.ToTable("WorkstationType", "emp");
+                entity.ToTable("WorkstationType", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
@@ -480,7 +546,85 @@ namespace ems.persistance.Data.Context
                     .IsFixedLength();
             });
 
-           
+            modelBuilder.Entity<Candidate>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Candidat__3214EC07A7BD071A");
+
+                entity.ToTable("Candidate", "AxionPro");
+
+                entity.HasIndex(e => e.PhoneNumber, "UQ__Candidat__85FB4E38B864B790").IsUnique();
+
+                entity.HasIndex(e => e.Email, "UQ__Candidat__A9D1053424EBF1F0").IsUnique();
+
+                entity.HasIndex(e => e.Aadhaar, "UQ__Candidat__C4B3336970F173B9").IsUnique();
+
+                entity.HasIndex(e => e.Pan, "UQ__Candidat__C577943DC86B77C1").IsUnique();
+
+                entity.HasIndex(e => e.CandidateReferenceCode, "UQ__Candidat__CF22B81AC2D2FB85").IsUnique();
+
+                entity.Property(e => e.Aadhaar).HasMaxLength(12);
+                entity.Property(e => e.AppliedDate)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CandidateReferenceCode).HasMaxLength(20);
+                entity.Property(e => e.CurrentCompany).HasMaxLength(200);
+                entity.Property(e => e.CurrentLocation).HasMaxLength(200);
+                entity.Property(e => e.Email).HasMaxLength(200);
+                entity.Property(e => e.ExpectedSalary).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.ExperienceYears).HasColumnType("decimal(4, 1)");
+                entity.Property(e => e.FirstName).HasMaxLength(100);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.LastName).HasMaxLength(100);
+                entity.Property(e => e.LastUpdatedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.Pan)
+                    .HasMaxLength(10)
+                    .HasColumnName("PAN");
+                entity.Property(e => e.PhoneNumber).HasMaxLength(15);
+                entity.Property(e => e.ResumeUrl).HasMaxLength(500);
+            });
+
+            modelBuilder.Entity<CandidateDepartmentModuleSkill>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Candidat__3214EC0758D57F40");
+
+                entity.ToTable("CandidateDepartmentModuleSkills", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.CandidateDepartmentModuleSkill1).HasColumnName("CandidateDepartmentModuleSkill");
+
+                entity.HasOne(d => d.CandidateDepartmentModuleSkill1Navigation).WithMany(p => p.InverseCandidateDepartmentModuleSkill1Navigation)
+                    .HasForeignKey(d => d.CandidateDepartmentModuleSkill1)
+                    .HasConstraintName("FK_CandidateDepartmentModuleSkills_Self");
+
+                entity.HasOne(d => d.Candidate).WithMany(p => p.CandidateDepartmentModuleSkills)
+                    .HasForeignKey(d => d.CandidateId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_CandidateDepartmentModuleSkills_Candidate");
+            });
+
+            modelBuilder.Entity<CandidateHistory>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Candidat__3214EC0731CB3F59");
+
+                entity.ToTable("CandidateHistory", "AxionPro");
+
+                entity.Property(e => e.CreatedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.ReapplyAllowedAfter).HasColumnType("datetime");
+                entity.Property(e => e.Status).HasMaxLength(50);
+
+                entity.HasOne(d => d.Candidate).WithMany(p => p.CandidateHistories)
+                    .HasForeignKey(d => d.CandidateId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Candidate__Candi__10E07F16");
+            });
+
+
         }
 
         public async Task<int> SaveChangesAsync()

@@ -15,11 +15,31 @@ namespace ems.persistance.Repositories
 {
     public class UserLoginReopsitory : IUserLoginReopsitory
     {
-        private EmsDbContext context;
+        private WorkforceDbContext context;
 
-        public UserLoginReopsitory(EmsDbContext context)
+        public UserLoginReopsitory(WorkforceDbContext context)
         {
             this.context = context;
+        }
+
+         public async Task<bool> IsValidUserAsync(long empId)
+        {
+            // Fetch user details based on LoginId from the repository
+                var user = await context.LoginCredentials.FirstOrDefaultAsync(u => u.EmployeeId == empId && u.IsActive == true);
+            // name _unitOfWork is not exist error aa rahi hai
+                       
+            var rr = user;
+
+                        // Check if user exists and if the password matches
+            if (user == null)
+            {
+                return false;
+                 
+            }
+
+
+            // Return success response with token
+            return true;
         }
 
         public async Task<LoginResponseDTO> AuthenticateUser(LoginRequestDTO loginRequest)

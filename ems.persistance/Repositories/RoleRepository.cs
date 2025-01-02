@@ -14,9 +14,9 @@ namespace ems.persistance.Repositories
 {
     public class RoleRepository : IRoleRepository
     {
-        private readonly EmsDbContext? _context;
+        private readonly WorkforceDbContext? _context;
         private readonly ILogger? _logger;
-          public RoleRepository(EmsDbContext? context, ILogger<RoleRepository>? logger)
+          public RoleRepository(WorkforceDbContext? context, ILogger<RoleRepository>? logger)
         {
             _context = context;
             _logger = logger;

@@ -8,19 +8,21 @@ using System.Threading.Tasks;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly EmsDbContext _context;
+    private readonly WorkforceDbContext _context;
     private readonly ILoggerFactory _loggerFactory;
     private IEmployeeRepository? _employeeRepository;  
     private IUserLoginReopsitory? _userLoginReopsitory;
     private IUserRoleRepository? _userRoleRepository;
     private IRoleRepository? _roleRepository;
     private IEmployeeTypeRepository? _employeeTyperepository;
+    private ICategoryRepository? _categoryRepository;
     private IEmployeeTypeBasicMenuRepository? _employeeTypeBasicMenurepository;
     private IUserRolesPermissionOnModuleRepository? _userRolesPermissionOnModuleRepository;
     private IAttendanceRepository? _attendanceRepository;
+    private ICandidateRegistrationRepository? _candidateRegistrationRepository;
 
   //  private IAccessDetailRepository? _accessDetailRepository;
-    public UnitOfWork(EmsDbContext context, ILoggerFactory loggerFactory)
+    public UnitOfWork(WorkforceDbContext context, ILoggerFactory loggerFactory)
     {
         _context = context;
         _loggerFactory = loggerFactory;
@@ -56,6 +58,14 @@ public class UnitOfWork : IUnitOfWork
             return _employeeTypeBasicMenurepository ??= new EmployeeTypeBasicMenuRepository(_context, _loggerFactory.CreateLogger<EmployeeTypeBasicMenuRepository>());
         }
     }
+    public ICandidateRegistrationRepository CandidatesRegistration
+    {
+        get
+        {
+            return  _candidateRegistrationRepository ??= new CandidateRegistrationRepository(_context, _loggerFactory.CreateLogger<CandidateRegistrationRepository>());
+        }
+    }
+
     public IEmployeeTypeRepository EmployeeTypeRepository
     {
         get
@@ -63,7 +73,15 @@ public class UnitOfWork : IUnitOfWork
             return _employeeTyperepository ??= new EmployeeTypeRepository(_context, _loggerFactory.CreateLogger<EmployeeTypeRepository>());
         }
     }
-    
+
+    public ICategoryRepository CategoryRepository
+    {
+        get
+        {
+            return _categoryRepository ??= new CategoryRepository(_context, _loggerFactory.CreateLogger<CategoryRepository>());
+        }
+    }
+
 
 
 

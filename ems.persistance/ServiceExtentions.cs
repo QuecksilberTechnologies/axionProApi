@@ -15,11 +15,11 @@ namespace ems.persistance
         public static void AddPersistance(this IServiceCollection services, IConfiguration configuration)
         {
             //register services
-            services.AddDbContext<EmsDbContext>(option => option.UseSqlServer(
+            services.AddDbContext<WorkforceDbContext>(option => option.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection")
                 ));
 
-             services.AddTransient<IEmsDbContext, EmsDbContext>();
+             services.AddTransient<IWorkforceDbContext, WorkforceDbContext>();
             // Register UnitOfWork with Scoped lifetime
              services.AddScoped<IUnitOfWork, UnitOfWork>();
 

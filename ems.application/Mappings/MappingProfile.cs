@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ems.application.DTOs.BasicAndRoleBaseMenuDTO;
+using ems.application.DTOs.CategoryDTO;
 using ems.application.DTOs.EmployeeDTO;
 using ems.application.DTOs.RoleDTO;
 using ems.application.DTOs.UserLogin;
@@ -28,8 +29,9 @@ namespace ems.application.Mappings
                 CreateMap<Employee, EmployeeDTO>();
                 // Agar reverse mapping chahiye toh, isse bhi add kar sakte hain
                 CreateMap<EmployeeDTO, Employee>();
-            CreateMap<LoginEmployeeInfoDTO, LoginResponseDTO>()
+                CreateMap<LoginEmployeeInfoDTO, LoginResponseDTO>()
              .ForMember(dest => dest.EmployeeInfo, opt => opt.MapFrom(src => src));
+              CreateMap<Category, CategoryResponseDTO>();
 
 
             // Mapping Employee entity to LoginEmployeeInfoDTO

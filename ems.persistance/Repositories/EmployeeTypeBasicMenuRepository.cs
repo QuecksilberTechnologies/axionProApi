@@ -19,9 +19,9 @@ namespace ems.persistance.Repositories
 {
     public class EmployeeTypeBasicMenuRepository : IEmployeeTypeBasicMenuRepository
     {
-        private readonly EmsDbContext? _context;
+        private readonly WorkforceDbContext? _context;
         private readonly ILogger? _logger;
-        public EmployeeTypeBasicMenuRepository(EmsDbContext? context, ILogger<EmployeeTypeBasicMenuRepository>? logger)
+        public EmployeeTypeBasicMenuRepository(WorkforceDbContext? context, ILogger<EmployeeTypeBasicMenuRepository>? logger)
         {
             _context = context;
             _logger = logger;

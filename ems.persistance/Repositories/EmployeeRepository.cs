@@ -13,10 +13,10 @@ namespace ems.persistance.Repositories
 {
     public class EmployeeRepository : IEmployeeRepository
     {
-        private EmsDbContext context;
+        private WorkforceDbContext context;
         private ILogger _logger;
 
-        public EmployeeRepository(EmsDbContext context)
+        public EmployeeRepository(WorkforceDbContext context)
         {
             this.context = context;
           //  this._logger = logger;  

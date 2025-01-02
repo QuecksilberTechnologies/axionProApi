@@ -17,10 +17,10 @@ namespace ems.persistance.Repositories
 
     public class UserRolesPermissionOnModuleRepository : IUserRolesPermissionOnModuleRepository
     {
-        private readonly EmsDbContext? _context;
+        private readonly WorkforceDbContext? _context;
         private readonly ILogger<UserRolesPermissionOnModuleRepository>? _logger;
 
-        public UserRolesPermissionOnModuleRepository(EmsDbContext? context, ILogger<UserRolesPermissionOnModuleRepository>? logger)
+        public UserRolesPermissionOnModuleRepository(WorkforceDbContext? context, ILogger<UserRolesPermissionOnModuleRepository>? logger)
         {
             _context = context;
             _logger = logger;

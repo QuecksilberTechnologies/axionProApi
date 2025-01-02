@@ -20,7 +20,7 @@ public class CompanyController : ControllerBase
    
 
     [HttpGet("{firstname}/{lastname}")]
-    [Authorize]
+   // [Authorize]
     public async Task<IActionResult> Get(string firstname, string lastname)
     {
         _logger.LogInfo("Company is created");

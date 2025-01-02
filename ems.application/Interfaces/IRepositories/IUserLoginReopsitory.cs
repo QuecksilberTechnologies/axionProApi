@@ -10,6 +10,7 @@ namespace ems.application.Interfaces.IRepositories
     public interface IUserLoginReopsitory
     {
         Task<LoginResponseDTO> AuthenticateUser(LoginRequestDTO loginRequest);
+        Task<bool> IsValidUserAsync(long empId);
 
     }
 

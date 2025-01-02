@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Interfaces.IContext
 {
-    public interface IEmsDbContext
+    public interface IWorkforceDbContext
     {
           
     }

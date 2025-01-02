@@ -6,12 +6,13 @@ public interface IUnitOfWork : IDisposable
 {
     // Repositories
     IEmployeeRepository Employees { get; }
+    ICandidateRegistrationRepository CandidatesRegistration { get; }
    
     IEmployeeTypeRepository  EmployeeTypeRepository { get; }
     IUserLoginReopsitory UserLoginReopsitory { get; }   
   //  IBasicMenuRepository CommonMenuRepository { get; }
     IUserRoleRepository UserRoleRepository { get; }
-   
+    ICategoryRepository CategoryRepository { get; }
     IRoleRepository RoleRepository {  get; }
 
     IEmployeeTypeBasicMenuRepository EmployeeTypeBasicMenuRepository { get; }
