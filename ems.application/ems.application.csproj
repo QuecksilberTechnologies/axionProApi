@@ -23,7 +23,6 @@
     <Folder Include="Features\EmployeeCmd\NewFolder\Commands\" />
     <Folder Include="Features\EmployeeCmd\NewFolder\Handlers\" />
     <Folder Include="Features\EmployeeCmd\NewFolder\Queries\" />
-    <Folder Include="Features\RoleCmd\Commands\" />
     <Folder Include="Features\UserLoginAndDashboardCmd\Queries\" />
   </ItemGroup>
 

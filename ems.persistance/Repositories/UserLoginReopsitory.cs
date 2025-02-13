@@ -22,24 +22,27 @@ namespace ems.persistance.Repositories
             this.context = context;
         }
 
-         public async Task<bool> IsValidUserAsync(long empId)
+
+        public async Task<bool> IsValidUserAsync(long empId)
         {
-            // Fetch user details based on LoginId from the repository
-                var user = await context.LoginCredentials.FirstOrDefaultAsync(u => u.EmployeeId == empId && u.IsActive == true);
-            // name _unitOfWork is not exist error aa rahi hai
-                       
-            var rr = user;
-
-                        // Check if user exists and if the password matches
-            if (user == null)
+            try
             {
-                return false;
-                 
+                // Fetch user details based on LoginId from the repository
+                var user = await context.LoginCredentials
+                    .FirstOrDefaultAsync(u => u.EmployeeId == empId && u.IsActive == true);
+
+                if (user == null)
+                {
+                    return false;
+                }
+
+                return true;
             }
-
-
-            // Return success response with token
-            return true;
+            catch (Exception ex)
+            {
+              //  _logger.LogError(ex, "Error in IsValidUserAsync for EmployeeId: {EmpId}", empId);
+                return false;
+            }
         }
 
         public async Task<LoginResponseDTO> AuthenticateUser(LoginRequestDTO loginRequest)

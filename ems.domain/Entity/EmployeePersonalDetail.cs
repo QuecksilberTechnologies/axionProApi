@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace ems.domain.Entity;
+
+public partial class EmployeePersonalDetail
+{
+    public long Id { get; set; }
+
+    public long EmployeeId { get; set; }
+
+    public string? AadhaarNumber { get; set; }
+
+    public string? PanNumber { get; set; }
+
+    public string? PassportNumber { get; set; }
+
+    public string? DrivingLicenseNumber { get; set; }
+
+    public string? VoterId { get; set; }
+
+    public string? BloodGroup { get; set; }
+
+    public string? MaritalStatus { get; set; }
+
+    public string? Nationality { get; set; }
+
+    public string? EmergencyContactName { get; set; }
+
+    public string? EmergencyContactNumber { get; set; }
+
+    public virtual Employee Employee { get; set; } = null!;
+}

@@ -28,22 +28,34 @@ namespace ems.persistance.Repositories
             _context = context;
             _logger = logger;
         }
-
-        public Task<int> AddCandidateAsync(CandidateRequestDTO candidate)
+        public async Task<long> AddCandidateAsync(Candidate candidate)
         {
-            //try
-            //{
-            //}
-            //catch (Exception ex)
-            //{
-            //    // Log error
-            //    _logger?.LogError(ex, "");
+            try
+            {
+                if (candidate == null)
+                    throw new ArgumentNullException(nameof(candidate), "Candidate data cannot be null.");
 
-            //    // Re-throw with user-friendly message
-            //    throw new Exception("", ex);
-            //}
-            return null;
+                await _context.Candidates.AddAsync(candidate);
+
+                // Save changes and get auto-generated ID
+                await _context.SaveChangesAsync();
+
+                _logger?.LogInformation($"New candidate added successfully with ID: {candidate.Id}");
+
+                return candidate.Id; // Return the generated Candidate ID
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger?.LogError(ex, "Null input encountered in AddCandidateAsync.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "An error occurred while adding a new candidate.");
+                throw new ApplicationException("An unexpected error occurred. Please try again later.", ex);
+            }
         }
+
 
         public Task<bool> DeleteCandidateAsync(int candidateId)
         {
@@ -60,39 +72,113 @@ namespace ems.persistance.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<bool> IsEmailPANAdharPhoneExistsAsync(CandidateRegistrationCommand request)
+        public async Task<long> GetCandidateIdAsync(CandidateRequestDTO request)
         {
             try
             {
-                if (request == null || request.RequestCandidateRegistrationDTO == null)
-                    throw new ArgumentNullException(nameof(request), "Request or CandidateRegistrationDTO cannot be null.");
+                if (request == null)
+                    throw new ArgumentNullException(nameof(request), "Request cannot be null.");
 
-                var dto = request.RequestCandidateRegistrationDTO;
+                // Query to find candidate ID by phone, email, PAN, or Aadhaar
+                var candidate = await _context.Candidates
+                    .Where(c =>
+                        c.Email == request.Email ||
+                        c.PhoneNumber == request.PhoneNumber ||
+                        (c.Pan != null && c.Pan == request.Pan) ||
+                        (c.Aadhaar != null && c.Aadhaar == request.Aadhaar))
+                    .Select(c => c.Id)
+                    .FirstOrDefaultAsync();
 
-                // Check for duplicate candidate data
+                return candidate; // Returns candidate ID or 0 if not found
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger?.LogError(ex, "Null input encountered in GetCandidateIdAsync.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "An error occurred while fetching candidate ID.");
+                throw new ApplicationException("An unexpected error occurred. Please try again later.", ex);
+            }
+        }
+
+
+        public async Task<bool> IsCandidateBlackListedAsync(CandidateRequestDTO request)
+        {
+            try
+            {
+                if (request == null)
+                    throw new ArgumentNullException(nameof(request), "Request cannot be null.");
+
+                // Check if the candidate is blacklisted based on Email, PhoneNumber, PAN, or Aadhaar
+                var isBlacklisted = await _context.Candidates.AnyAsync(c =>
+                    (c.Email == request.Email ||
+                     c.PhoneNumber == request.PhoneNumber ||
+                     (c.Pan != null && c.Pan == request.Pan) ||
+                     (c.Aadhaar != null && c.Aadhaar == request.Aadhaar))
+                    && c.IsBlacklisted);
+
+                return isBlacklisted;
+            }
+            catch (ArgumentNullException ex)
+            {
+                _logger?.LogError(ex, "Null input encountered in IsCandidateBlackListedAsync.");
+                throw; // Rethrow to notify the caller
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "An error occurred while checking if the candidate is blacklisted.");
+                throw new ApplicationException("An unexpected error occurred. Please try again later.", ex);
+            }
+        }
+
+
+
+        public async Task<bool> IsEmailPANAdharPhoneExistsAsync(CandidateRequestDTO request)
+        {
+            try
+            {
+                if (request == null)
+                    throw new ArgumentNullException(nameof(request), "Request cannot be null.");
+
+                // Duplicate check (Blacklist ko ignore karte hue)
                 var isDuplicate = await _context.Candidates.AnyAsync(c =>
-                    c.Email == dto.Email ||
-                    c.PhoneNumber == dto.PhoneNumber ||
-                    c.Pan == dto.Pan ||
-                    c.Aadhaar == dto.Aadhaar);
+                    c.Email == request.Email ||
+                    c.PhoneNumber == request.PhoneNumber ||
+                    (c.Pan != null && c.Pan == request.Pan) ||
+                    (c.Aadhaar != null && c.Aadhaar == request.Aadhaar)
+                );
 
-                return isDuplicate;
+                if (isDuplicate)
+                {
+                    return true; // Duplicate record exists, blacklist check nahi karna
+                }
+                else
+                    return false;
+
+
+                // Blacklist check only if no duplicate found
+                //var isBlacklisted = await _context.Candidates.AnyAsync(c =>
+                //    (c.Email == request.Email ||
+                //    c.PhoneNumber == request.PhoneNumber ||
+                //    (c.Pan != null && c.Pan == request.Pan) ||
+                //    (c.Aadhaar != null && c.Aadhaar == request.Aadhaar))
+                //    && c.IsBlacklisted
+                //);
+
+                //return isBlacklisted; // Blacklisted record exists or not
             }
             catch (ArgumentNullException ex)
             {
                 _logger?.LogError(ex, "Null input encountered in IsEmailPANAdharPhoneExistsAsync.");
-                throw; // Rethrow to ensure the caller is aware of the issue
+                throw;
             }
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "An error occurred while checking for duplicate candidate data.");
-                throw new Exception("An unexpected error occurred. Please try again later.", ex);
+                throw new ApplicationException("An unexpected error occurred. Please try again later.", ex);
             }
-        }
-
-        public Task<bool> IsEmailPANAdharPhoneExistsAsync(CandidateRequestDTO request)
-        {
-            throw new NotImplementedException();
         }
 
         public Task<bool> UpdateCandidateAsync(CandidateResponseDTO candidate)

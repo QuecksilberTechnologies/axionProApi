@@ -5,12 +5,14 @@ using ems.persistance.Repositories;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
-
-public class UnitOfWork : IUnitOfWork
+using Microsoft.EntityFrameworkCore.Storage;
+public class UnitOfWork  : IUnitOfWork
 {
     private readonly WorkforceDbContext _context;
     private readonly ILoggerFactory _loggerFactory;
-    private IEmployeeRepository? _employeeRepository;  
+    private IDbContextTransaction? _currentTransaction;
+
+    private IEmployeeRepository? _employeeRepository;
     private IUserLoginReopsitory? _userLoginReopsitory;
     private IUserRoleRepository? _userRoleRepository;
     private IRoleRepository? _roleRepository;
@@ -20,21 +22,24 @@ public class UnitOfWork : IUnitOfWork
     private IUserRolesPermissionOnModuleRepository? _userRolesPermissionOnModuleRepository;
     private IAttendanceRepository? _attendanceRepository;
     private ICandidateRegistrationRepository? _candidateRegistrationRepository;
+   // private ICandidateCategorySkillRepository? _candidateCategorySkillRepository;
 
-  //  private IAccessDetailRepository? _accessDetailRepository;
+
     public UnitOfWork(WorkforceDbContext context, ILoggerFactory loggerFactory)
     {
         _context = context;
         _loggerFactory = loggerFactory;
     }
-    public IAttendanceRepository AttendanceReopsitory
-    {
-        get
-        {
-            return _attendanceRepository ??= new AttendanceRepository(_context, _loggerFactory.CreateLogger<AttendanceRepository>());
-        }
-    }
-    
+
+    // Repositories
+    //public IAttendanceRepository AttendanceReopsitory
+    //{
+    //    get
+    //    {
+    //        return _attendanceRepository ??= new AttendanceRepository(_context, _loggerFactory.CreateLogger<AttendanceRepository>());
+    //    }
+    //}
+
     public IUserLoginReopsitory UserLoginReopsitory
     {
         get
@@ -43,6 +48,7 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
+  
     public IEmployeeRepository Employees
     {
         get
@@ -51,20 +57,29 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
-     public IEmployeeTypeBasicMenuRepository EmployeeTypeBasicMenuRepository
+    public IEmployeeTypeBasicMenuRepository EmployeeTypeBasicMenuRepository
     {
         get
         {
             return _employeeTypeBasicMenurepository ??= new EmployeeTypeBasicMenuRepository(_context, _loggerFactory.CreateLogger<EmployeeTypeBasicMenuRepository>());
         }
     }
-    public ICandidateRegistrationRepository CandidatesRegistration
+
+    public ICandidateRegistrationRepository CandidatesRegistrationRepository
     {
         get
         {
-            return  _candidateRegistrationRepository ??= new CandidateRegistrationRepository(_context, _loggerFactory.CreateLogger<CandidateRegistrationRepository>());
+            return _candidateRegistrationRepository ??= new CandidateRegistrationRepository(_context, _loggerFactory.CreateLogger<CandidateRegistrationRepository>());
         }
     }
+
+    //public ICandidateCategorySkillRepository CandidateCategorySkillRepository
+    //{
+    //    get
+    //    {
+    //        return _candidateCategorySkillRepository ??= new CandidateCategorySkillRepository(_context, _loggerFactory.CreateLogger<CandidateCategorySkillRepository>());
+    //    }
+    //}
 
     public IEmployeeTypeRepository EmployeeTypeRepository
     {
@@ -82,17 +97,14 @@ public class UnitOfWork : IUnitOfWork
         }
     }
 
-
-
-
-
     public IUserRoleRepository UserRoleRepository
     {
         get
         {
-            return _userRoleRepository ??= new UserRoleRepository(_context, _loggerFactory.CreateLogger < UserRoleRepository>());
+            return _userRoleRepository ??= new UserRoleRepository(_context, _loggerFactory.CreateLogger<UserRoleRepository>());
         }
     }
+
     public IUserRolesPermissionOnModuleRepository UserRolesPermissionOnModuleRepository
     {
         get
@@ -100,6 +112,7 @@ public class UnitOfWork : IUnitOfWork
             return _userRolesPermissionOnModuleRepository ??= new UserRolesPermissionOnModuleRepository(_context, _loggerFactory.CreateLogger<UserRolesPermissionOnModuleRepository>());
         }
     }
+
     public IRoleRepository RoleRepository
     {
         get
@@ -107,6 +120,40 @@ public class UnitOfWork : IUnitOfWork
             return _roleRepository ??= new RoleRepository(_context, _loggerFactory.CreateLogger<RoleRepository>());
         }
     }
+
+    //public ICandidateCategorySkillRepository CandidateCategorySkillRepository => throw new NotImplementedException();
+
+    //public ITenderCategoryRespository TenderCategoryRepository => throw new NotImplementedException();
+
+
+    // Transaction Management
+    public async Task BeginTransactionAsync()
+    {
+        _currentTransaction = await _context.Database.BeginTransactionAsync();
+    }
+
+    public async Task CommitTransactionAsync()
+    {
+        try
+        {
+            await _context.SaveChangesAsync();
+            await _currentTransaction?.CommitAsync();
+        }
+        catch (Exception)
+        {
+            await RollbackTransactionAsync();
+            throw;
+        }
+    }
+
+    public async Task RollbackTransactionAsync()
+    {
+        if (_currentTransaction != null)
+        {
+            await _currentTransaction.RollbackAsync();
+        }
+    }
+
     public async Task<int> CommitAsync()
     {
         return await _context.SaveChangesAsync();
@@ -120,5 +167,6 @@ public class UnitOfWork : IUnitOfWork
     public void Dispose()
     {
         _context.Dispose();
+        _currentTransaction?.Dispose();
     }
 }

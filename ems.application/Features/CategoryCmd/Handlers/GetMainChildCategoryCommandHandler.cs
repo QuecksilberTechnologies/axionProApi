@@ -1,16 +1,10 @@
 ﻿using AutoMapper;
 using ems.application.DTOs.CategoryDTO;
-using ems.application.DTOs.RegistrationDTO;
-using ems.application.DTOs.UserLogin;
 using ems.application.Features.CategoryCmd.Command;
-using ems.application.Features.UserLoginAndDashboardCmd.Commands;
-using ems.application.Features.UserLoginAndDashboardCmd.Handlers;
 using ems.application.Interfaces;
 using ems.application.Wrappers;
-using ems.domain.Entity;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,22 +13,20 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.CategoryCmd.Handlers
 {
-
-
-    public class GetMainCategoryRequestCommandHandler : IRequestHandler<GetMainCategoryRequestCommand, ApiResponse<List<CategoryResponseDTO>>>
+    public class GetMainCategoryChildRequestCommandHandler : IRequestHandler<GetMainChildCategoryCommand, ApiResponse<List<CategoryResponseDTO>>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<GetMainCategoryRequestCommandHandler> _logger;
+        private readonly ILogger<GetMainCategoryCommandHandler> _logger;
 
-        public GetMainCategoryRequestCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, ILogger<GetMainCategoryRequestCommandHandler> logger)
+        public GetMainCategoryChildRequestCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, ILogger<GetMainCategoryCommandHandler> logger)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
-        public async Task<ApiResponse<List<CategoryResponseDTO>>> Handle(GetMainCategoryRequestCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<CategoryResponseDTO>>> Handle(GetMainChildCategoryCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -63,17 +55,17 @@ namespace ems.application.Features.CategoryCmd.Handlers
                 }
 
                 // Fetch all main categories (where ParentCategoryId is NULL)
-                var categories = await _unitOfWork.CategoryRepository.GetAllMainCategoriesAsync();
+              //  var categories = await _unitOfWork.CategoryRepository.GetAllChildCategoryByIdAsync(categoryRequestDto.Id, categoryRequestDto.CategoryId);
 
                 // Map the domain model to the response DTO
-                var categoryResponseDTOs = _mapper.Map<List<CategoryResponseDTO>>(categories);
+              //  var categoryResponseDTOs = _mapper.Map<List<CategoryResponseDTO>>(categories);
 
                 // Return a success response
                 return new ApiResponse<List<CategoryResponseDTO>>
                 {
                     IsSuccecced = true,
                     Message = "Categories fetched successfully.",
-                    Data = categoryResponseDTOs
+                  //  Data = categoryResponseDTOs
                 };
             }
             catch (Exception ex)
@@ -90,7 +82,8 @@ namespace ems.application.Features.CategoryCmd.Handlers
                 };
             }
         }
-    }
 
+       
+    }
 
 }

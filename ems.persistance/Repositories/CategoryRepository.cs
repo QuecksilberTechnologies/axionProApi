@@ -41,10 +41,41 @@ namespace ems.persistance.Repositories
                 throw;
             }
         }
-        public Task<CategoryResponseDTO> AddCategoryAsync(CategoryRequestDTO category)
-        {
-            throw new NotImplementedException();
-        }
+        //public Task<CategoryResponseDTO> AddCategoryAsync(CategoryRequestDTO category)
+        //{
+        //    public async Task<CategoryResponseDTO> AddCategoryAsync(CategoryRequestDTO category)
+        //    {
+        //        try
+        //        {
+        //            var newCategory = new Category
+        //            {
+        //                Name = category.Name,
+        //                Description = category.Description,
+        //                IsActive = true,
+        //                AddedById = category.AddedById,
+        //                AddedDateTime = DateTime.UtcNow
+        //            };
+
+        //            await _context.Categories.AddAsync(newCategory);
+        //            await _context.SaveChangesAsync();
+
+        //            return new CategoryResponseDTO
+        //            {
+        //                Id = newCategory.Id,
+        //                Name = newCategory.Name,
+        //                Description = newCategory.Description,
+        //                IsActive = newCategory.IsActive
+        //            };
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _logger.LogError(ex, "Error while adding category: {CategoryName}", category.Name);
+        //            throw new ApplicationException("An error occurred while adding the category.");
+        //        }
+        //    }
+
+
+        //}
 
         public Task<bool> DeleteCategoryAsync(int id)
         {
@@ -98,6 +129,9 @@ namespace ems.persistance.Repositories
             }
         }
 
-
+        public Task<CategoryResponseDTO> AddCategoryAsync(CategoryRequestDTO category)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

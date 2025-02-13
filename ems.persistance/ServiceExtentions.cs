@@ -21,10 +21,10 @@ namespace ems.persistance
 
              services.AddTransient<IWorkforceDbContext, WorkforceDbContext>();
             // Register UnitOfWork with Scoped lifetime
-             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+            // services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             // Register repositories
-            services.AddTransient<IAttendanceRepository, AttendanceRepository>();
+            //services.AddTransient<IAttendanceRepository, AttendanceRepository>();
             services.AddTransient<IEmployeeRepository, EmployeeRepository>();
             services.AddTransient<IUserLoginReopsitory, UserLoginReopsitory>();        
             services.AddTransient<IRoleRepository, RoleRepository>();
@@ -32,6 +32,9 @@ namespace ems.persistance
             services.AddTransient<IEmployeeTypeRepository, EmployeeTypeRepository>();
             services.AddTransient<IEmployeeTypeBasicMenuRepository, EmployeeTypeBasicMenuRepository>();
             services.AddTransient<IUserRolesPermissionOnModuleRepository, UserRolesPermissionOnModuleRepository>();
+            services.AddTransient<ICandidateRegistrationRepository, CandidateRegistrationRepository>();  
+           // services.AddTransient<ICandidateCategorySkillRepository, CandidateCategorySkillRepository>();
+         //   services.AddTransient<ITenderCategoryRespository, TenderCategoryRepository>();
             // services.AddTransient<ICompanyRepository, CompanyRepository>();
 
 

@@ -1,4 +1,5 @@
 ﻿using ems.application.Interfaces.IContext;
+using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ namespace ems.persistance.Data.Context
     public class WorkforceDbContext : DbContext, IWorkforceDbContext
     {
 
-        public virtual DbSet<Attendance> Attendances { get; set; }
+        public virtual DbSet<Attendance> Attendances { get; set; }      
 
         public virtual DbSet<AttendanceDeviceType> AttendanceDeviceTypes { get; set; }
 
@@ -21,6 +22,7 @@ namespace ems.persistance.Data.Context
         public virtual DbSet<Candidate> Candidates { get; set; }
 
         public virtual DbSet<CandidateDepartmentModuleSkill> CandidateDepartmentModuleSkills { get; set; }
+        public virtual DbSet<CandidateCategorySkill> CandidateCategorySkills { get; set; }
 
         public virtual DbSet<CandidateHistory> CandidateHistories { get; set; }
 
@@ -62,8 +64,22 @@ namespace ems.persistance.Data.Context
         public virtual DbSet<WorkstationType> WorkstationTypes { get; set; }
         public DbSet<EmployeeTypeBasicMenu> EmployeeTypeBasicsMenus { get; set; }
         public DbSet<Category> Categories { get; set; }
-       
-        
+
+       // public virtual DbSet<Tender> Tenders { get; set; }
+
+        //public virtual DbSet<TenderProject> TenderProjects { get; set; }
+
+        //public virtual DbSet<TenderService> TenderServices { get; set; }
+
+        //public virtual DbSet<TenderServiceHistory> TenderServiceHistories { get; set; }
+
+        //public virtual DbSet<TenderServiceProvider> TenderServiceProviders { get; set; }
+
+        //public virtual DbSet<TenderServiceSpecification> TenderServiceSpecifications { get; set; }
+
+        //public virtual DbSet<TenderServiceType> TenderServiceTypes { get; set; }
+
+        //public virtual DbSet<TenderStatus> TenderStatuses { get; set; }
         public WorkforceDbContext(DbContextOptions<WorkforceDbContext> options) : base(options)
         {
 
@@ -226,9 +242,10 @@ namespace ems.persistance.Data.Context
                     .HasConstraintName("FK__Departmen__Depar__3587F3E0");
             });
 
+           
             modelBuilder.Entity<Employee>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC07AC087B1D");
+                entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC07752E5229");
 
                 entity.ToTable("Employee", "AxionPro");
 
@@ -241,9 +258,17 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.Remark).HasMaxLength(200);
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
 
+                entity.HasOne(d => d.Designation).WithMany(p => p.Employees)
+                    .HasForeignKey(d => d.DesignationId)
+                    .OnDelete(DeleteBehavior.SetNull)
+                    .HasConstraintName("FK_Employee_Designation");
+
                 entity.HasOne(d => d.EmployeeType).WithMany(p => p.Employees)
                     .HasForeignKey(d => d.EmployeeTypeId)
                     .HasConstraintName("FK_Employee_EmployeeType");
+
+              //  entity.HasMany(e => e.UserRoles).WithMany(z => z.RoleId).HasForeignKey(d => d.RoleId);
+
             });
 
             modelBuilder.Entity<EmployeeDailyAttendance>(entity =>
@@ -317,9 +342,9 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.TypeName).HasMaxLength(255);
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
 
-                entity.HasOne(d => d.Role).WithMany(p => p.EmployeeTypes)
-                    .HasForeignKey(d => d.RoleId)
-                    .HasConstraintName("FK_EmployeeType_Role");
+                //entity.HasOne(d => d.Role).WithMany(p => p.EmployeeTypes)
+                //    .HasForeignKey(d => d.RoleId)
+                //    .HasConstraintName("FK_EmployeeType_Role");
             });
 
             modelBuilder.Entity<EmployeeTypeBasicMenu>(entity =>
@@ -512,21 +537,20 @@ namespace ems.persistance.Data.Context
 
             modelBuilder.Entity<UserRole>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__UserRole__3214EC07DC059E47");
+                entity.HasKey(e => e.Id).HasName("PK__UserRole__3214EC078A706F66");
 
                 entity.ToTable("UserRole", "AxionPro");
 
-                entity.Property(e => e.AddedDateTime)
-                    .HasDefaultValueSql("(getdate())")
-                    .HasColumnType("datetime");
-                entity.Property(e => e.AssignedDateTime)
-                    .HasDefaultValueSql("(getdate())")
-                    .HasColumnType("datetime");
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
-                entity.Property(e => e.Remark).HasMaxLength(500);
+                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.AssignedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.Remark).HasMaxLength(255);
                 entity.Property(e => e.RemovedDateTime).HasColumnType("datetime");
-                entity.Property(e => e.RoleStartDate).HasColumnType("datetime");
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Role).WithMany(p => p.UserRoles)
+                    .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .HasConstraintName("FK_UserRole_Role");
             });
 
             modelBuilder.Entity<WorkstationType>(entity =>
@@ -546,6 +570,7 @@ namespace ems.persistance.Data.Context
                     .IsFixedLength();
             });
 
+
             modelBuilder.Entity<Candidate>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Candidat__3214EC07A7BD071A");
@@ -563,12 +588,14 @@ namespace ems.persistance.Data.Context
                 entity.HasIndex(e => e.CandidateReferenceCode, "UQ__Candidat__CF22B81AC2D2FB85").IsUnique();
 
                 entity.Property(e => e.Aadhaar).HasMaxLength(12);
+                entity.Property(e => e.ActionStatus).HasMaxLength(20);
                 entity.Property(e => e.AppliedDate)
                     .HasDefaultValueSql("(getdate())")
                     .HasColumnType("datetime");
                 entity.Property(e => e.CandidateReferenceCode).HasMaxLength(20);
                 entity.Property(e => e.CurrentCompany).HasMaxLength(200);
                 entity.Property(e => e.CurrentLocation).HasMaxLength(200);
+                entity.Property(e => e.Education).HasMaxLength(50);
                 entity.Property(e => e.Email).HasMaxLength(200);
                 entity.Property(e => e.ExpectedSalary).HasColumnType("decimal(18, 2)");
                 entity.Property(e => e.ExperienceYears).HasColumnType("decimal(4, 1)");
@@ -584,26 +611,27 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.PhoneNumber).HasMaxLength(15);
                 entity.Property(e => e.ResumeUrl).HasMaxLength(500);
             });
-
-            modelBuilder.Entity<CandidateDepartmentModuleSkill>(entity =>
+            modelBuilder.Entity<CandidateCategorySkill>(entity =>
             {
-                entity.HasKey(e => e.Id).HasName("PK__Candidat__3214EC0758D57F40");
+                entity.HasKey(e => e.Id).HasName("PK__Candidat__3214EC07F516E3E9");
 
-                entity.ToTable("CandidateDepartmentModuleSkills", "AxionPro");
+                entity.ToTable("CandidateCategorySkill", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
                     .HasColumnType("datetime");
-                entity.Property(e => e.CandidateDepartmentModuleSkill1).HasColumnName("CandidateDepartmentModuleSkill");
+                entity.Property(e => e.Description).HasMaxLength(255);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
 
-                entity.HasOne(d => d.CandidateDepartmentModuleSkill1Navigation).WithMany(p => p.InverseCandidateDepartmentModuleSkill1Navigation)
-                    .HasForeignKey(d => d.CandidateDepartmentModuleSkill1)
-                    .HasConstraintName("FK_CandidateDepartmentModuleSkills_Self");
-
-                entity.HasOne(d => d.Candidate).WithMany(p => p.CandidateDepartmentModuleSkills)
+                entity.HasOne(d => d.Candidate).WithMany(p => p.CandidateCategorySkills)
                     .HasForeignKey(d => d.CandidateId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_CandidateDepartmentModuleSkills_Candidate");
+                    .HasConstraintName("FK__Candidate__Candi__53A266AC");
+
+                //entity.HasOne(d => d.Category).WithMany(p => p.CandidateCategorySkills)
+                //    .HasForeignKey(d => d.CategoryId)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK__Candidate__Categ__54968AE5");
             });
 
             modelBuilder.Entity<CandidateHistory>(entity =>
@@ -623,7 +651,8 @@ namespace ems.persistance.Data.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Candidate__Candi__10E07F16");
             });
-
+ 
+            
 
         }
 

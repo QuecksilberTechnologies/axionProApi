@@ -52,9 +52,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
             //  var userRoll = await _unitOfWork.UserRoleRepository.GetUsersRolesWithDetailsByIdAsync(user.Id);
 
             var employee = await _unitOfWork.Employees.GetEmployeeByIdAsync(user.Id);
-            // var employeeType = await _unitOfWork.EmployeeTypeRepository.GetEmployeeTypeByIdAsync(employee.EmployeeTypeId);
-            // var employeeInfo = _mapper.Map<LoginEmployeeInfoDTO>(employee);
-            // Map Employee to LoginEmployeeInfoDTO with LoginId
+           
             var employeeInfo = _mapper.Map<LoginEmployeeInfoDTO>(employee, opt =>
             {
                 opt.Items["LoginId"] = loginRequest.LoginId; // Pass LoginId to the context

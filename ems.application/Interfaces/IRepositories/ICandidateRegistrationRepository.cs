@@ -12,7 +12,7 @@ namespace ems.application.Interfaces.IRepositories
     public interface ICandidateRegistrationRepository
     {
         // Create: Add a new candidate
-        Task<int> AddCandidateAsync(CandidateRequestDTO candidate);
+        Task<long> AddCandidateAsync(Candidate candidate);
 
         // Read: Get a candidate by ID
         Task<CandidateResponseDTO> GetCandidateByIdAsync(int candidateId);
@@ -26,6 +26,8 @@ namespace ems.application.Interfaces.IRepositories
         // Delete: Delete a candidate by ID
         Task<bool> DeleteCandidateAsync(int candidateId);
         Task<bool> IsEmailPANAdharPhoneExistsAsync(CandidateRequestDTO request);
+        Task<bool> IsCandidateBlackListedAsync(CandidateRequestDTO request);
+        Task<long> GetCandidateIdAsync(CandidateRequestDTO request);
     }
 
 }

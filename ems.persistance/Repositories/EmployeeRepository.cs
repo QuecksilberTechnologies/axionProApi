@@ -44,13 +44,9 @@ namespace ems.persistance.Repositories
             try
             {
                 _logger?.LogInformation("Fetching employee details for ID: {EmployeeId}", employeeId);
-
-                //var employee = await context.Employees.FirstOrDefaultAsync(e => e.Id == employeeId);
-              //  var employee = await context.Employees.Include(e => e.EmployementType).Include(e => e.UserRolesEmp).ThenInclude(ur => ur.RolesUr)
-                                  
-                //    .FirstOrDefaultAsync(e => e.Id == employeeId);
+  
                 var employee = await context.Employees.Include(e => e.EmployeeType).Include(e => e.UserRolesEmp)
-                 .ThenInclude(ur => ur.role).FirstOrDefaultAsync(e => e.Id == employeeId);
+                 .ThenInclude(ur => ur.RoleId).FirstOrDefaultAsync(e => e.Id == employeeId);
                 if (employee == null)
                 {
                     _logger?.LogWarning("Employee not found with ID: {EmployeeId}", employeeId);

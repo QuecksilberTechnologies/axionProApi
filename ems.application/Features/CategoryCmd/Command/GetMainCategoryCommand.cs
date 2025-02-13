@@ -1,4 +1,5 @@
-﻿using ems.application.DTOs.CategoryDTO;
+﻿using ems.application.DTOs.AttendanceDTO;
+using ems.application.DTOs.CategoryDTO;
 using ems.application.Wrappers;
 using MediatR;
 using System;
@@ -9,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.CategoryCmd.Command
 {
-    public class GetMainChildCategoryRequestCommand : IRequest<ApiResponse<List<CategoryResponseDTO>>>
+    public class GetMainCategoryCommand : IRequest<ApiResponse<List<CategoryResponseDTO>>>
     {
         public CategoryRequestDTO CategoryRequestDTO { get; set; }
 
 
-        public GetMainChildCategoryRequestCommand(CategoryRequestDTO categoryRequestDTO)
+        public GetMainCategoryCommand(CategoryRequestDTO categoryRequestDTO)
         {
             CategoryRequestDTO = categoryRequestDTO;
         }
-     
 
     }
+
 }

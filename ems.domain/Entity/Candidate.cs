@@ -1,60 +1,64 @@
-﻿using System;
+﻿using ems.domain.Entity;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ems.domain.Entity
+namespace ems.domain.Entity;
+
+public partial class Candidate
 {
-    public partial class Candidate
-    {
-        public long Id { get; set; }
+    public long Id { get; set; }
 
-        public string FirstName { get; set; } = null!;
+    public string FirstName { get; set; } = null!;
 
-        public string? LastName { get; set; }
+    public string? LastName { get; set; }
 
-        public string Email { get; set; } = null!;
+    public string Email { get; set; } = null!;
 
-        public string PhoneNumber { get; set; } = null!;
+    public string PhoneNumber { get; set; } = null!;
 
-        public string? Pan { get; set; }
+    public string? Pan { get; set; }
 
-        public string? Aadhaar { get; set; }
+    public string? Aadhaar { get; set; }
 
-        public string CandidateReferenceCode { get; set; } = null!;
+    public string CandidateReferenceCode { get; set; } = null!;
 
-        public bool IsBlacklisted { get; set; }
+    public bool IsBlacklisted { get; set; }
 
-        public string? ResumeUrl { get; set; }
+    public string? ResumeUrl { get; set; }
 
-        public decimal ExperienceYears { get; set; }
+    public decimal ExperienceYears { get; set; }
 
-        public string? CurrentLocation { get; set; }
+    public string? CurrentLocation { get; set; }
 
-        public decimal? ExpectedSalary { get; set; }
+    public decimal? ExpectedSalary { get; set; }
 
-        public string? CurrentCompany { get; set; }
+    public string? CurrentCompany { get; set; }
 
-        public int? NoticePeriod { get; set; }
+    public int? NoticePeriod { get; set; }
 
-        public DateOnly? DateOfBirth { get; set; }
+    public DateOnly? DateOfBirth { get; set; }
 
-        public DateTime AppliedDate { get; set; }
+    public DateTime AppliedDate { get; set; }
 
-        public DateTime? LastUpdatedDateTime { get; set; }
+    public DateTime? LastUpdatedDateTime { get; set; }
 
-        public string? SkillSet { get; set; }
+    public string? SkillSet { get; set; }
 
-        public bool IsActive { get; set; }
+    public bool IsActive { get; set; }
 
-        public virtual ICollection<CandidateDepartmentModuleSkill> CandidateDepartmentModuleSkills { get; set; } = new List<CandidateDepartmentModuleSkill>();
+    public string? ActionStatus { get; set; }
 
-        public virtual ICollection<CandidateHistory> CandidateHistories { get; set; } = new List<CandidateHistory>();
+    public string? Education { get; set; }
 
-        public virtual ICollection<InterviewFeedback> InterviewFeedbacks { get; set; } = new List<InterviewFeedback>();
+    public bool? IsFresher { get; set; }
 
-        public virtual ICollection<InterviewSchedule> InterviewSchedules { get; set; } = new List<InterviewSchedule>();
-    }
+    public byte[]? Resume { get; set; }
 
+    public virtual ICollection<CandidateCategorySkill> CandidateCategorySkills { get; set; } = new List<CandidateCategorySkill>();
+
+    public virtual ICollection<CandidateHistory> CandidateHistories { get; set; } = new List<CandidateHistory>();
+
+    public virtual ICollection<InterviewFeedback> InterviewFeedbacks { get; set; } = new List<InterviewFeedback>();
+
+    public virtual ICollection<InterviewSchedule> InterviewSchedules { get; set; } = new List<InterviewSchedule>();
 }

@@ -9,15 +9,11 @@ namespace ems.application.DTOs.RegistrationDTO
 {
     public class CandidateResponseDTO
     {
-      
-            public long Id { get; set; }
-            public bool Success { get; set; }
-            public string? Token { get; set; }
-            public string? ExpireWithin { get; set; }
-            public string? RefreshToken { get; set; }
-            public CandidateInfoDTO CandidateInfoDTO { get; set; }  // Employee Information
 
+        public bool Success { get; set; }  // Operation success status (true/false)
+        public long? CandidateId { get; set; }  // CandidateId if success, else null
+        public string Message { get; set; }  // Success/Failure message
+                                             //   public CandidateInfoDTO CandidateInfoDTO { get; set; }  // Employee Information
 
-        
     }
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 
 namespace ems.domain.Entity;
-
 public partial class Role
 {
     public int Id { get; set; }
@@ -21,5 +20,5 @@ public partial class Role
 
     public DateTime? UpdatedDateTime { get; set; }
 
-    public virtual ICollection<EmployeeType> EmployeeTypes { get; set; } = new List<EmployeeType>();
+    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 }

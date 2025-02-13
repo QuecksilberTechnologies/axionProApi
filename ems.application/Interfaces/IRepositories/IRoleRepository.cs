@@ -11,14 +11,14 @@ namespace ems.application.Interfaces.IRepositories
 
     public interface IRoleRepository
         {
-            // Create a new role
-            Task<Role> CreateRoleAsync(Role role);
+        // Create a new role
+           Task<List<Role>> CreateRoleAsync(Role role);
 
             // Get a role by its Id
             Task<Role> GetRoleByIdAsync(int roleId);
 
             // Get all roles
-            Task<IEnumerable<Role>> GetAllRolesAsync();
+            Task<List<Role>> GetAllRolesAsync();
 
             // Update an existing role
             Task<Role> UpdateRoleAsync(Role role);

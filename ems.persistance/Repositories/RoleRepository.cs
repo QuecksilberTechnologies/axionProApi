@@ -1,4 +1,5 @@
-﻿using ems.application.Interfaces.IRepositories;
+﻿using ems.application.Interfaces;
+using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Serilog.Core;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,38 +23,57 @@ namespace ems.persistance.Repositories
             _context = context;
             _logger = logger;
         }
-       
-            public async Task<Role> CreateRoleAsync(Role role)
+
+        public async Task<List<Role>> CreateRoleAsync(Role role)
+        {
+            try
             {
-                try
-                {
-                    
-                    await _context.Roles.AddAsync(role);
-                    // Changes ko save karenge
-                    await _context.SaveChangesAsync();
+                 
+                role.AddedDateTime = DateTime.Now; // or DateTime.UtcNow                
+                await _context.Roles.AddAsync(role);
+                // Changes ko save karenge
+                await _context.SaveChangesAsync();
 
-                    // Added role ko return karenge
-                    return role;
-                }
-                catch (Exception ex)
-                {
-                    // Exception ko log karenge
-                    _logger.LogError(ex, "Error occurred while creating role.");
-                    throw;  // Rethrow the exception for further handling
-                }
-             
-
-
+                // Added role ko return karenge
+                // `GetAllRolesAsync()` se returned IEnumerable ko List mein convert karenge
+                return (await GetAllRolesAsync()).ToList();
+            }
+            catch (Exception ex)
+            {
+                // Exception ko log karenge
+                _logger.LogError(ex, "Error occurred while creating role.");
+                throw;  // Rethrow the exception for further handling
+            }
         }
+       
 
         public Task<bool> DeleteRoleAsync(int roleId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Role>> GetAllRolesAsync()
+        public async Task<List<Role>> GetAllRolesAsync()
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger.LogInformation("Fetching all roles from the database...");
+
+                var roles = await _context.Roles.ToListAsync(); // ✅ Corrected EF Core syntax
+
+                if (roles == null || !roles.Any())
+                {
+                    _logger.LogWarning("No roles found in the database.");
+                    return new List<Role>(); // Empty list return karein instead of null
+                }
+
+                _logger.LogInformation("Successfully retrieved {Count} roles.", roles.Count);
+                return roles;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching roles.");
+                return new List<Role>(); // Exception ke case me empty list return karein
+            }
         }
 
         public async Task<Role> GetRoleByIdAsync(int roleId)

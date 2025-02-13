@@ -6,21 +6,27 @@ public interface IUnitOfWork : IDisposable
 {
     // Repositories
     IEmployeeRepository Employees { get; }
-    ICandidateRegistrationRepository CandidatesRegistration { get; }
-   
-    IEmployeeTypeRepository  EmployeeTypeRepository { get; }
-    IUserLoginReopsitory UserLoginReopsitory { get; }   
-  //  IBasicMenuRepository CommonMenuRepository { get; }
+    ICandidateRegistrationRepository CandidatesRegistrationRepository { get; }
+   // ICandidateCategorySkillRepository CandidateCategorySkillRepository { get; }
+    IEmployeeTypeRepository EmployeeTypeRepository { get; }
+    IUserLoginReopsitory UserLoginReopsitory { get; }
     IUserRoleRepository UserRoleRepository { get; }
     ICategoryRepository CategoryRepository { get; }
-    IRoleRepository RoleRepository {  get; }
-
+   // ITenderCategoryRespository TenderCategoryRepository { get; }
+    IRoleRepository RoleRepository { get; }
     IEmployeeTypeBasicMenuRepository EmployeeTypeBasicMenuRepository { get; }
-    IUserRolesPermissionOnModuleRepository UserRolesPermissionOnModuleRepository { get; }   
-    // IAccessDetailRepository AccessDetailRepository {  get; }
-    // Aap apne aur repositories ko yahan add kar sakte hain
-    // ICompanyRepository Companies { get; }
+    IUserRolesPermissionOnModuleRepository UserRolesPermissionOnModuleRepository { get; }
+
+    // Begin a transaction
+    Task BeginTransactionAsync();
+
+    // Commit a transaction
+    Task CommitTransactionAsync();
+
+    // Rollback a transaction
+    Task RollbackTransactionAsync();
 
     // Save changes asynchronously
     Task<int> CommitAsync();
 }
+

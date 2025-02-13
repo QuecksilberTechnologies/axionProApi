@@ -17,8 +17,7 @@ namespace ems.application.DTOs.EmployeeDTO
         public string EmployeeFirstName { get; set; } = string.Empty; // User ka Name
         public string EmployeeMiddleName { get; set; } = string.Empty; // User ka Name
         public string EmployeeLastName { get; set; } = string.Empty; // User ka Name
-        public string EmployeeFullName { get; set; } = string.Empty; // User ka Name
-        
+        public string EmployeeFullName { get; set; } = string.Empty; // User ka Name        
         public string EmployeeTypeId { get; set; } = string.Empty; // Employee Type ID
         public string EmployeeType { get; set; } = string.Empty; // Employee Type ID
 
