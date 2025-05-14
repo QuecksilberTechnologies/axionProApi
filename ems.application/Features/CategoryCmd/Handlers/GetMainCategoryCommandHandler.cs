@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using ems.application.DTOs.CategoryDTO;
-using ems.application.DTOs.RegistrationDTO;
+using ems.application.DTOs.Category;
+ 
 using ems.application.DTOs.UserLogin;
 using ems.application.Features.CategoryCmd.Command;
 using ems.application.Features.UserLoginAndDashboardCmd.Commands;
@@ -52,15 +52,15 @@ namespace ems.application.Features.CategoryCmd.Handlers
                 var categoryRequestDto = request.CategoryRequestDTO;
 
                 // Validate user authorization
-                if (!await _unitOfWork.UserLoginReopsitory.IsValidUserAsync(categoryRequestDto.Id))
-                {
-                    return new ApiResponse<List<CategoryResponseDTO>>
-                    {
-                        IsSuccecced = false,
-                        Message = "User is not authenticated or authorized to perform this action.",
-                        Data = null
-                    };
-                }
+                //if (!await _unitOfWork.UserLoginReopsitory.IsValidUserAsync(categoryRequestDto.Id))
+                //{
+                //    return new ApiResponse<List<CategoryResponseDTO>>
+                //    {
+                //        IsSuccecced = false,
+                //        Message = "User is not authenticated or authorized to perform this action.",
+                //        Data = null
+                //    };
+                //}
 
                 // Fetch all main categories (where ParentCategoryId is NULL)
                   var categories = await _unitOfWork.CategoryRepository.GetAllMainCategoriesAsync();

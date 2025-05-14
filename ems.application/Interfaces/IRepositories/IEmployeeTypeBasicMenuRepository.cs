@@ -1,4 +1,4 @@
-﻿using ems.application.DTOs.BasicAndRoleBaseMenuDTO;
+﻿using ems.application.DTOs.BasicAndRoleBaseMenu;
 using ems.application.DTOs.UserLogin;
 using System;
 using System.Collections.Generic;

@@ -20,8 +20,8 @@ namespace ems.application.Interfaces.IRepositories
             // Get all roles
             Task<List<Role>> GetAllRolesAsync();
 
-            // Update an existing role
-            Task<Role> UpdateRoleAsync(Role role);
+        // Update an existing role
+         Task<List<Role>> UpdateRoleAsync(Role role);
 
             // Delete a role by its Id
             Task<bool> DeleteRoleAsync(int roleId);

@@ -1,4 +1,5 @@
 ﻿using ems.application.DTOs.UserLogin;
+using ems.domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,8 @@ namespace ems.application.Interfaces.IRepositories
 {
     public interface IUserLoginReopsitory
     {
-        Task<LoginResponseDTO> AuthenticateUser(LoginRequestDTO loginRequest);
-        Task<bool> IsValidUserAsync(long empId);
-
+        Task<LoginCredential> AuthenticateUser(LoginRequestDTO loginRequest);
+       
     }
 
 }

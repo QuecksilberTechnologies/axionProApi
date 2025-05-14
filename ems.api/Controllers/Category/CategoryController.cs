@@ -1,5 +1,6 @@
-﻿using ems.application.DTOs.AttendanceDTO;
-using ems.application.DTOs.CategoryDTO;
+﻿ 
+using ems.application.DTOs.Category;
+
 //using ems.application.Features.AttendanceCmd.Command;
 using ems.application.Features.CategoryCmd.Command;
 using ems.application.Interfaces.ILogger;
@@ -8,6 +9,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ems.api.Controllers.Category
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class CategoryController : ControllerBase
     {
         private readonly IMediator _mediator;

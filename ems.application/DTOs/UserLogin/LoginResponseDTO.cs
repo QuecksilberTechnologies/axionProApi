@@ -1,6 +1,6 @@
-﻿using ems.application.DTOs.BasicAndRoleBaseMenuDTO;
-using ems.application.DTOs.EmployeeDTO;
-using ems.application.DTOs.RoleDTO;
+﻿ using ems.application.DTOs.Employee;
+using ems.application.DTOs.ProjectModule;
+using ems.domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,12 +13,19 @@ namespace ems.application.DTOs.UserLogin
 
     public class LoginResponseDTO
     {
-        public long Id {get; set;}            
-        public bool   Success { get; set; }
+                   
+        public bool Success { get; set; }
         public string? Token { get; set; }
-        public string? ExpireWithin { get; set; }       
         public string? RefreshToken { get; set; }
-        public LoginEmployeeInfoDTO EmployeeInfo { get; set; }  // Employee Information
+        public string? Message { get; set; }
+        public EmployeeLoginInfoDTO? EmployeeInfo { get; set; }
+        public string? Allroles { get; set; }
+
+        public List<CommonItem>? CommonItems { get; set; }
+        public List<List<RoleModulePermission>>? OperationalMenus { get; set; }
+        
+
+
 
 
     }

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ems.application.DTOs.CategoryDTO;
+using ems.application.DTOs.Category;
 using ems.application.Features.CategoryCmd.Command;
 using ems.application.Interfaces;
 using ems.application.Wrappers;
@@ -44,28 +44,28 @@ namespace ems.application.Features.CategoryCmd.Handlers
                 var categoryRequestDto = request.CategoryRequestDTO;
 
                 // Validate user authorization
-                if (!await _unitOfWork.UserLoginReopsitory.IsValidUserAsync(categoryRequestDto.Id))
-                {
-                    return new ApiResponse<List<CategoryResponseDTO>>
-                    {
-                        IsSuccecced = false,
-                        Message = "User is not authenticated or authorized to perform this action.",
-                        Data = null
-                    };
-                }
+                //if (!await _unitOfWork.UserLoginReopsitory.IsValidUserAsync(categoryRequestDto.Id))
+                //{
+                //    return new ApiResponse<List<CategoryResponseDTO>>
+                //    {
+                //        IsSuccecced = false,
+                //        Message = "User is not authenticated or authorized to perform this action.",
+                //        Data = null
+                //    };
+                //}
 
-                // Fetch all main categories (where ParentCategoryId is NULL)
-              //  var categories = await _unitOfWork.CategoryRepository.GetAllChildCategoryByIdAsync(categoryRequestDto.Id, categoryRequestDto.CategoryId);
+        //        fetch all main categories(where parentcategoryid is null)
+                var categories = await _unitOfWork.CategoryRepository.GetAllChildCategoryByIdAsync(categoryRequestDto.Id, categoryRequestDto.CategoryId);
 
-                // Map the domain model to the response DTO
-              //  var categoryResponseDTOs = _mapper.Map<List<CategoryResponseDTO>>(categories);
+            //    map the domain model to the response dto
+                var categoryresponsedtos = _mapper.Map<List<CategoryResponseDTO>>(categories);
 
-                // Return a success response
+              
                 return new ApiResponse<List<CategoryResponseDTO>>
                 {
                     IsSuccecced = true,
                     Message = "Categories fetched successfully.",
-                  //  Data = categoryResponseDTOs
+                    Data = categoryresponsedtos
                 };
             }
             catch (Exception ex)

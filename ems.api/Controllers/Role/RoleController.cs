@@ -1,5 +1,5 @@
-﻿using ems.application.DTOs.CategoryDTO;
-using ems.application.DTOs.RoleDTO;
+﻿ 
+using ems.application.DTOs.Role;
 using ems.application.Features.CategoryCmd.Command;
 using ems.application.Features.EmployeeCmd.Commands;
 using ems.application.Features.RoleCmd.Commands;
@@ -7,10 +7,13 @@ using ems.application.Features.RoleCmd.Queries;
 using ems.application.Interfaces.ILogger;
 using ems.application.Wrappers;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ems.api.Controllers.Role
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class RoleController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -21,10 +24,23 @@ namespace ems.api.Controllers.Role
             _mediator = mediator;
             _logger = logger;
         }
+        [HttpPost("updaterole")]
+        // [Authorize]
+        public async Task<IActionResult> UpdateRole([FromBody] UpdateRoleDTO updateRoleDTO)
+        {
+            _logger.LogInfo("Received request for update a new role" + updateRoleDTO.ToString());
+            var command = new UpdateRoleCommand(updateRoleDTO);
+            var result = await _mediator.Send(command);
+            if (!result.IsSuccecced)
+            {
+                return Ok(result);
+            }
+            return Ok(result);
+        }
 
         [HttpPost("addrole")]
-        // [Authorize]
-        public async Task<IActionResult> Login([FromBody] CreateRoleDTO createRoleDTO)
+           [Authorize]
+        public async Task<IActionResult> CreateRole([FromBody] CreateRoleDTO createRoleDTO)
         {
             _logger.LogInfo("Received request for create a new role" + createRoleDTO.ToString());
             var command = new CreateRoleCommand(createRoleDTO);
@@ -35,6 +51,7 @@ namespace ems.api.Controllers.Role
             }
             return Ok(result);
         }
+        [Authorize]
         [HttpGet("getallrole")]
         public async Task<IActionResult> GetAllRoles([FromQuery] RoleRequestDTO? roleRequestDTO)
         {
@@ -56,6 +73,8 @@ namespace ems.api.Controllers.Role
 
             return Ok(result);
         }
+
+       
     }
 
     }

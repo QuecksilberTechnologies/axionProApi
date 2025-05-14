@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using ems.application.DTOs.CategoryDTO;
-using ems.application.DTOs.EmployeeDTO;
-using ems.application.DTOs.RoleDTO;
+ 
+using ems.application.DTOs.Role;
 using ems.application.Features.CategoryCmd.Command;
 using ems.application.Features.EmployeeCmd.Commands;
 using ems.application.Features.RoleCmd.Commands;

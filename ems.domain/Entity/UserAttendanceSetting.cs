@@ -33,6 +33,8 @@ public partial class UserAttendanceSetting
 
     public DateTime? UpdatedDateTime { get; set; }
 
+    public DateTime? ReportingTime { get; set; }
+
     public virtual AttendanceDeviceType AttendanceDeviceType { get; set; } = null!;
 
     public virtual Employee Employee { get; set; } = null!;

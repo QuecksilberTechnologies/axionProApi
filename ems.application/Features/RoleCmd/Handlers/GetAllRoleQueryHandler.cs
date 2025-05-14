@@ -1,6 +1,6 @@
-﻿using AutoMapper;
-using ems.application.DTOs.CategoryDTO;
-using ems.application.DTOs.RoleDTO;
+﻿
+using AutoMapper;
+using ems.application.DTOs.Role;
 using ems.application.Features.RoleCmd.Queries;
 using ems.application.Interfaces;
 using ems.application.Wrappers;

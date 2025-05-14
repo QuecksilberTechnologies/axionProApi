@@ -1,5 +1,5 @@
 ﻿using ems.application.Constants;
-using ems.application.DTOs.AttendanceDTO;
+using ems.application.DTOs.Attendance;
 using ems.application.DTOs.UserLogin;
 using ems.application.Interfaces.IRepositories;
 using ems.application.Wrappers;

@@ -1,5 +1,5 @@
-﻿using ems.application.DTOs.CategoryDTO;
-using ems.application.DTOs.RoleDTO;
+﻿ 
+using ems.application.DTOs.Role;
 using ems.application.Wrappers;
 using MediatR;
 using System;

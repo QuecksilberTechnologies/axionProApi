@@ -1,4 +1,4 @@
-﻿using ems.application.DTOs.EmployeeDTO;
+﻿using ems.application.DTOs.Employee;
 using MediatR;
 using System;
 using System.Collections.Generic;

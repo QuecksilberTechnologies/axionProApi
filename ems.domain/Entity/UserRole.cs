@@ -36,6 +36,7 @@ public partial class UserRole
    // public virtual ICollection<InterviewPanelMember> InterviewPanelMembers { get; set; } = new List<InterviewPanelMember>();
 
     public virtual Role? Role { get; set; }
+    public virtual Employee? Employee { get; set; }
 
    // public virtual ICollection<TenderProject> TenderProjects { get; set; } = new List<TenderProject>();
 }

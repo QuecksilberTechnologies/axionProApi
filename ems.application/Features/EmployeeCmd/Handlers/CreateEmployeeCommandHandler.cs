@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ems.application.DTOs.EmployeeDTO;
+using ems.application.DTOs.Employee;
 using ems.application.Features.EmployeeCmd.Commands;
 using ems.application.Interfaces;
 using ems.application.Interfaces.IRepositories;

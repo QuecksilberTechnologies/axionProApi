@@ -15,13 +15,7 @@ public partial class ProjectModuleDetail
 
     public string? Remark { get; set; }
 
-    public long? AddedById { get; set; }
-
-    public DateTime? AddedDateTime { get; set; }
-
-    public long? UpdatedById { get; set; }
-
-    public DateTime? UpdatedDateTime { get; set; }
+    public byte[]? IconImage { get; set; }
 
     public virtual ICollection<ProjectSubModuleDetail> ProjectSubModuleDetails { get; set; } = new List<ProjectSubModuleDetail>();
 }

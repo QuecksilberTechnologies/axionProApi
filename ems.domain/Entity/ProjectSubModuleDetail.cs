@@ -19,15 +19,7 @@ public partial class ProjectSubModuleDetail
 
     public string? Remark { get; set; }
 
-    public long AddedById { get; set; }
-
-    public DateTime? AddedDateTime { get; set; }
-
-    public long? UpdatedById { get; set; }
-
-    public DateTime? UpdatedDateTime { get; set; }
-
     public virtual ProjectModuleDetail Module { get; set; } = null!;
-
-    public virtual ICollection<RoleModuleAndPermission> RoleModuleAndPermissions { get; set; } = new List<RoleModuleAndPermission>();
+    public byte[]? IconImage { get; set; }
+    public virtual ICollection<ProjectChildModuleDetail> ProjectChildModuleDetails { get; set; } = new List<ProjectChildModuleDetail>();
 }

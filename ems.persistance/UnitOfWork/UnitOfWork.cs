@@ -6,14 +6,14 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
+using ems.application.Interfaces.ITokenService;
 public class UnitOfWork  : IUnitOfWork
 {
     private readonly WorkforceDbContext _context;
     private readonly ILoggerFactory _loggerFactory;
     private IDbContextTransaction? _currentTransaction;
-
+    private ILeaveRepository? _leaveRepository;
     private IEmployeeRepository? _employeeRepository;
-    private IUserLoginReopsitory? _userLoginReopsitory;
     private IUserRoleRepository? _userRoleRepository;
     private IRoleRepository? _roleRepository;
     private IEmployeeTypeRepository? _employeeTyperepository;
@@ -22,7 +22,15 @@ public class UnitOfWork  : IUnitOfWork
     private IUserRolesPermissionOnModuleRepository? _userRolesPermissionOnModuleRepository;
     private IAttendanceRepository? _attendanceRepository;
     private ICandidateRegistrationRepository? _candidateRegistrationRepository;
-   // private ICandidateCategorySkillRepository? _candidateCategorySkillRepository;
+    private ICandidateCategorySkillRepository? _candidateCategorySkillRepository;
+    private IAssetRepository? _assetRepository;
+    //private  INewTokenRepository _tokenService;
+    private IRefreshTokenRepository _refreshTokenRepository;
+    private ICommonRepository _commonRepository;
+    private IUserLoginReopsitory? _userLoginReopsitory;
+
+
+    // private IClientRepository? _clientRepository;
 
 
     public UnitOfWork(WorkforceDbContext context, ILoggerFactory loggerFactory)
@@ -40,15 +48,20 @@ public class UnitOfWork  : IUnitOfWork
     //    }
     //}
 
+
+
     public IUserLoginReopsitory UserLoginReopsitory
     {
         get
         {
-            return _userLoginReopsitory ??= new UserLoginReopsitory(_context);
+            return _userLoginReopsitory ??= new UserLoginReopsitory(_context, _loggerFactory.CreateLogger<UserLoginReopsitory>());
         }
     }
+    
 
-  
+
+
+
     public IEmployeeRepository Employees
     {
         get
@@ -73,13 +86,13 @@ public class UnitOfWork  : IUnitOfWork
         }
     }
 
-    //public ICandidateCategorySkillRepository CandidateCategorySkillRepository
-    //{
-    //    get
-    //    {
-    //        return _candidateCategorySkillRepository ??= new CandidateCategorySkillRepository(_context, _loggerFactory.CreateLogger<CandidateCategorySkillRepository>());
-    //    }
-    //}
+    public ICandidateCategorySkillRepository CandidateCategorySkillRepository
+    {
+        get
+        {
+            return _candidateCategorySkillRepository ??= new CandidateCategorySkillRepository(_context, _loggerFactory.CreateLogger<CandidateCategorySkillRepository>());
+        }
+    }
 
     public IEmployeeTypeRepository EmployeeTypeRepository
     {
@@ -88,6 +101,36 @@ public class UnitOfWork  : IUnitOfWork
             return _employeeTyperepository ??= new EmployeeTypeRepository(_context, _loggerFactory.CreateLogger<EmployeeTypeRepository>());
         }
     }
+    public IClientRepository ClientsRepository => new ClientRepository(_context, _loggerFactory.CreateLogger<ClientRepository>());
+    public ICommonRepository CommonRepository
+    {
+        get
+        {
+            return _commonRepository ??= new CommonRepository(_context, _loggerFactory.CreateLogger<CommonRepository>());
+        }
+    }
+    //public INewTokenRepository NewTokenRepository
+    //{
+    //    get
+    //    {
+    //        return _tokenService ??= new NewTokenRepository(_context, _loggerFactory.CreateLogger<NewTokenRepository>());
+    //    }
+    //}
+    //private INewTokenRepository _tokenService;
+    //private IRefreshTokenRepository _refreshTokenRepository;
+    //private ICommonRepository _commonRepository;
+    //private IUserLoginReopsitory? _userLoginReopsitory;
+    //public ICommonRepository CommonRepository => new CommonRepository(_context, _loggerFactory.CreateLogger<CommonRepository>());
+
+    public IUserLoginReopsitory UserLoginRepository => new UserLoginReopsitory(_context, _loggerFactory.CreateLogger<UserLoginReopsitory>());
+    public IRefreshTokenRepository RefreshTokenRepository =>  new RefreshTokenRepository(_context, _loggerFactory.CreateLogger<RefreshTokenRepository>());
+
+    public IAssetRepository AssetRepository => new  AssetRepository(_context, _loggerFactory.CreateLogger<AssetRepository>());
+    public ITravelRepository TravelRepository => new TravelRepository(_context, _loggerFactory.CreateLogger<TravelRepository>());
+
+    public IOperationRepository OperationRepository => new OperationRepository(_context, _loggerFactory.CreateLogger<OperationRepository>());
+    public IDesignationRepository DesignationRepository => new DesignationRepository(_context, _loggerFactory.CreateLogger<DesignationRepository>());
+
 
     public ICategoryRepository CategoryRepository
     {
@@ -117,9 +160,26 @@ public class UnitOfWork  : IUnitOfWork
     {
         get
         {
-            return _roleRepository ??= new RoleRepository(_context, _loggerFactory.CreateLogger<RoleRepository>());
+               return _roleRepository ??= new RoleRepository(_context, _loggerFactory.CreateLogger<RoleRepository>());
+              //   return _roleRepository ??= new CandidateCategorySkillRepository(_context, _loggerFactory.CreateLogger<RoleRepository>());
+
         }
     }
+
+    public ILeaveRepository LeaveRepository
+    {
+        get
+        {
+            return _leaveRepository ??= new LeaveRepository(_context, _loggerFactory.CreateLogger<LeaveRepository>());
+            
+
+        }
+    }
+
+  
+
+
+
 
     //public ICandidateCategorySkillRepository CandidateCategorySkillRepository => throw new NotImplementedException();
 
@@ -127,9 +187,13 @@ public class UnitOfWork  : IUnitOfWork
 
 
     // Transaction Management
+
     public async Task BeginTransactionAsync()
     {
-        _currentTransaction = await _context.Database.BeginTransactionAsync();
+        if (_currentTransaction == null) // Avoid nested transactions
+        {
+            _currentTransaction = await _context.Database.BeginTransactionAsync();
+        }
     }
 
     public async Task CommitTransactionAsync()
@@ -137,7 +201,12 @@ public class UnitOfWork  : IUnitOfWork
         try
         {
             await _context.SaveChangesAsync();
-            await _currentTransaction?.CommitAsync();
+            if (_currentTransaction != null)
+            {
+                await _currentTransaction.CommitAsync();
+                await _currentTransaction.DisposeAsync();
+                _currentTransaction = null;
+            }
         }
         catch (Exception)
         {
@@ -151,6 +220,8 @@ public class UnitOfWork  : IUnitOfWork
         if (_currentTransaction != null)
         {
             await _currentTransaction.RollbackAsync();
+            await _currentTransaction.DisposeAsync();
+            _currentTransaction = null;
         }
     }
 
@@ -166,7 +237,9 @@ public class UnitOfWork  : IUnitOfWork
 
     public void Dispose()
     {
-        _context.Dispose();
         _currentTransaction?.Dispose();
+        _context.Dispose();
     }
+
+
 }

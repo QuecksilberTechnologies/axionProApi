@@ -1,5 +1,5 @@
-﻿using ems.application.DTOs.AttendanceDTO;
-using ems.application.DTOs.CategoryDTO;
+﻿ 
+using ems.application.DTOs.Category;
 using ems.application.Wrappers;
 using MediatR;
 using System;

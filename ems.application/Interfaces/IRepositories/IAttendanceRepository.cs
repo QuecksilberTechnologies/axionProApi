@@ -1,6 +1,6 @@
-﻿using ems.application.DTOs.AttendanceDTO;
+﻿using ems.application.DTOs.Attendance;
 using ems.domain.Entity;
- 
+
 using System;
 using System.Collections.Generic;
 using System.Linq;

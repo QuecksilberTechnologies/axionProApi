@@ -9,91 +9,173 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ems.application.Constants;
-using ems.application.DTOs.BasicAndRoleBaseMenuDTO;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using ems.application.DTOs.RoleDTO;
  
-using ems.application.DTOs.EmployeeDTO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+ 
 using ems.application.Features.UserLoginAndDashboardCmd.Commands;
+ 
+using ems.application.DTOs.Employee;
+using Microsoft.Extensions.Logging;
+using ems.application.Features.AssetCmd.Handlers;
+using ems.domain.Entity;
+using ems.application.DTOs.UserRole;
+using Microsoft.VisualBasic;
 
 namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 {
     public class LoginCommandHandler : IRequestHandler<LoginCommand, ApiResponse<LoginResponseDTO>>
     {
-         
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ITokenService _tokenService;
+        private readonly INewTokenRepository _tokenService;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly ILogger<LoginCommandHandler> _logger;
 
-        public LoginCommandHandler(IUserLoginReopsitory userLoginRepository, IMapper mapper, IUnitOfWork unitOfWork, ITokenService tokenService)
+        public LoginCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, INewTokenRepository tokenService, IRefreshTokenRepository refreshTokenRepository, ILogger<LoginCommandHandler> logger)
         {
- 
+            _logger = logger;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
+            _refreshTokenRepository = refreshTokenRepository;
         }
-
         public async Task<ApiResponse<LoginResponseDTO>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
-            // Step 1: Map LoginCommand to LoginRequestDTO
-            var loginRequest = new LoginRequestDTO
+            try
             {
-                LoginId = request.RequestLoginDTO.LoginId,
-                Password = request.RequestLoginDTO.Password
-            };
+                var loginRequest = new LoginRequestDTO
+                {
+                    LoginId = request.RequestLoginDTO.LoginId,
+                    Password = request.RequestLoginDTO.Password,
+                    IpAddressLocal = request.RequestLoginDTO.IpAddressLocal,
+                    IpAddressPublic = request.RequestLoginDTO.IpAddressPublic,
+                    LoginDevice = request.RequestLoginDTO.LoginDevice,
+                    MacAddress = request.RequestLoginDTO.MacAddress,
+                    Latitude = request.RequestLoginDTO.Latitude,
+                    Longitude = request.RequestLoginDTO.Longitude,
+                };
 
-            // Step 2: Authenticate User
-            var user = await _unitOfWork.UserLoginReopsitory.AuthenticateUser(loginRequest);
-            if (user == null || !user.Success)
-            {
-                return new ApiResponse<LoginResponseDTO>(null, ConstantValues.invalidCredential, ConstantValues.fail);
-            }
-            // Step 3: Fetch User Roles and Employee Details
-            //  var userRoll = await _unitOfWork.UserRoleRepository.GetUsersRolesWithDetailsByIdAsync(user.Id);
+                var existUserWithEmpId = await _unitOfWork.CommonRepository.ValidateUserLoginAsync(loginRequest.LoginId);
+                _logger.LogInformation("Validation result: {existUserWithEmpId}", existUserWithEmpId);
 
-            var employee = await _unitOfWork.Employees.GetEmployeeByIdAsync(user.Id);
-           
-            var employeeInfo = _mapper.Map<LoginEmployeeInfoDTO>(employee, opt =>
-            {
-                opt.Items["LoginId"] = loginRequest.LoginId; // Pass LoginId to the context
-            });
+                if (existUserWithEmpId < 1)
+                {
+                    _logger.LogWarning("User validation failed. Rolling back transaction.");
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return new ApiResponse<LoginResponseDTO>
+                    {
+                        IsSuccecced = false,
+                        Message = "User is not authenticated or authorized to perform this action.",
+                        Data = null
+                    };
+                }
+
+                // ✅ Generate JWT Token & Refresh Token
+                var user = await _unitOfWork.UserLoginRepository.AuthenticateUser(loginRequest);
+                if (user == null)
+                {
+                    return new ApiResponse<LoginResponseDTO>(null, ConstantValues.invalidCredential, ConstantValues.fail);
+                }
+
+                string token = await _tokenService.GenerateToken(loginRequest.LoginId.ToString());
+                string refreshToken = await _tokenService.GenerateRefreshToken();
+                var isSaved = await _refreshTokenRepository.SaveOrUpdateRefreshToken(
+                    loginRequest.LoginId.ToString(),
+                    token,
+                    ConstantValues.ExpireTokenDate,
+                    ConstantValues.IP
+                );
+
+                var updatedLoginMessage = await _unitOfWork.CommonRepository.UpdateLoginCredential(loginRequest);
+                _logger.LogInformation("UpdateLoginCredential executed successfully for {LoginId}", loginRequest.LoginId);
+
+                 Employee? employee = await _unitOfWork.Employees.GetEmployeeInfoForLoginByIdAsync(existUserWithEmpId);
 
 
+                List<UserRole> userRoles = await _unitOfWork.UserRoleRepository
+                                                .GetEmployeeRolesWithDetailsByIdAsync(existUserWithEmpId);
+                string AllroleIdsCsv = null;
+                // Null check to avoid exceptions
+                if (userRoles != null && userRoles.Any())
+                {
+                    // RoleId extract karke comma-separated string banayein
+                       AllroleIdsCsv = string.Join(", ", userRoles
+                        .Where(ur => ur.RoleId != null)  // NULL RoleId ko hatao
+                        .Select(ur => ur.RoleId.ToString()) // Convert to string
+                    );
 
-            // var mpr = _mapper.Map<LoginResponseDTO>(employee);
-            // Step 4: Generate JWT Token
-            string token = GenerateJwtToken(loginRequest);
-            string refreshToken = GenerateRfeshToken(loginRequest);
+                    // Debug/Check output
+                    Console.WriteLine($"RoleIds CSV: {AllroleIdsCsv}");
+                }
+                else
+                {
+                    Console.WriteLine("No roles found or userRoles is null.");
+                }
 
-            // Step 5: Fetch Common Menus
-            //   var basicMenus = await _unitOfWork.CommonMenuRepository.GetBasicMenusByUserAndDeviceAsync(1, 1);
 
-            var expireTime = DateTime.Now.AddMinutes(36);
-            // Step 6: Prepare Response DTO
-            // Step 1: Prepare Login Response DTO
-            var loginResponse = new LoginResponseDTO
-            {
-                Token = token,
-                ExpireWithin = expireTime.ToString("yyyy-MM-dd HH:mm:ss"), // Corrected format
-                RefreshToken = refreshToken,
-                Success = ConstantValues.isSucceeded,  // Make sure success is set to true if login is successful
-                EmployeeInfo = employeeInfo // Bind EmployeeInfo
+                List<UserRoleDTO> userRoleDTOs = _mapper.Map<List<UserRoleDTO>>(userRoles);
+
+                // ✅ Find Primary Role
+                UserRoleDTO? EmployeePrimaryUserRole = userRoleDTOs.FirstOrDefault(ur => ur.IsPrimaryRole == true && ur.IsActive == true);
+                
+                // ✅ Remove Primary Role from List
+                if (EmployeePrimaryUserRole != null)
+                {
+                    userRoleDTOs.Remove(EmployeePrimaryUserRole);
+                }
+                // ✅ Extract Only RoleId & RoleName
+                List<int>? SecondryRoleList = userRoleDTOs.Where(ur => ur.RoleId > 0).Select(ur => ur.RoleId).ToList();
+                string roleIdsCsv = (SecondryRoleList != null && SecondryRoleList.Any())
+                 ? string.Join(",", SecondryRoleList): "NULL"; // ✅ Null Safe Handling
+
+                // ✅ Map Employee to EmployeeLoginInfoDTO
+                EmployeeLoginInfoDTO employeeInfo = _mapper.Map<EmployeeLoginInfoDTO>(employee);
+
+                // ✅ Assign Primary Role & Other Roles
+                employeeInfo.UserPrimaryRole = EmployeePrimaryUserRole;
+                employeeInfo.UserSecondryRoles = userRoleDTOs;
+                List<CommonItem> tem = await _unitOfWork.CommonRepository.GetCommonItemAsync();
+                bool isactive = true;
+                bool hasaccess = true;
+                List<List<RoleModulePermission>> rolespermission = new List<List<RoleModulePermission>>();
+
               
-            };
+                    var permissions = await _unitOfWork.CommonRepository.GetModulePermissionsAsync(existUserWithEmpId, AllroleIdsCsv, hasaccess, isactive);
+                    rolespermission.Add(permissions);
+               
 
-            // Step 2: Return Response wrapped in ApiResponse
-            return new ApiResponse<LoginResponseDTO>(loginResponse, ConstantValues.successMessage, ConstantValues.isSucceeded);
-            
+                await _unitOfWork.CommitTransactionAsync();
+                var loginResponse = new LoginResponseDTO
+                {
+                    Token = token,
+                    RefreshToken = refreshToken,
+                    Success = ConstantValues.isSucceeded,
+                    EmployeeInfo = employeeInfo,
+                    CommonItems = tem,
+                    OperationalMenus = rolespermission,
+                    Allroles = AllroleIdsCsv.Trim()
+
+                };
+
+                return new ApiResponse<LoginResponseDTO>(loginResponse, ConstantValues.successMessage, ConstantValues.isSucceeded);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred in LoginCommandHandler.Handle method.");
+
+                await _unitOfWork.RollbackTransactionAsync();  // ✅ Rollback Transaction in case of error
+
+                return new ApiResponse<LoginResponseDTO>
+                {
+                    IsSuccecced = false,
+                    Message = "An error occurred while processing the login request. Please try again later.",
+                    Data = null
+                };
+            }
         }
 
-        private string GenerateRfeshToken(LoginRequestDTO loginRequest)
-        {
-            return "w4lfsd #@@DSsdF@#fsdgfsgfsdklfdsdflksdfl34f$#%#4345463#FEF^$^&#%#Rergfgfsfgfgsfh46trtpoj4opyu40[gshegne;k q3";
-        }
 
-        private string GenerateJwtToken(LoginRequestDTO user)
-        {
-            return _tokenService.GenerateToken(user);
-        }
+
     }
+
 }

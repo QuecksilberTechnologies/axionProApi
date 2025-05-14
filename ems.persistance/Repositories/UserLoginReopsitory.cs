@@ -4,6 +4,7 @@ using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,81 +16,51 @@ namespace ems.persistance.Repositories
 {
     public class UserLoginReopsitory : IUserLoginReopsitory
     {
-        private WorkforceDbContext context;
+        private readonly WorkforceDbContext _context;
+        private readonly ILogger<UserLoginReopsitory> _logger;
 
-        public UserLoginReopsitory(WorkforceDbContext context)
+        public UserLoginReopsitory(WorkforceDbContext context, ILogger<UserLoginReopsitory> logger)
         {
-            this.context = context;
+            _context = context;
+            _logger = logger;
         }
 
-
-        public async Task<bool> IsValidUserAsync(long empId)
+        public async Task<LoginCredential?> AuthenticateUser(LoginRequestDTO loginRequest)
         {
             try
             {
-                // Fetch user details based on LoginId from the repository
-                var user = await context.LoginCredentials
-                    .FirstOrDefaultAsync(u => u.EmployeeId == empId && u.IsActive == true);
+                _logger.LogInformation("Authenticating user with LoginId: {LoginId}", loginRequest.LoginId);
+
+                LoginCredential? user = await _context.LoginCredentials
+                    .FirstOrDefaultAsync(u => u.LoginId == loginRequest.LoginId);
 
                 if (user == null)
                 {
-                    return false;
+                    _logger.LogWarning("Login failed: User not found for LoginId: {LoginId}", loginRequest.LoginId);
+                    return null;
                 }
 
-                return true;
+                if (!VerifyPassword(loginRequest.Password, user.Password))
+                {
+                    _logger.LogWarning("Login failed: Incorrect password for LoginId: {LoginId}", loginRequest.LoginId);
+                    return null;
+                }
+
+                _logger.LogInformation("User authenticated successfully: {LoginId}", loginRequest.LoginId);
+                return user;
             }
             catch (Exception ex)
             {
-              //  _logger.LogError(ex, "Error in IsValidUserAsync for EmployeeId: {EmpId}", empId);
-                return false;
+                _logger.LogError(ex, "An error occurred while authenticating user with LoginId: {LoginId}", loginRequest.LoginId);
+                throw; // Rethrowing the exception to ensure proper handling at higher levels
             }
         }
 
-        public async Task<LoginResponseDTO> AuthenticateUser(LoginRequestDTO loginRequest)
-        {
-            // Fetch user details based on LoginId from the repository
-                var user = await context.LoginCredentials.FirstOrDefaultAsync(u => u.LoginId == loginRequest.LoginId);
-            // name _unitOfWork is not exist error aa rahi hai
-                       
-            var rr = user;
-
-                        // Check if user exists and if the password matches
-            if (user == null || !VerifyPassword(loginRequest.Password, user.Password))
-            {
-                return new LoginResponseDTO
-                {
-                    Success = ConstantValues.fail
-
-                };
-            }
-
-            // Generate token if needed (e.g., using JWT)
-            string token = GenerateJwtToken(user);
-
-            // Return success response with token
-            return new LoginResponseDTO
-            {
-                Success = ConstantValues.isSucceeded,
-                Token = token,               
-                Id = user.EmployeeId
-
-            };
-        }
-
-        // This is a placeholder for the password verification logic
         private bool VerifyPassword(string providedPassword, string storedPassword)
         {
-            // Here, you would hash the providedPassword and compare with storedPassword
-            // This is a basic example, assuming plain-text comparison (not secure for production)
+            // Secure hashing and comparison logic should be implemented here
             return providedPassword == storedPassword;
         }
-
-        // Placeholder for JWT token generation
-        private string GenerateJwtToken(LoginCredential user)
-        {
-            // Code to generate JWT token based on user information
-            return "GeneratedTokenHere"; // Replace with actual JWT generation logic
-        }
-
     }
+
 }

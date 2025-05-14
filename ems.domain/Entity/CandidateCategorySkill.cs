@@ -1,5 +1,4 @@
-﻿using ems.domain.Entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ems.domain.Entity;

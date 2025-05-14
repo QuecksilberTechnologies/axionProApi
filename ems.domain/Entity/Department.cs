@@ -9,8 +9,6 @@ public partial class Department
 
     public string DepartmentName { get; set; } = null!;
 
-    public int? ParentDepartmentId { get; set; }
-
     public string? Description { get; set; }
 
     public bool IsActive { get; set; }
@@ -24,8 +22,4 @@ public partial class Department
     public long? UpdatedById { get; set; }
 
     public DateTime? UpdatedDateTime { get; set; }
-
-    public virtual ICollection<Department> InverseParentDepartment { get; set; } = new List<Department>();
-
-    public virtual Department? ParentDepartment { get; set; }
 }

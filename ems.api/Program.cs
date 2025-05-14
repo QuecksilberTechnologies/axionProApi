@@ -62,7 +62,7 @@ try
     builder.Services.AddSwaggerGen();
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
-    builder.Services.AddPersistance(builder.Configuration);
+    builder.Services.AddPersistence(builder.Configuration);
     builder.Services.AddHttpContextAccessor();
 
     var app = builder.Build();

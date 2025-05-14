@@ -25,5 +25,7 @@ public partial class EmployeeExperience
 
     public long? VerifiedBy { get; set; }
 
+    public bool IsActive { get; set; }
+
     public virtual Employee Employee { get; set; } = null!;
 }

@@ -26,6 +26,9 @@
         public static readonly string attendancefail = "Attendance not marked please try again";
         public static readonly bool isSucceeded = true;
         public static readonly bool fail= false;
-        
+        public static readonly DateTime ExpireTokenDate = DateTime.UtcNow.AddDays(5);
+        public static readonly string IP ="100.100.100.100";
+
+
     }
 }

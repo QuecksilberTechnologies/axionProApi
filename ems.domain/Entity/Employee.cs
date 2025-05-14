@@ -51,12 +51,17 @@ public partial class Employee
 
     public DateTime? UpdatedDateTime { get; set; }
 
+    public virtual ICollection<AssetAssignment> AssetAssignments { get; set; } = new List<AssetAssignment>();
+
+    public virtual ICollection<AssetHistory> AssetHistoryEmployees { get; set; } = new List<AssetHistory>();
+
+    public virtual ICollection<AssetHistory> AssetHistoryScrapApprovedByNavigations { get; set; } = new List<AssetHistory>();
+
     public virtual ICollection<AttendanceHistory> AttendanceHistories { get; set; } = new List<AttendanceHistory>();
 
     public virtual Designation? Designation { get; set; }
 
-    public virtual ICollection<UserRole> UserRolesEmp { get; set; } = new List<UserRole>();
-   // public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public virtual ICollection<EmployeeBankDetail> EmployeeBankDetails { get; set; } = new List<EmployeeBankDetail>();
 
     public virtual ICollection<EmployeeCategorySkill> EmployeeCategorySkills { get; set; } = new List<EmployeeCategorySkill>();
 
@@ -72,10 +77,11 @@ public partial class Employee
 
     public virtual ICollection<EmployeeStatusHistory> EmployeeStatusHistories { get; set; } = new List<EmployeeStatusHistory>();
 
-
     public virtual EmployeeType? EmployeeType { get; set; }
 
+    
     public virtual ICollection<LeaveAllocation> LeaveAllocations { get; set; } = new List<LeaveAllocation>();
+    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 
     public virtual ICollection<LoginCredential> LoginCredentials { get; set; } = new List<LoginCredential>();
 

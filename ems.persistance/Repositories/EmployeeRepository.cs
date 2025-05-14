@@ -39,21 +39,48 @@ namespace ems.persistance.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<Employee> GetEmployeeByIdAsync(long employeeId)
+        public async Task<Employee?> GetEmployeeInfoForLoginByIdAsync(long employeeId)
         {
             try
             {
                 _logger?.LogInformation("Fetching employee details for ID: {EmployeeId}", employeeId);
-  
-                var employee = await context.Employees.Include(e => e.EmployeeType).Include(e => e.UserRolesEmp)
-                 .ThenInclude(ur => ur.RoleId).FirstOrDefaultAsync(e => e.Id == employeeId);
-                if (employee == null)
-                {
-                    _logger?.LogWarning("Employee not found with ID: {EmployeeId}", employeeId);
-                    return null;
-                }
 
-                return employee;
+                var employee = await context.Employees
+                    .Where(e => e.Id == employeeId && e.IsActive)
+                    .Select(e => new Employee
+                    {
+                        Id = e.Id,
+                        DesignationId = e.DesignationId,
+                        DepartmentId = e.DepartmentId,
+                        EmployeeTypeId = e.EmployeeTypeId,
+                        OfficialEmail = e.OfficialEmail,
+                        FirstName = e.FirstName,
+                        MiddleName= e.MiddleName, 
+                        LastName =  e.LastName
+                    })
+                    .FirstOrDefaultAsync();
+
+                return employee; // Sirf required fields return ho rahe hain!
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "An error occurred while fetching employee details for ID: {EmployeeId}", employeeId);
+                throw;
+            }
+        }
+
+
+        public async Task<Employee?> GetEmployeeByIdAsync(long employeeId)
+        {
+            try
+            {
+                _logger?.LogInformation("Fetching employee details for ID: {EmployeeId}", employeeId);
+
+                Employee? employee = await context.Employees
+                    .Where(e => e.Id == employeeId && e.IsActive)
+                    .FirstOrDefaultAsync();
+
+                return employee; // पूरी entity return करें
             }
             catch (Exception ex)
             {
@@ -63,7 +90,7 @@ namespace ems.persistance.Repositories
         }
 
         // Method to fetch employee type by ID
-      
+
     }
 }
 

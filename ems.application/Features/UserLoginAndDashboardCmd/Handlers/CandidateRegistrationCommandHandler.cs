@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using ems.application.DTOs.RegistrationDTO;
 using ems.application.Interfaces.IRepositories;
 using ems.application.Interfaces.ITokenService;
 using ems.application.Interfaces;
@@ -11,106 +10,101 @@ using System.Threading;
 using System.Threading.Tasks;
 using ems.application.Features.UserLoginAndDashboardCmd.Commands;
 using ems.domain.Entity;
+using ems.application.DTOs.Registration;
 
 namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 {
-  
-     //public class CandidateRegistrationCommandHandler : IRequestHandler<CandidateRegistrationCommand, ApiResponse<CandidateResponseDTO>>
-    //{
-    //    private readonly IMapper _mapper;
-    //    private readonly IUnitOfWork _unitOfWork;
-    //    private readonly ILogger<CandidateRegistrationCommandHandler> _logger;
 
-    //    public CandidateRegistrationCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, ILogger<CandidateRegistrationCommandHandler> logger)
-    //    {
-    //        _mapper = mapper;
-    //        _unitOfWork = unitOfWork;
-    //        _logger = logger;
-    //    }
+    public class CandidateRegistrationCommandHandler : IRequestHandler<CandidateRegistrationCommand, ApiResponse<CandidateResponseDTO>>
+    {
+        private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<CandidateRegistrationCommandHandler> _logger;
 
-    //    public async Task<ApiResponse<CandidateResponseDTO>> Handle(CandidateRegistrationCommand request, CancellationToken cancellationToken)
-    //    {
-    //        try
-    //        {
+        public CandidateRegistrationCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, ILogger<CandidateRegistrationCommandHandler> logger)
+        {
+            _mapper = mapper;
+            _unitOfWork = unitOfWork;
+            _logger = logger;
+        }
 
-    //            CandidateResponseDTO candidateResponse = new CandidateResponseDTO();
-    //            // Validate the request
-    //            if (request == null || request.RequestCandidateRegistrationDTO == null)
-    //            {
-    //                candidateResponse.Success = false;
-    //                candidateResponse.CandidateId = 0;
-    //                candidateResponse.Message = "Invalid request or missing CandidateRegistrationDTO.";
-    //                return new ApiResponse<CandidateResponseDTO>
-    //                {
-    //                    IsSuccecced = false,
-    //                    Message = "fail",
-    //                    Data = candidateResponse
-    //                };
-    //            }
+        public async Task<ApiResponse<CandidateResponseDTO>> Handle(CandidateRegistrationCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                CandidateResponseDTO candidateResponse = new CandidateResponseDTO();
 
-    //            CandidateRequestDTO candidateResponseDTO = _mapper.Map<CandidateRequestDTO>(request.RequestCandidateRegistrationDTO);
-              
-    //            // Check for duplicate data
-    //            var isBlacklistedOrDuplicate = await _unitOfWork.CandidatesRegistrationRepository.IsEmailPANAdharPhoneExistsAsync(candidateResponseDTO);
-               
-    //            if (isBlacklistedOrDuplicate)
-    //            {
-    //                candidateResponse.Success = false;
-    //                candidateResponse.CandidateId = 0;
-    //                candidateResponse.Message = "Data is already exist";
-    //                return new ApiResponse<CandidateResponseDTO>
-    //                {
-    //                    IsSuccecced = false,
-    //                    Message = "fail",
-    //                     Data = candidateResponse
+                // Validate the request
+                if (request == null || request.RequestCandidateRegistrationDTO == null)
+                {
+                    return new ApiResponse<CandidateResponseDTO>
+                    {
+                        IsSuccecced = false,
+                        Message = "Invalid request or missing CandidateRegistrationDTO."
+                    };
+                }
 
-    //                };
-    //            }
-    //            else
-    //            {
-    //                List<int> skillSetList = candidateResponseDTO.SkillSet.Split(',').Select(int.Parse).ToList();
-    //                Candidate cc = _mapper.Map<Candidate>(request.RequestCandidateRegistrationDTO);
-    //                var id =  await _unitOfWork.CandidatesRegistrationRepository.AddCandidateAsync(cc);
-    //                List<CandidateCategorySkill> candidateSkillsList = skillSetList.Select(skill => new CandidateCategorySkill
-    //                {
-    //                    CandidateId = id,      // Fixed candidate ID
-    //                    CategoryId = skill,              // SkillSet ka current item
-    //                    AddedDateTime = DateTime.Now,     // Current DateTime
-    //                    IsActive = true                   // Default true
-    //                }).ToList();
-    //               var numberOfRecordInserted= await _unitOfWork.CandidateCategorySkillRepository.AddSkillsAsync(candidateSkillsList);
-    //                 // var status= _unitOfWork.CommitAsync();
-    //                  candidateResponse.Success = true;
-    //                  candidateResponse.CandidateId = id;
-    //                  candidateResponse.Message = "Candidate registration successful.";
-                    
-    //                return new ApiResponse<CandidateResponseDTO>
-    //                {
-    //                    IsSuccecced = true,
-    //                    Message = "success",
-    //                    Data = candidateResponse
-    //                };
-    //            }
+                CandidateRequestDTO candidateResponseDTO = _mapper.Map<CandidateRequestDTO>(request.RequestCandidateRegistrationDTO);
 
-    //            //  await _unitOfWork.CommitAsync(cancellationToken);
+                // Check for duplicate data
+                var isBlacklistedOrDuplicate = await _unitOfWork.CandidatesRegistrationRepository.IsEmailPANAdharPhoneExistsAsync(candidateResponseDTO);
+                if (isBlacklistedOrDuplicate)
+                {
+                    return new ApiResponse<CandidateResponseDTO>
+                    {
+                        IsSuccecced = false,
+                        Message = "Data already exists."
+                    };
+                }
+
+                // 🔹 Transaction Start
+                await _unitOfWork.BeginTransactionAsync();
+
+                try
+                {
+                    List<int> skillSetList = candidateResponseDTO.SkillSet.Split(',').Select(int.Parse).ToList();
+                    Candidate cc = _mapper.Map<Candidate>(request.RequestCandidateRegistrationDTO);
+
+                    // 🔹 Step 1: Save Candidate
+                    var id = await _unitOfWork.CandidatesRegistrationRepository.AddCandidateAsync(cc);
+
+                    // 🔹 Step 2: Save Candidate Skills
+                    List<CandidateCategorySkill> candidateSkillsList = skillSetList.Select(skill => new CandidateCategorySkill
+                    {
+                        CandidateId = id,
+                        CategoryId = skill,
+                        AddedDateTime = DateTime.Now,
+                        IsActive = true
+                    }).ToList();
+
+                    var numberOfRecordInserted = await _unitOfWork.CandidateCategorySkillRepository.AddSkillsAsync(candidateSkillsList);
+
+                    // 🔹 Step 3: Commit Transaction
+                    await _unitOfWork.CommitTransactionAsync();
+
+                    return new ApiResponse<CandidateResponseDTO>
+                    {
+                        IsSuccecced = true,
+                        Message = "Candidate registration successful.",
+                        Data = new CandidateResponseDTO { Success = true, CandidateId = id }
+                    };
+                }
+                catch (Exception ex)
+                {
+                    // 🔹 Rollback if any step fails
+                    await _unitOfWork.RollbackTransactionAsync();
+                    _logger.LogError(ex, "Transaction rolled back due to an error.");
+                    return new ApiResponse<CandidateResponseDTO> { IsSuccecced = false, Message = "Transaction failed." };
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while processing the registration request.");
+                return new ApiResponse<CandidateResponseDTO> { IsSuccecced = false, Message = "An error occurred while processing the request." };
+            }
+        }
 
 
 
-               
-    //        }
-    //        catch (Exception ex)
-    //        {
-    //            // Log the error
-    //            _logger.LogError(ex, "An error occurred while processing the registration request.");
-
-    //            // Return a failure response
-    //            return new ApiResponse<CandidateResponseDTO>
-    //            {
-
-    //                IsSuccecced = false,
-    //                Message = "An error occurred while processing the request. Please try again later."
-    //            };
-    //        }
-    //    }
-    //}
+    }
 }

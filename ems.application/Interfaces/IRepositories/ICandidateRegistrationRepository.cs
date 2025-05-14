@@ -1,4 +1,4 @@
-﻿using ems.application.DTOs.RegistrationDTO;
+﻿using ems.application.DTOs.Registration;
 using ems.application.Features.UserLoginAndDashboardCmd.Commands;
 using ems.domain.Entity;
 using System;

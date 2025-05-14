@@ -1,5 +1,4 @@
-﻿using ems.domain.Entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace ems.domain.Entity;
@@ -53,6 +52,8 @@ public partial class Candidate
     public bool? IsFresher { get; set; }
 
     public byte[]? Resume { get; set; }
+
+    public string? FewWords { get; set; }
 
     public virtual ICollection<CandidateCategorySkill> CandidateCategorySkills { get; set; } = new List<CandidateCategorySkill>();
 

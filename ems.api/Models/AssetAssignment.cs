@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace ems.api.Models;
+
+public partial class AssetAssignment
+{
+    public int Id { get; set; }
+
+    public long EmployeeId { get; set; }
+
+    public int AssetId { get; set; }
+
+    public DateTime? AssignedDate { get; set; }
+
+    public DateTime? ExpectedReturnDate { get; set; }
+
+    public DateTime? ActualReturnDate { get; set; }
+
+    public int AssignmentStatusId { get; set; }
+
+    public string AssetConditionAtAssign { get; set; } = null!;
+
+    public string? AssetConditionAtReturn { get; set; }
+
+    public string IdentificationMethod { get; set; } = null!;
+
+    public string IdentificationValue { get; set; } = null!;
+
+    public bool? IsActive { get; set; }
+
+    public long CreatedBy { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
+
+    public long? UpdatedBy { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+
+    public virtual Asset Asset { get; set; } = null!;
+
+    public virtual AssignmentStatus AssignmentStatus { get; set; } = null!;
+
+    public virtual Employee Employee { get; set; } = null!;
+}

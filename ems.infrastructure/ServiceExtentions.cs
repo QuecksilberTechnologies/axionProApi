@@ -16,11 +16,11 @@ namespace ems.infrastructure
            
 
             // Registering the token service with both configuration and logger
-            services.AddScoped<ITokenService, TokenService>(provider =>
-            {
-                var logger = provider.GetRequiredService<ILogger<TokenService>>();
-                return new TokenService(configuration, logger);
-            });
+            //services.AddScoped<INewTokenRepository, NewTokenService>(provider =>
+            //{
+            //    var logger = provider.GetRequiredService<ILogger<NewTokenService>>();
+            //    return new NewTokenService(configuration, logger);
+            //});
 
             services.AddScoped<ILoggerService, LoggerService>();
 

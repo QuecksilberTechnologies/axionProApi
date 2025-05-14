@@ -18,16 +18,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTOs\BasicMenu\" />
     <Folder Include="Enums\" />
+    <Folder Include="Features\Cmd\Commands\" />
+    <Folder Include="Features\Cmd\Handlers\" />
+    <Folder Include="Features\Cmd\Queries\" />
     <Folder Include="Features\Company\Commands\" />
+    <Folder Include="Features\Company\Commands\" />
+    <Folder Include="Features\DepartmentCmd\Commands\" />
+    <Folder Include="Features\DepartmentCmd\Queries\" />
     <Folder Include="Features\EmployeeCmd\NewFolder\Commands\" />
     <Folder Include="Features\EmployeeCmd\NewFolder\Handlers\" />
     <Folder Include="Features\EmployeeCmd\NewFolder\Queries\" />
+    <Folder Include="Features\ServiceProviderCmd\Commands\" />
+    <Folder Include="Features\ServiceProviderCmd\Queries\" />
     <Folder Include="Features\UserLoginAndDashboardCmd\Queries\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ems.domain\ems.domain.csproj" />
+    <Folder Include="Features\WorkstationCmd\Commands\" />
+    <Folder Include="Features\WorkstationCmd\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +43,10 @@
 
   <ItemGroup>
     <None Include="C:\codebase\employeemanagement\ems.application\DTOs\RoleDTO\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ems.domain\ems.domain.csproj" />
   </ItemGroup>
 
 </Project>

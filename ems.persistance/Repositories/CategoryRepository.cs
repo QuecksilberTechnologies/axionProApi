@@ -1,4 +1,4 @@
-﻿using ems.application.DTOs.CategoryDTO;
+﻿using ems.application.DTOs.Category;
 using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;

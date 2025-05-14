@@ -1,34 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ems.domain.Entity
+namespace ems.domain.Entity;
+
+public partial class InterviewSchedule
 {
-    public partial class InterviewSchedule
-    {
-        public long Id { get; set; }
+    public int Id { get; set; }
 
-        public long CandidateId { get; set; }
+    public long CandidateId { get; set; }
 
-        public DateTime ScheduledDateTime { get; set; }
+    public int PanelId { get; set; }
 
-        public long InterviewerId { get; set; }
+    public DateTime ScheduledDate { get; set; }
 
-        public string InterviewMode { get; set; } = null!;
+    public bool IsActive { get; set; }
 
-        public string? Status { get; set; }
+    public string? Remarks { get; set; }
 
-        public string? Remarks { get; set; }
+    public virtual Candidate Candidate { get; set; } = null!;
 
-        public string? Description { get; set; }
-
-        public DateTime CreatedDateTime { get; set; }
-
-        public virtual Candidate Candidate { get; set; } = null!;
-
-        public virtual ICollection<InterviewFeedback> InterviewFeedbacks { get; set; } = new List<InterviewFeedback>();
-    }
-
+    public virtual InterviewPanel Panel { get; set; } = null!;
 }

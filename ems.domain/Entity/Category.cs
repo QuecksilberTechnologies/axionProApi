@@ -23,6 +23,10 @@ public partial class Category
 
     public bool IsActive { get; set; }
 
+    public virtual ICollection<CandidateCategorySkill> CandidateCategorySkills { get; set; } = new List<CandidateCategorySkill>();
+
+    public virtual ICollection<EmployeeCategorySkill> EmployeeCategorySkills { get; set; } = new List<EmployeeCategorySkill>();
+
     public virtual ICollection<Category> InverseParent { get; set; } = new List<Category>();
 
     public virtual Category? Parent { get; set; }

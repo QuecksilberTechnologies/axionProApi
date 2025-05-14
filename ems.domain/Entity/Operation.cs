@@ -18,6 +18,8 @@ public partial class Operation
     public DateTime AddedDateTime { get; set; }
 
     public long? UpdatedById { get; set; }
+    public string CompletePath { get; set; }
 
     public DateTime? UpdateDateTime { get; set; }
+    public byte[]? IconImage { get; set; }
 }

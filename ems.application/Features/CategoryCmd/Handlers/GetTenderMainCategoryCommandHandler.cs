@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ems.application.DTOs.CategoryDTO;
+using ems.application.DTOs.Category;
 using ems.application.Features.CategoryCmd.Command;
 using ems.application.Interfaces;
 using ems.application.Wrappers;
@@ -13,8 +13,8 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.CategoryCmd.Handlers
 {
-    
-      public class GetTenderMainCategoryRequestHandler : IRequestHandler<GetTenderMainCategoryCommand, ApiResponse<List<TenderCategoryResponseDTO>>>
+
+    public class GetTenderMainCategoryRequestHandler : IRequestHandler<GetTenderMainCategoryCommand, ApiResponse<List<TenderCategoryResponseDTO>>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;

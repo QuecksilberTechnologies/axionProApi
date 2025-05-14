@@ -9,15 +9,13 @@ public partial class LoginCredential
 
     public long EmployeeId { get; set; }
 
-    public string? LoginId { get; set; }
+    public string LoginId { get; set; } = null!;
 
     public string? Password { get; set; }
 
     public bool? HasFirstLogin { get; set; }
 
     public string? MacAddress { get; set; }
-
-    public string? IpAddress { get; set; }
 
     public bool? IsActive { get; set; }
 
@@ -29,13 +27,13 @@ public partial class LoginCredential
 
     public int LoginDevice { get; set; }
 
-    public long? AddedById { get; set; }
+    public string? IpAddressLocal { get; set; }
 
-    public DateTime? AddedDateTime { get; set; }
-
-    public long? UpdatedById { get; set; }
-
-    public DateTime? UpdatedDateTime { get; set; }
+    public string? IpAddressPublic { get; set; }
 
     public virtual Employee Employee { get; set; } = null!;
+
+    public virtual ICollection<RefreshToken1> RefreshToken1s { get; set; } = new List<RefreshToken1>();
+
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 }

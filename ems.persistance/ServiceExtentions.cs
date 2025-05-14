@@ -12,42 +12,49 @@ namespace ems.persistance
 {
     public static class ServiceExtentions
     {
-        public static void AddPersistance(this IServiceCollection services, IConfiguration configuration)
+        public static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
-            //register services
-            services.AddDbContext<WorkforceDbContext>(option => option.UseSqlServer(
-                configuration.GetConnectionString("DefaultConnection")
-                ));
+            // Debugging: Connection String Check Karein
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                throw new Exception("Connection String is null or empty!");
+            }
 
-             services.AddTransient<IWorkforceDbContext, WorkforceDbContext>();
-            // Register UnitOfWork with Scoped lifetime
-            // services.AddScoped<IUnitOfWork, UnitOfWork>();
+            // ✅ DbContext with Scoped Lifetime
+            services.AddDbContext<WorkforceDbContext>(options =>
+                options.UseSqlServer(connectionString));
+
+            // ✅ Correct Injection for WorkforceDbContext
+            services.AddScoped<IWorkforceDbContext>(provider => provider.GetRequiredService<WorkforceDbContext>());
+
+            // ✅ Unit of Work should be Scoped
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-            // Register repositories
-            //services.AddTransient<IAttendanceRepository, AttendanceRepository>();
-            services.AddTransient<IEmployeeRepository, EmployeeRepository>();
-            services.AddTransient<IUserLoginReopsitory, UserLoginReopsitory>();        
-            services.AddTransient<IRoleRepository, RoleRepository>();
-            services.AddTransient<IUserRoleRepository, UserRoleRepository>();
-            services.AddTransient<IEmployeeTypeRepository, EmployeeTypeRepository>();
-            services.AddTransient<IEmployeeTypeBasicMenuRepository, EmployeeTypeBasicMenuRepository>();
-            services.AddTransient<IUserRolesPermissionOnModuleRepository, UserRolesPermissionOnModuleRepository>();
-            services.AddTransient<ICandidateRegistrationRepository, CandidateRegistrationRepository>();  
-           // services.AddTransient<ICandidateCategorySkillRepository, CandidateCategorySkillRepository>();
-         //   services.AddTransient<ITenderCategoryRespository, TenderCategoryRepository>();
-            // services.AddTransient<ICompanyRepository, CompanyRepository>();
 
+            // ✅ Repositories should be Scoped (instead of Transient)
+            services.AddScoped<ICommonRepository, CommonRepository>();
+            services.AddScoped<INewTokenRepository, NewTokenRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<IAssetRepository, AssetRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            services.AddScoped<IUserLoginReopsitory, UserLoginReopsitory>();  // **FIXED**
+            services.AddScoped<ILeaveRepository, LeaveRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IUserRoleRepository, UserRoleRepository>();
+            services.AddScoped<IEmployeeTypeRepository, EmployeeTypeRepository>();
+            services.AddScoped<IEmployeeTypeBasicMenuRepository, EmployeeTypeBasicMenuRepository>();
+            services.AddScoped<IUserRolesPermissionOnModuleRepository, UserRolesPermissionOnModuleRepository>();
+            services.AddScoped<ICandidateRegistrationRepository, CandidateRegistrationRepository>();
+            services.AddScoped<IClientRepository, ClientRepository>();
+            services.AddScoped<ITravelRepository, TravelRepository>();
+            services.AddScoped<IOperationRepository, OperationRepository>();
+            services.AddScoped<IDesignationRepository, DesignationRepository>();
+            services.AddScoped<ICandidateCategorySkillRepository, CandidateCategorySkillRepository>();
+           
 
-            //services.AddIdentityCore<ApplicationUser>()
-            //    .AddRoles<ApplicationRole>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            //services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
-
-            //services.AddTransient<IAccountService, AccountService>();
-            ////Seeds roles and users
-            //DefaultRoles.SeedRolesAsync(services.BuildServiceProvider()).Wait();
-            //DefaultUsers.SeedUsersAsync(services.BuildServiceProvider()).Wait();
+            // Debugging Logs
+            Console.WriteLine("✅ Persistence Layer Configured Successfully.");
         }
     }
+
 }

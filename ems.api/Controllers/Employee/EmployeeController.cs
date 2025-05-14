@@ -1,5 +1,5 @@
 ﻿
-using ems.application.DTOs.EmployeeDTO;
+using ems.application.DTOs.Employee;
 using ems.application.Features.EmployeeCmd.Commands;
 using ems.application.Interfaces.ILogger;
 using MediatR;

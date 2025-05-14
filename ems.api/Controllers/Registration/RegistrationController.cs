@@ -1,4 +1,4 @@
-﻿using ems.application.DTOs.RegistrationDTO;
+﻿using ems.application.DTOs.Registration;
 using ems.application.DTOs.UserLogin;
 using ems.application.Features.UserLoginAndDashboardCmd.Commands;
 using ems.application.Interfaces.ILogger;
@@ -23,20 +23,20 @@ namespace ems.api.Controllers.Registration
     }
 
 
-    //[HttpPost("candidate")]
-    //   // [Authorize]
-    //    public async Task<IActionResult> Login([FromBody] CandidateRequestDTO candidateRegistrationDTO)
-    //     {
-    //        _logger.LogInfo("Received request for register a new candidate" + candidateRegistrationDTO.ToString());
-    //    var command = new CandidateRegistrationCommand(candidateRegistrationDTO);
-    //    var result = await _mediator.Send(command);
-    //    if (!result.IsSuccecced)
-    //    {
-    //        return Ok(result);
-    //    }
-    //    return Ok(result);
-    //}
-    [HttpPost("AccessDetails")]
+        [HttpPost("candidate")]
+        // [Authorize]
+        public async Task<IActionResult> Login([FromBody] CandidateRequestDTO candidateRegistrationDTO)
+        {
+            _logger.LogInfo("Received request for register a new candidate" + candidateRegistrationDTO.ToString());
+            var command = new CandidateRegistrationCommand(candidateRegistrationDTO);
+            var result = await _mediator.Send(command);
+            if (!result.IsSuccecced)
+            {
+                return Ok(result);
+            }
+            return Ok(result);
+        }
+        [HttpPost("AccessDetails")]
    // [Authorize] // Ensures the user is authenticated via token
     public async Task<IActionResult> UserAccessDetailsAsync([FromBody] AccessDetailRequestDTO accessDetailsDTO)
     {

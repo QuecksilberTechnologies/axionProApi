@@ -13,11 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ems.application\ems.application.csproj" />
+    <Folder Include="Security\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Security\NewFolder\" />
+    <ProjectReference Include="..\ems.application\ems.application.csproj" />
   </ItemGroup>
 
 </Project>

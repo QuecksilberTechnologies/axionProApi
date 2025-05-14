@@ -36,7 +36,9 @@ namespace ems.persistance.Repositories
 
                 // Added role ko return karenge
                 // `GetAllRolesAsync()` se returned IEnumerable ko List mein convert karenge
-                return (await GetAllRolesAsync()).ToList();
+                return (await GetAllRolesAsync())
+                 .OrderByDescending(r => r.Id) // Latest Role पहले आएगा
+                 .ToList();
             }
             catch (Exception ex)
             {
@@ -45,13 +47,6 @@ namespace ems.persistance.Repositories
                 throw;  // Rethrow the exception for further handling
             }
         }
-       
-
-        public Task<bool> DeleteRoleAsync(int roleId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<List<Role>> GetAllRolesAsync()
         {
             try
@@ -76,6 +71,13 @@ namespace ems.persistance.Repositories
             }
         }
 
+
+        public Task<bool> DeleteRoleAsync(int roleId)
+        {
+            throw new NotImplementedException();
+        }
+
+   
         public async Task<Role> GetRoleByIdAsync(int roleId)
         {
             try
@@ -99,9 +101,39 @@ namespace ems.persistance.Repositories
         }
 
 
-        public Task<Role> UpdateRoleAsync(Role role)
+        public async Task<List<Role>> UpdateRoleAsync(Role role)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // Role को db से ढूंढेंगे जो हमें update करना है
+                var existingRole = await _context.Roles.FirstOrDefaultAsync(r => r.Id == role.Id);
+
+                if (existingRole == null)
+                {
+                    _logger.LogWarning("Role with ID {RoleId} not found.", role.Id);
+                    return new List<Role>(); // Agar role nahi milta, to empty list return karenge
+                }
+
+                // Existing role ke fields ko update karenge
+                existingRole.RoleName = role.RoleName;
+                existingRole.Remark = role.Remark;
+                existingRole.IsActive = role.IsActive;
+                existingRole.UpdatedById = role.UpdatedById; // Assuming Update operation needs tracking
+                existingRole.UpdatedDateTime = DateTime.Now; // or DateTime.UtcNow
+
+                // Changes ko save karenge
+                await _context.SaveChangesAsync();
+
+                // Updated role ko return karenge
+                return (await GetAllRolesAsync()).ToList(); // `GetAllRolesAsync()` ko call karenge taaki updated data fetch ho sake
+            }
+            catch (Exception ex)
+            {
+                // Exception ko log karenge
+                _logger.LogError(ex, "Error occurred while updating role with ID {RoleId}.", role.Id);
+                throw;  // Rethrow the exception for further handling
+            }
         }
+
     }
 }
