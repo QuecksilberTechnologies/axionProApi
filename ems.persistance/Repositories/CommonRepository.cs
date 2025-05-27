@@ -146,12 +146,12 @@ namespace ems.persistance.Repositories
                     .ToListAsync();
 
                 // Icons ko Base64 convert karna
-                foreach (var item in result)
-                {
-                    item.ModuleIcon = item.ModuleIcon != null ? Convert.FromBase64String(ConvertToBase64(item.ModuleIcon)) : null;
-                    item.SubModuleIcon = item.SubModuleIcon != null ? Convert.FromBase64String(ConvertToBase64(item.SubModuleIcon)) : null;
-                    item.ChildModuleIcon = item.ChildModuleIcon != null ? Convert.FromBase64String(ConvertToBase64(item.ChildModuleIcon)) : null;
-                }
+                //foreach (var item in result)
+                //{
+                //    item.ModuleIcon = item.ModuleIcon != null ? Convert.FromBase64String(ConvertToBase64(item.ModuleIcon)) : null;
+                //    item.SubModuleIcon = item.SubModuleIcon != null ? Convert.FromBase64String(ConvertToBase64(item.SubModuleIcon)) : null;
+                //    item.ChildModuleIcon = item.ChildModuleIcon != null ? Convert.FromBase64String(ConvertToBase64(item.ChildModuleIcon)) : null;
+                //}
 
 
                 return result;

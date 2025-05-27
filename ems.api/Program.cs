@@ -1,4 +1,4 @@
-using ems.api.Middlewares;
+﻿using ems.api.Middlewares;
 using ems.application;
 using ems.infrastructure;
 using ems.persistance;
@@ -52,12 +52,14 @@ try
     {
         options.AddPolicy("AllowReactApp", policy =>
         {
-            policy.WithOrigins("http://localhost:3001", "http://localhost:3000", "http://localhost:3002") // React app URL
+       
+
+            policy.WithOrigins("http://localhost:3001", "http://localhost:3000", "http://quecksilber.in", "http://localhost:4200") // React app URL
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
     });
-   
+
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddApplication();
@@ -71,11 +73,14 @@ try
     app.UseAuthorization();
 
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
+    // Swagger har environment me enable
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
     {
-        app.UseSwagger();
-        app.UseSwaggerUI();
-    }
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "EMS API V1");
+        c.RoutePrefix = string.Empty; // Swagger root par open ho
+    });
+
 
     app.UseHttpsRedirection();
     app.UseAuthentication();
@@ -97,4 +102,3 @@ finally
 
 
 
- 

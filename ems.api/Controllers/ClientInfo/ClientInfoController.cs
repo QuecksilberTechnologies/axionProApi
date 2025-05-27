@@ -27,10 +27,10 @@ public class ClientInfoController : ControllerBase
         var localIp = HttpContext.Connection.RemoteIpAddress?.MapToIPv4().ToString();
         var publicIp = GetPublicIpFromRequest();
 
-        //var userAgent = Request.Headers["User-Agent"].ToString();
-        //var deviceType = GetDeviceType(userAgent);
-        //var localIp ="192.168.0.08";
-        //var publicIp = "33.454.32.344";
+        //var useragent = request.headers["user-agent"].tostring();
+        //var devicetype = getdevicetype(useragent);
+        //var localip ="192.168.0.08";
+        //var publicip = "33.454.32.344";
         var deviceInfo = new
         {
             localIp ,

@@ -60,15 +60,15 @@ namespace ems.domain.Entity
         public int ModuleId { get; set; }
         public string Module { get; set; }
         public string ModuleURL { get; set; }
-        public byte[]? ModuleIcon { get; set; }
+        public string? ModuleIcon { get; set; }
         public int SubModuleId { get; set; }
-        public byte[]? SubModuleIcon { get; set; }
+        public string? SubModuleIcon { get; set; }
         public string SubModule { get; set; }
         public string SubModuleURL { get; set; }
         public string ChildModuleURL { get; set; }
         public int ChildModuleId { get; set; }
         public string ChildModule { get; set; }  
-        public byte[]? ChildModuleIcon { get; set; }
+        public string? ChildModuleIcon { get; set; }
         public int OperationId { get; set; }
         public string Operation { get; set; }
         // public List<Operation> Operations { get; set; } = new();

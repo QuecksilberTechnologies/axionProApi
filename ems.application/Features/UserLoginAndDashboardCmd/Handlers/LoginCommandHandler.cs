@@ -134,7 +134,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 // ✅ Assign Primary Role & Other Roles
                 employeeInfo.UserPrimaryRole = EmployeePrimaryUserRole;
                 employeeInfo.UserSecondryRoles = userRoleDTOs;
-                List<CommonItem> tem = await _unitOfWork.CommonRepository.GetCommonItemAsync();
+                 List<CommonItem> tem = await _unitOfWork.CommonRepository.GetCommonItemAsync();
                 bool isactive = true;
                 bool hasaccess = true;
                 List<List<RoleModulePermission>> rolespermission = new List<List<RoleModulePermission>>();
