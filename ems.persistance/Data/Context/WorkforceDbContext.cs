@@ -57,6 +57,9 @@ namespace ems.persistance.Data.Context
 
         public virtual DbSet<Employee> Employees { get; set; }
 
+        public virtual DbSet<Tenant> Tenants { get; set; }
+        public virtual DbSet<TenantProfile> TenantProfiles { get; set; }
+
         public virtual DbSet<EmployeeBankDetail> EmployeeBankDetails { get; set; }
 
         public virtual DbSet<EmployeeCategorySkill> EmployeeCategorySkills { get; set; }
@@ -118,6 +121,7 @@ namespace ems.persistance.Data.Context
        
 
         public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
 
         public virtual DbSet<RoleModuleAndPermission> RoleModuleAndPermissions { get; set; }
 
@@ -240,6 +244,36 @@ namespace ems.persistance.Data.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Asset_AssetType");
             });
+
+
+            modelBuilder.Entity<EmailTemplate>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__EmailTem__3214EC072FE49A64");
+
+                entity.ToTable("EmailTemplate", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.AddedFromIp)
+                    .HasMaxLength(50)
+                    .HasColumnName("AddedFromIP");
+                entity.Property(e => e.Category).HasMaxLength(100);
+                entity.Property(e => e.FromEmail).HasMaxLength(150);
+                entity.Property(e => e.FromName).HasMaxLength(100);
+                entity.Property(e => e.CcEmail).HasMaxLength(300);
+                entity.Property(e => e.BccEmail).HasMaxLength(300);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.LanguageCode).HasMaxLength(10);
+                entity.Property(e => e.Subject).HasMaxLength(250);
+                entity.Property(e => e.TemplateCode).HasMaxLength(100);
+                entity.Property(e => e.TemplateName).HasMaxLength(150);
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.UpdatedFromIp)
+                    .HasMaxLength(50)
+                    .HasColumnName("UpdatedFromIP");
+            });
+
 
             modelBuilder.Entity<AssetAssignment>(entity =>
             {
@@ -660,6 +694,59 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
             });
 
+            modelBuilder.Entity<Tenant>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Tenant__3214EC0728DD7C6E");
+
+                entity.ToTable("Tenant", "AxionPro");
+
+                entity.HasIndex(e => e.TenantCode, "UQ_Tenant_TenantCode").IsUnique();
+
+                entity.HasIndex(e => e.TenantEmail, "UQ__Tenant__F7C944DD7E3D53D9").IsUnique();
+
+                entity.Property(e => e.CompanyEmailDomain).HasMaxLength(255);
+                entity.Property(e => e.CompanyName).HasMaxLength(200);
+                entity.Property(e => e.ContactNumber).HasMaxLength(20);
+                entity.Property(e => e.ContactPersonName).HasMaxLength(100);
+                entity.Property(e => e.TenantCode).HasMaxLength(100);
+                entity.Property(e => e.TenantEmail).HasMaxLength(200);
+            });
+
+            modelBuilder.Entity<TenantEmailConfig>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__TenantEm__3214EC077A90B3A3");
+
+                entity.ToTable("TenantEmailConfig", "AxionPro");
+
+                entity.Property(e => e.FromEmail).HasMaxLength(200);
+                entity.Property(e => e.FromName).HasMaxLength(100);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.SmtpHost).HasMaxLength(200);
+                entity.Property(e => e.SmtpPasswordEncrypted).HasMaxLength(500);
+                entity.Property(e => e.SmtpUsername).HasMaxLength(200);
+
+                entity.HasOne(d => d.Tenant).WithMany(p => p.TenantEmailConfigs)
+                    .HasForeignKey(d => d.TenantId)
+                    .HasConstraintName("FK_TenantEmailConfig_Tenant");
+            });
+
+            modelBuilder.Entity<TenantProfile>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__TenantPr__3214EC0796A1B93D");
+
+                entity.ToTable("TenantProfile", "AxionPro");
+
+                entity.Property(e => e.Address).HasMaxLength(300);
+                entity.Property(e => e.BusinessType).HasMaxLength(100);
+                entity.Property(e => e.Industry).HasMaxLength(100);
+                entity.Property(e => e.LogoUrl).HasMaxLength(255);
+                entity.Property(e => e.ThemeColor).HasMaxLength(50);
+                entity.Property(e => e.WebsiteUrl).HasMaxLength(200);
+
+                entity.HasOne(d => d.Tenant).WithMany(p => p.TenantProfiles)
+                    .HasForeignKey(d => d.TenantId)
+                    .HasConstraintName("FK_TenantProfile_Tenant");
+            });
             modelBuilder.Entity<Employee>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC07E3264254");
@@ -669,6 +756,7 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.EmployementCode).HasMaxLength(50);
                 entity.Property(e => e.FirstName).HasMaxLength(100);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
                 entity.Property(e => e.LastName).HasMaxLength(100);
                 entity.Property(e => e.MiddleName).HasMaxLength(100);
                 entity.Property(e => e.OfficialEmail).HasMaxLength(255);
@@ -676,12 +764,17 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Designation).WithMany(p => p.Employees)
-                    .HasForeignKey(d => d.DesignationId)                   
+                    .HasForeignKey(d => d.DesignationId)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("FK_Employee_Designation");
 
                 entity.HasOne(d => d.EmployeeType).WithMany(p => p.Employees)
                     .HasForeignKey(d => d.EmployeeTypeId)
                     .HasConstraintName("FK_Employee_EmployeeType");
+
+                entity.HasOne(d => d.Tenant).WithMany(p => p.Employees)
+                    .HasForeignKey(d => d.TenantId)
+                    .HasConstraintName("FK_Employee_Tenant");
             });
 
             modelBuilder.Entity<EmployeeBankDetail>(entity =>
@@ -1139,7 +1232,10 @@ namespace ems.persistance.Data.Context
 
                 entity.Property(e => e.IpAddressLocal).HasMaxLength(50);
                 entity.Property(e => e.IpAddressPublic).HasMaxLength(50);
+                entity.Property(e => e.Latitude).HasDefaultValue(0.0);
+                entity.Property(e => e.LoginDevice).HasDefaultValue(0);
                 entity.Property(e => e.LoginId).HasMaxLength(255);
+                entity.Property(e => e.Longitude).HasDefaultValue(0.0);
                 entity.Property(e => e.MacAddress).HasMaxLength(255);
                 entity.Property(e => e.Password).HasMaxLength(255);
                 entity.Property(e => e.Remark).HasMaxLength(255);
@@ -1148,7 +1244,13 @@ namespace ems.persistance.Data.Context
                     .HasForeignKey(d => d.EmployeeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_LoginCredential_Employee");
+
+                entity.HasOne(d => d.Tenant).WithMany(p => p.LoginCredentials)
+                    .HasForeignKey(d => d.TenantId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_LoginCredential_Tenant");
             });
+
 
             modelBuilder.Entity<MealAllowancePolicyByDesignation>(entity =>
             {

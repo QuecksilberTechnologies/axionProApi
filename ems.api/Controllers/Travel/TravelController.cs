@@ -32,7 +32,7 @@ namespace ems.api.Controllers.Travel
             var command = new GetAllTravelModeTypeQuery(travelModeRequestDTO);
             var result = await _mediator.Send(command);
 
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Unauthorized(result);
             }
@@ -52,7 +52,7 @@ namespace ems.api.Controllers.Travel
             var command = new CreateTravelModeTypeCommand(createTravelModeDTO);
             var result = await _mediator.Send(command);
 
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return BadRequest(result);
             }
@@ -66,7 +66,7 @@ namespace ems.api.Controllers.Travel
             _logger.LogInfo("Received request for update a leave" + updateTravelModeDTO.ToString());
             var command = new UpdateTravelModeTypeCommand(updateTravelModeDTO);
             var result = await _mediator.Send(command);
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Ok(result);
             }

@@ -38,7 +38,7 @@ namespace ems.application.Features.AssetCmd.Handlers
                 {
                     return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "Invalid request or missing asset creation.",
                         Data = null
                     };
@@ -53,7 +53,7 @@ namespace ems.application.Features.AssetCmd.Handlers
                 {
                     return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "Asset already exists.",
                         Data = null
                     };
@@ -79,7 +79,7 @@ namespace ems.application.Features.AssetCmd.Handlers
 
                 return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Asset created successfully.",
                     Data = resultDTOList
                 };
@@ -89,7 +89,7 @@ namespace ems.application.Features.AssetCmd.Handlers
                 _logger.LogError(ex, "An error occurred while processing the asset creation request.");
                 return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = "An error occurred while processing the request.",
                     Data = null
                 };

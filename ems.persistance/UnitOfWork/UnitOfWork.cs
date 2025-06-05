@@ -13,6 +13,7 @@ public class UnitOfWork  : IUnitOfWork
     private readonly ILoggerFactory _loggerFactory;
     private IDbContextTransaction? _currentTransaction;
     private ILeaveRepository? _leaveRepository;
+    private ITenantRepository? _tenantRepository;
     private IEmployeeRepository? _employeeRepository;
     private IUserRoleRepository? _userRoleRepository;
     private IRoleRepository? _roleRepository;
@@ -28,6 +29,7 @@ public class UnitOfWork  : IUnitOfWork
     private IRefreshTokenRepository _refreshTokenRepository;
     private ICommonRepository _commonRepository;
     private IUserLoginReopsitory? _userLoginReopsitory;
+    private IEmailTemplateRepository _emailTemplateRepository;
 
 
     // private IClientRepository? _clientRepository;
@@ -69,12 +71,28 @@ public class UnitOfWork  : IUnitOfWork
             return _employeeRepository ??= new EmployeeRepository(_context);
         }
     }
+    
+          public ITenantRepository TenantRepository
+           {
+                  get
+                  {
+                    return _tenantRepository ??= new TenantRepository(_context, _loggerFactory.CreateLogger<TenantRepository>());
+                   }
+            }
 
     public IEmployeeTypeBasicMenuRepository EmployeeTypeBasicMenuRepository
     {
         get
         {
             return _employeeTypeBasicMenurepository ??= new EmployeeTypeBasicMenuRepository(_context, _loggerFactory.CreateLogger<EmployeeTypeBasicMenuRepository>());
+        }
+    }
+
+    public IEmailTemplateRepository EmailTemplateRepository
+    {
+        get
+        {
+            return _emailTemplateRepository ??= new EmailTemplateRepository(_context, _loggerFactory.CreateLogger<EmailTemplateRepository>());
         }
     }
 

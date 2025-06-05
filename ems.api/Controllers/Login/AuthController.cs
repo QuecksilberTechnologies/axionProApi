@@ -31,7 +31,7 @@ namespace ems.api.Controllers.Login
             _logger.LogInfo("Received login request for user: {LoginId}" + logindto.LoginId.ToString());
             var command = new LoginCommand(logindto);
             var result = await _mediator.Send(command);
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Unauthorized(result);
             }
@@ -58,7 +58,7 @@ namespace ems.api.Controllers.Login
                 var result = await _mediator.Send(command);
 
                 // Check the result of the command
-                if (!result.IsSuccecced)
+                if (!result.IsSucceeded)
                 {
                   //  _logger.LogWarning("AccessDetail retrieval failed for EmployeeId: {EmployeeId}", accessDetailsDTO.EmployeeId);
                     return Unauthorized(result);
@@ -98,7 +98,7 @@ namespace ems.api.Controllers.Login
                 var result = await _mediator.Send(command);
 
                 // Check the result of the command
-                if (!result.IsSuccecced)
+                if (!result.IsSucceeded)
                 {
                     //  _logger.LogWarning("AccessDetail retrieval failed for EmployeeId: {EmployeeId}", accessDetailsDTO.EmployeeId);
                     return Unauthorized(result);

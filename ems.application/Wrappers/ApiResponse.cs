@@ -12,7 +12,7 @@
         {
 
 
-            IsSuccecced = isSuccecced;
+            IsSucceeded = isSuccecced;
             Message = message;
             Data = data;
 
@@ -20,7 +20,7 @@
 
         //faild response
         
-        public bool IsSuccecced { get; set; }
+        public bool IsSucceeded { get; set; }
         public string Message { get; set; }
         public List<string> Errors { get; set; }
         public T Data { get; set; }

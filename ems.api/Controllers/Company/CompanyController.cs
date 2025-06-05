@@ -1,4 +1,7 @@
-﻿using ems.application.Interfaces.ILogger;
+﻿using ems.application.DTOs.Registration;
+using ems.application.Features.RegistrationCmd.Commands;
+using ems.application.Features.UserLoginAndDashboardCmd.Commands;
+using ems.application.Interfaces.ILogger;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,5 +28,18 @@ public class CompanyController : ControllerBase
     {
         _logger.LogInfo("Company is created");
         return Ok();
+    }
+    [HttpPost("tenant")]
+    // [Authorize]
+    public async Task<IActionResult> TenantCreation([FromBody] TenantCreateRequestDTO tenantCreateRequestDTO)
+    {
+        _logger.LogInfo("Received request for register a new Tenant" + tenantCreateRequestDTO.ToString());
+        var command = new CreateTenantCommand(tenantCreateRequestDTO);
+        var result = await _mediator.Send(command);
+        if (!result.IsSucceeded)
+        {
+            return Ok(result);
+        }
+        return Ok(result);
     }
 }

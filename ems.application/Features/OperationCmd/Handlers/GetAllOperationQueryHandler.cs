@@ -49,7 +49,7 @@ namespace ems.application.Features.OperationCmd.Handlers
                 _logger.LogInformation("Successfully retrieved {Count} Operations.", getAllOperationDTOs.Count);
                 return new ApiResponse<List<GetAllOperationDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Operations fetched successfully.",
                     Data = getAllOperationDTOs
                 };
@@ -59,7 +59,7 @@ namespace ems.application.Features.OperationCmd.Handlers
                 _logger.LogError(ex, "Error while fetching Operations.");
                 return new ApiResponse<List<GetAllOperationDTO>>
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = "Operations fetched successfully.",
                     Data = null
                 };

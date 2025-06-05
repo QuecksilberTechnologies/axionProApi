@@ -42,7 +42,7 @@ namespace ems.application.Features.OperationCmd.Handlers
                 {
                     return new ApiResponse<List<GetAllOperationDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "No operation were updated.",
                         Data = new List<GetAllOperationDTO>()
                     };
@@ -52,7 +52,7 @@ namespace ems.application.Features.OperationCmd.Handlers
 
                 return new ApiResponse<List<GetAllOperationDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Travel created successfully",
                     Data = getAllOperationDTOs
                 };
@@ -63,7 +63,7 @@ namespace ems.application.Features.OperationCmd.Handlers
                 return new ApiResponse<List<GetAllOperationDTO>>
 
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = $"An error occurred: {ex.Message}",
                     Data = null
                 };

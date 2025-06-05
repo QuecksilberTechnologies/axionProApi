@@ -64,7 +64,7 @@ namespace ems.application.Features.EmployeeCmd.Handlers
 
                 // Database insert
                 var createdEmployee = await _employeeRepository.AddAsync(employee);
-               await _unitOfWork.CommitAsync();
+               await _unitOfWork.CommitTransactionAsync();
             // Entity to DTO Mapping for Response - Ensure this maps Employee to EmployeeDTO
             return _mapper.Map<EmployeeDTO>(createdEmployee);
 

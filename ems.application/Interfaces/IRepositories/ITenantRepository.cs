@@ -1,4 +1,5 @@
-﻿using ems.domain.Entity;
+﻿using ems.application.DTOs.Registration;
+using ems.domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,15 @@ namespace ems.application.Interfaces.IRepositories
 {
     public interface ITenantRepository
     {
-        Task<Tenant> GetByIdAsync(long id);
+        Task<Tenant> GetTenantByIdAsync(long id);
+        Task<bool> CheckTenantByEmail(string email);
         Task<Tenant> GetByCodeAsync(string tenantCode);
-        Task<IEnumerable<Tenant>> GetAllAsync();
-        Task AddAsync(Tenant tenant);
-        Task UpdateAsync(Tenant tenant);
-        Task DeleteAsync(Tenant tenant);
-        Task<bool> IsTenantEmailExistsAsync(string email);
+        Task<IEnumerable<Tenant>> GetAllTenantAsync();
+
+        Task<long> AddTenantAsync(Tenant tenant);
+        Task<long> AddTenantProfileAsync(TenantProfile tenantProfile);
+        Task UpdateTenantAsync(Tenant tenant);
+        Task DeleteTenantAsync(Tenant tenant);
+        
     }
 }

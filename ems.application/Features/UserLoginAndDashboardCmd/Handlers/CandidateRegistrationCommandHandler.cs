@@ -39,7 +39,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 {
                     return new ApiResponse<CandidateResponseDTO>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "Invalid request or missing CandidateRegistrationDTO."
                     };
                 }
@@ -52,13 +52,12 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 {
                     return new ApiResponse<CandidateResponseDTO>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "Data already exists."
                     };
                 }
 
-                // 🔹 Transaction Start
-                await _unitOfWork.BeginTransactionAsync();
+   
 
                 try
                 {
@@ -84,7 +83,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 
                     return new ApiResponse<CandidateResponseDTO>
                     {
-                        IsSuccecced = true,
+                        IsSucceeded = true,
                         Message = "Candidate registration successful.",
                         Data = new CandidateResponseDTO { Success = true, CandidateId = id }
                     };
@@ -94,13 +93,13 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                     // 🔹 Rollback if any step fails
                     await _unitOfWork.RollbackTransactionAsync();
                     _logger.LogError(ex, "Transaction rolled back due to an error.");
-                    return new ApiResponse<CandidateResponseDTO> { IsSuccecced = false, Message = "Transaction failed." };
+                    return new ApiResponse<CandidateResponseDTO> { IsSucceeded = false, Message = "Transaction failed." };
                 }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while processing the registration request.");
-                return new ApiResponse<CandidateResponseDTO> { IsSuccecced = false, Message = "An error occurred while processing the request." };
+                return new ApiResponse<CandidateResponseDTO> { IsSucceeded = false, Message = "An error occurred while processing the request." };
             }
         }
 

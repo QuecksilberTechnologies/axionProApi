@@ -40,7 +40,7 @@ namespace ems.application.Features.TransportCmd.Handlers
             {
                 return new ApiResponse<List<GetAllTravelModeDTO>>
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = "No Travel were created.",
                     Data = new List<GetAllTravelModeDTO>()
                 };
@@ -50,7 +50,7 @@ namespace ems.application.Features.TransportCmd.Handlers
 
             return new ApiResponse<List<GetAllTravelModeDTO>>
             {
-                IsSuccecced = true,
+                IsSucceeded = true,
                 Message = "Travel created successfully",
                 Data = getAllTravelModeDTOs
             };
@@ -61,7 +61,7 @@ namespace ems.application.Features.TransportCmd.Handlers
             return new ApiResponse<List<GetAllTravelModeDTO>>
 
             {
-                IsSuccecced = false,
+                IsSucceeded = false,
                 Message = $"An error occurred: {ex.Message}",
                 Data = null
             };

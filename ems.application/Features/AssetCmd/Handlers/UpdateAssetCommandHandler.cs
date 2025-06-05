@@ -44,7 +44,7 @@ namespace ems.application.Features.AssetCmd.Handlers
                 {
                     return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "No asset was updated.",
                         Data = null
                     };
@@ -55,7 +55,7 @@ namespace ems.application.Features.AssetCmd.Handlers
 
                 return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Asset updated successfully.",
                     Data = allAssetDTOs
                 };
@@ -65,7 +65,7 @@ namespace ems.application.Features.AssetCmd.Handlers
                 // _logger.LogError(ex, "Error occurred while updating asset.");
                 return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = $"An error occurred: {ex.Message}",
                     Data = null
                 };

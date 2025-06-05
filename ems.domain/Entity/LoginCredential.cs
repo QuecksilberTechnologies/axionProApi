@@ -8,6 +8,7 @@ public partial class LoginCredential
     public long Id { get; set; }
 
     public long EmployeeId { get; set; }
+    public long TenantId { get; set; }    
 
     public string LoginId { get; set; } = null!;
 
@@ -36,4 +37,6 @@ public partial class LoginCredential
     public virtual ICollection<RefreshToken1> RefreshToken1s { get; set; } = new List<RefreshToken1>();
 
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+
+    public virtual Tenant Tenant { get; set; } = null!;
 }

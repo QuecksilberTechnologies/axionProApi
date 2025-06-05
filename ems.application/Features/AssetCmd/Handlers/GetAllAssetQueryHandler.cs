@@ -43,7 +43,7 @@ namespace ems.application.Features.AssetCmd.Handlers
                     _logger.LogWarning("No assets found.");
                     return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "No assets found.",
                         Data = new List<GetAllAssetWithDependentEntityDTO>()
                     };
@@ -73,7 +73,7 @@ namespace ems.application.Features.AssetCmd.Handlers
                 _logger.LogInformation("Successfully retrieved {AssetCount} asset(s) and {AssetTypeCount} asset type(s).", assetDTOs.Count, assetTypeDTOs.Count);
                 return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Assets fetched successfully.",
                     Data = compositeDTOList
                 };
@@ -83,7 +83,7 @@ namespace ems.application.Features.AssetCmd.Handlers
                 _logger.LogError(ex, "Error while fetching assets.");
                 return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = "Error occurred while fetching assets.",
                     Data = null
                 };

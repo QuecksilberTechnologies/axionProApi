@@ -38,7 +38,7 @@ namespace ems.application.Features.LeaveCmd.Handlers
                 {
                     return new ApiResponse<List<GetAllLeaveTypeDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "No Leave were update.",
                         Data = new List<GetAllLeaveTypeDTO>()
                     };
@@ -48,7 +48,7 @@ namespace ems.application.Features.LeaveCmd.Handlers
 
                 return new ApiResponse<List<GetAllLeaveTypeDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Leave update successfully",
                     Data = leaveTypeDTOs
                 };
@@ -59,7 +59,7 @@ namespace ems.application.Features.LeaveCmd.Handlers
                 return new ApiResponse<List<GetAllLeaveTypeDTO>>
 
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = $"An error occurred: {ex.Message}",
                     Data = null
                 };

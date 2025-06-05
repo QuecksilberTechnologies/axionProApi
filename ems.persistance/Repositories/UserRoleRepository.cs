@@ -52,10 +52,11 @@ namespace ems.persistance.Repositories
             }
         }
 
-        public async Task AddUserRoleAsync(UserRole userRole)
+        public async Task<int?> AddUserRoleAsync(UserRole userRole)
         {
             await _context.UserRoles.AddAsync(userRole);
             await _context.SaveChangesAsync();
+            return userRole.RoleId;
         }
 
         public async Task DeleteUserRoleAsync(int id)
@@ -78,10 +79,11 @@ namespace ems.persistance.Repositories
             return await _context.UserRoles.FindAsync(id);
         }
 
-        public async Task UpdateUserRoleAsync(UserRole userRole)
+        public async Task<int?> UpdateUserRoleAsync(UserRole userRole)
         {
             _context.UserRoles.Update(userRole);
             await _context.SaveChangesAsync();
+            return userRole.RoleId;
         }
         public async Task<List<UserRole>> GetEmployeeRolesWithDetailsByIdAsync(long employeeId)
         {

@@ -64,7 +64,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                     await _unitOfWork.RollbackTransactionAsync();
                     return new ApiResponse<LoginResponseDTO>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "User is not authenticated or authorized to perform this action.",
                         Data = null
                     };
@@ -167,7 +167,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 
                 return new ApiResponse<LoginResponseDTO>
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = "An error occurred while processing the login request. Please try again later.",
                     Data = null
                 };

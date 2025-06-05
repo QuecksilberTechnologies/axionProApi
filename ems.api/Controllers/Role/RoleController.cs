@@ -31,7 +31,7 @@ namespace ems.api.Controllers.Role
             _logger.LogInfo("Received request for update a new role" + updateRoleDTO.ToString());
             var command = new UpdateRoleCommand(updateRoleDTO);
             var result = await _mediator.Send(command);
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Ok(result);
             }
@@ -45,7 +45,7 @@ namespace ems.api.Controllers.Role
             _logger.LogInfo("Received request for create a new role" + createRoleDTO.ToString());
             var command = new CreateRoleCommand(createRoleDTO);
             var result = await _mediator.Send(command);
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Ok(result);
             }
@@ -66,7 +66,7 @@ namespace ems.api.Controllers.Role
             var query = new GetAllRoleQuery(roleRequestDTO);  //  Fix: No parameter needed in GetAllRoleQuery
             var result = await _mediator.Send(query);
 
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Unauthorized(result);
             }

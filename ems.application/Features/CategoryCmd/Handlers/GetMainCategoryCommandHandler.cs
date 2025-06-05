@@ -43,7 +43,7 @@ namespace ems.application.Features.CategoryCmd.Handlers
                 {
                     return new ApiResponse<List<CategoryResponseDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "Invalid request. Category ID is required.",
                         Data = null
                     };
@@ -71,7 +71,7 @@ namespace ems.application.Features.CategoryCmd.Handlers
                 // Return a success response
                 return new ApiResponse<List<CategoryResponseDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Categories fetched successfully.",
                     Data = categoryResponseDTOs
                 };
@@ -84,7 +84,7 @@ namespace ems.application.Features.CategoryCmd.Handlers
                 // Return a failure response
                 return new ApiResponse<List<CategoryResponseDTO>>
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = "An error occurred while processing the category request.",
                     Data = null
                 };

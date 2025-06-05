@@ -55,7 +55,7 @@ namespace ems.application.Features.ClientCmd.Handlers
                 _logger.LogInformation("Successfully retrieved {Count} roles.", getAllClientTypeDTOs.Count);
                 return new ApiResponse<List<GetAllClientTypeDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Categories fetched successfully.",
                     Data = getAllClientTypeDTOs
                 };
@@ -66,7 +66,7 @@ namespace ems.application.Features.ClientCmd.Handlers
                 _logger.LogError(ex, "Error while fetching roles.");
                 return new ApiResponse<List<GetAllClientTypeDTO>>
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = "Categories fetched successfully.",
                     Data = null
                 };

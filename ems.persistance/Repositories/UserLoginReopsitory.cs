@@ -56,6 +56,34 @@ namespace ems.persistance.Repositories
             }
         }
 
+        public async Task<long> CreateUser(LoginCredential loginRequest)
+        {
+            try
+            {
+                if (_context == null)
+                {
+                    _logger?.LogError("DbContext is null in CreateUser.");
+                    throw new ArgumentNullException(nameof(_context), "DbContext is not initialized.");
+                }
+
+               
+
+                await _context.LoginCredentials.AddAsync(loginRequest); // Add LoginCredential
+                await _context.SaveChangesAsync(); // Save changes
+
+                _logger?.LogInformation("User created successfully with ID: {UserId}", loginRequest.Id);
+
+                return loginRequest.Id; // Return auto-generated ID
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "An error occurred while creating user.");
+                throw;
+            }
+        }
+
+     
+
         private bool VerifyPassword(string providedPassword, string storedPassword)
         {
             // Secure hashing and comparison logic should be implemented here

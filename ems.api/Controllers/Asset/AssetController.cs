@@ -26,7 +26,7 @@ namespace ems.api.Controllers.Asset
             _logger.LogInfo("Received request for update a new Asset" + updateAssetDTO.ToString());
             var command = new UpdateAssetCommand(updateAssetDTO);
             var result = await _mediator.Send(command);
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Ok(result);
             }
@@ -40,7 +40,7 @@ namespace ems.api.Controllers.Asset
             _logger.LogInfo("Received request for create a new Asset" + createAssetDTO.ToString());
             var command = new CreateAssetCommand(createAssetDTO);
             var result = await _mediator.Send(command);
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Ok(result);
             }
@@ -60,7 +60,7 @@ namespace ems.api.Controllers.Asset
             var query = new GetAllAssetQuery(AssetRequestDTO);  //  Fix: No parameter needed in GetAllAssetQuery
             var result = await _mediator.Send(query);
 
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Unauthorized(result);
             }

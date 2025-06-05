@@ -38,7 +38,7 @@ namespace ems.application.Features.OperationCmd.Handlers
                 bool result = await _unitOfWork.CommonRepository.GetHasAccessOperation(requestDTO);
                 if (result)
                 {
-                    response.IsSuccecced = result;
+                    response.IsSucceeded = result;
 
                     response.Data = new HasAccessOperationDTO
                     {
@@ -50,7 +50,7 @@ namespace ems.application.Features.OperationCmd.Handlers
                 }
                 else
                 {
-                    response.IsSuccecced = result;
+                    response.IsSucceeded = result;
                     response.Data = new HasAccessOperationDTO
                     {
                         Status = result, // Assign the bool directly
@@ -64,7 +64,7 @@ namespace ems.application.Features.OperationCmd.Handlers
             }
             catch (Exception ex)
             {
-                response.IsSuccecced = false;
+                response.IsSucceeded = false;
                 response.Message = "❌ An error occurred while checking permission.";
                 _logger.LogError($"🚨 Error in GetPageOperationPermissionQueryHandler: {ex.Message}");
             }

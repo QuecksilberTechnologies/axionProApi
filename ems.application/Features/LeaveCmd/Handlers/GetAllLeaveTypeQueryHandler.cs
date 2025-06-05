@@ -19,7 +19,7 @@ namespace ems.application.Features.LeaveCmd.Handlers
 {
     public class GetAllLeaveTypeQueryHandler  : IRequestHandler<GetAllLeaveTypeQuery, ApiResponse<List<GetAllLeaveTypeDTO>>>
     {
-        private readonly IMapper _mapper;
+    private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<GetAllLeaveTypeQueryHandler> _logger;
 
@@ -49,7 +49,7 @@ namespace ems.application.Features.LeaveCmd.Handlers
             _logger.LogInformation("Successfully retrieved {Count} roles.", leaveTypeDTOs.Count);
             return new ApiResponse<List<GetAllLeaveTypeDTO>>
             {
-                IsSuccecced = true,
+                IsSucceeded = true,
                 Message = "Categories fetched successfully.",
                 Data = leaveTypeDTOs
             };
@@ -65,7 +65,7 @@ namespace ems.application.Features.LeaveCmd.Handlers
             _logger.LogError(ex, "Error while fetching roles.");
             return new ApiResponse<List<GetAllLeaveTypeDTO>>
             {
-                IsSuccecced = false,
+                IsSucceeded = false,
                 Message = "Categories fetched successfully.",
                 Data = null
             };

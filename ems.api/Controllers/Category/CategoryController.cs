@@ -29,7 +29,7 @@ namespace ems.api.Controllers.Category
             _logger.LogInfo("Received  request to get categories from userId: {LoginId}" + categoryRequestDTO.Id.ToString());
             var command = new GetMainCategoryCommand(categoryRequestDTO);
             var result = await _mediator.Send(command);
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Unauthorized(result);
             }
@@ -57,7 +57,7 @@ namespace ems.api.Controllers.Category
             _logger.LogInfo("Received  request to get sub-categories from userId: {LoginId}" + categoryRequestDTO.Id.ToString());
             var command = new GetMainChildCategoryCommand(categoryRequestDTO);
             var result = await _mediator.Send(command);
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Unauthorized(result);
             }

@@ -30,12 +30,14 @@ namespace ems.api.Controllers.Registration
             _logger.LogInfo("Received request for register a new candidate" + candidateRegistrationDTO.ToString());
             var command = new CandidateRegistrationCommand(candidateRegistrationDTO);
             var result = await _mediator.Send(command);
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Ok(result);
             }
             return Ok(result);
         }
+
+       
         [HttpPost("AccessDetails")]
    // [Authorize] // Ensures the user is authenticated via token
     public async Task<IActionResult> UserAccessDetailsAsync([FromBody] AccessDetailRequestDTO accessDetailsDTO)
@@ -57,7 +59,7 @@ namespace ems.api.Controllers.Registration
             var result = await _mediator.Send(command);
 
             // Check the result of the command
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 //  _logger.LogWarning("AccessDetail retrieval failed for EmployeeId: {EmployeeId}", accessDetailsDTO.EmployeeId);
                 return Unauthorized(result);

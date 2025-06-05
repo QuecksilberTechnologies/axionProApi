@@ -41,7 +41,7 @@ namespace ems.application.Features.ClientCmd.Handlers
                 {
                     return new ApiResponse<List<GetAllClientTypeDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "No Leave were created.",
                         Data = new List<GetAllClientTypeDTO>()
                     };
@@ -51,7 +51,7 @@ namespace ems.application.Features.ClientCmd.Handlers
 
                 return new ApiResponse<List<GetAllClientTypeDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Leave created successfully",
                     Data = leaveTypeDTOs
                 };
@@ -62,7 +62,7 @@ namespace ems.application.Features.ClientCmd.Handlers
                 return new ApiResponse<List<GetAllClientTypeDTO>>
 
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = $"An error occurred: {ex.Message}",
                     Data = null
                 };

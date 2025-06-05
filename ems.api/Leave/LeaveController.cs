@@ -36,7 +36,7 @@ namespace ems.api.Controllers
             var command = new CreateLeaveTypeCommand(createLeaveTypeDTO);
             var result = await _mediator.Send(command);
 
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return BadRequest(result);
             }
@@ -57,7 +57,7 @@ namespace ems.api.Controllers
             var query = new GetAllLeaveTypeQuery(leaveRequestDTO);
             var result = await _mediator.Send(query);
 
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return BadRequest(result);
             }
@@ -71,7 +71,7 @@ namespace ems.api.Controllers
             _logger.LogInformation("Received request for update a leave" + updateLeaveTypeDTO.ToString());
             var command = new UpdateLeaveTypeCommand(updateLeaveTypeDTO);
             var result = await _mediator.Send(command);
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Ok(result);
             }

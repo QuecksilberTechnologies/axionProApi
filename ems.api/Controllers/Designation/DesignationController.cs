@@ -32,7 +32,7 @@ namespace ems.api.Controllers.Designation
             var command = new GetAllDesignationQuery(designationRequestDTO);
             var result = await _mediator.Send(command);
 
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Unauthorized(result);
             }
@@ -52,7 +52,7 @@ namespace ems.api.Controllers.Designation
             var command = new CreateDesignationCommand(createDesignationDTO);
             var result = await _mediator.Send(command);
 
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return BadRequest(result);
             }
@@ -66,7 +66,7 @@ namespace ems.api.Controllers.Designation
             _logger.LogInfo("Received request for update sedignation" + updateDesignationDTO.ToString());
             var command = new UpdateDesignationCommand(updateDesignationDTO);
             var result = await _mediator.Send(command);
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Ok(result);
             }

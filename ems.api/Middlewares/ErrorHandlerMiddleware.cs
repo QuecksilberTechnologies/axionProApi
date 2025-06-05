@@ -23,7 +23,7 @@ namespace ems.api.Middlewares
             {
                 var response = context.Response;
                 response.ContentType = "application/json";
-                var responseModel = new ApiResponse<string> { IsSuccecced = false, Message = ex.Message };
+                var responseModel = new ApiResponse<string> { IsSucceeded = false, Message = ex.Message };
 
                 switch (ex)
                 {

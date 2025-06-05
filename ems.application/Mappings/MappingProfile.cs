@@ -5,6 +5,7 @@ using ems.application.DTOs.Category;
 using ems.application.DTOs.Client;
 using ems.application.DTOs.Department;
 using ems.application.DTOs.Designation;
+using ems.application.DTOs.EmailTemplate;
 using ems.application.DTOs.Employee;
 using ems.application.DTOs.Leave;
 using ems.application.DTOs.Operation;
@@ -124,7 +125,7 @@ namespace ems.application.Mappings
                                      // `Employee.DesignationId` ➝ `EmployeeInfoDTO.DesignationId` (Nullable check)
 
                                .ForMember(dest => dest.OfficialEmail, opt => opt.MapFrom(src => src.OfficialEmail ?? null));
-                            // `Employee.OfficialEmail` ➝ `EmployeeInfoDTO.OfficialEmail`
+            // `Employee.OfficialEmail` ➝ `EmployeeInfoDTO.OfficialEmail`
 
 
             // Add mapping for List<Role> to List<GetAllRoleDTO>
@@ -152,6 +153,12 @@ namespace ems.application.Mappings
             //    RoleName = ur.Role.RoleName,
             //    Description = ur.Remark
             //})));
+
+            //CreateMap<EmailTemplate, EmailTemplateDTO>();
+            CreateMap<EmailTemplate, EmailTemplateDTO>().ReverseMap();
+
+            CreateMap<Tenant, TenantCreateRequestDTO>().ReverseMap();
+            CreateMap<LoginCredential, Employee>().ReverseMap();
 
 
 
@@ -183,6 +190,7 @@ namespace ems.application.Mappings
          .ForMember(dest => dest.LastUpdatedDateTime, opt => opt.MapFrom(src => DateTime.UtcNow));
 
         }
+
 
     }
 }

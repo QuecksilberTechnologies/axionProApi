@@ -48,7 +48,7 @@ namespace ems.application.Features.DesignationCmd.Handlers
                 _logger.LogInformation("Successfully retrieved {Count} Designation.", getAllOperationDTOs.Count);
                 return new ApiResponse<List<GetAllDesignationDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Operations fetched successfully.",
                     Data = getAllOperationDTOs
                 };
@@ -58,7 +58,7 @@ namespace ems.application.Features.DesignationCmd.Handlers
                 _logger.LogError(ex, "Error while fetching Designation.");
                 return new ApiResponse<List<GetAllDesignationDTO>>
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = "Designation fetched successfully.",
                     Data = null
                 };

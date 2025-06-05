@@ -41,7 +41,7 @@ namespace ems.application.Features.DesignationCmd.Handlers
                 {
                     return new ApiResponse<List<GetAllDesignationDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "No operation were updated.",
                         Data = new List<GetAllDesignationDTO>()
                     };
@@ -51,7 +51,7 @@ namespace ems.application.Features.DesignationCmd.Handlers
 
                 return new ApiResponse<List<GetAllDesignationDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Travel created successfully",
                     Data = getAllDesignationDTOs
                 };
@@ -62,7 +62,7 @@ namespace ems.application.Features.DesignationCmd.Handlers
                 return new ApiResponse<List<GetAllDesignationDTO>>
 
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = $"An error occurred: {ex.Message}",
                     Data = null
                 };

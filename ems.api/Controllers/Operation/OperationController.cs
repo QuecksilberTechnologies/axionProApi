@@ -35,7 +35,7 @@ namespace ems.api.Controllers.Operation
             var command = new GetAllOperationQuery(operationRequestDTO);
             var result = await _mediator.Send(command);
 
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Unauthorized(result);
             }
@@ -55,7 +55,7 @@ namespace ems.api.Controllers.Operation
             var command = new CreateOperationCommand(createOperationDTO);
             var result = await _mediator.Send(command);
 
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return BadRequest(result);
             }
@@ -69,7 +69,7 @@ namespace ems.api.Controllers.Operation
             _logger.LogInfo("Received request for update a leave" + updateOperationDTO.ToString());
             var command = new UpdateOperationCommand(updateOperationDTO);
             var result = await _mediator.Send(command);
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Ok(result);
             }
@@ -91,7 +91,7 @@ namespace ems.api.Controllers.Operation
             var query = new GetPageOperationPermissionQuery(checkOperationPermissionRequest);
             var result = await _mediator.Send(query);
 
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
             //    _logger.LogWarning("⛔ Permission denied for RoleId: {RoleId}, ModuleId: {ModuleId}, OperationId: {OperationId}",
                    // checkOperationPermissionRequest.RoleId, checkOperationPermissionRequest.ProjectChildModuleDetailId, checkOperationPermissionRequest.OperationId);

@@ -50,6 +50,8 @@ namespace ems.persistance
             services.AddScoped<IOperationRepository, OperationRepository>();
             services.AddScoped<IDesignationRepository, DesignationRepository>();
             services.AddScoped<ICandidateCategorySkillRepository, CandidateCategorySkillRepository>();
+            services.AddScoped<IEmailTemplateRepository, EmailTemplateRepository>();
+            services.AddScoped<ITenantRepository, TenantRepository>();
            
 
             // Debugging Logs

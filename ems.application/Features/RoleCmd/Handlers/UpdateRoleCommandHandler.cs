@@ -54,7 +54,7 @@ namespace ems.application.Features.RoleCmd.Handlers
                     _logger.LogWarning("No roles were updated for RoleId: {RoleId}", request.updateRoleDTO.Id);
                     return new ApiResponse<List<GetAllRoleDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "No roles were updated.",
                         Data = new List<GetAllRoleDTO>()
                     };
@@ -70,7 +70,7 @@ namespace ems.application.Features.RoleCmd.Handlers
                 _logger.LogInformation("UpdateRoleCommand handled successfully.");
                 return new ApiResponse<List<GetAllRoleDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Roles updated successfully",
                     Data = roleDTOs
                 };
@@ -80,7 +80,7 @@ namespace ems.application.Features.RoleCmd.Handlers
                 _logger.LogError(ex, "Error occurred while updating roles for RoleId: {RoleId}", request.updateRoleDTO.Id);
                 return new ApiResponse<List<GetAllRoleDTO>>
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = $"An error occurred: {ex.Message}",
                     Data = null
                 };

@@ -7,6 +7,8 @@ public partial class Employee
 {
     public long Id { get; set; }
 
+    public long TenantId { get; set; }
+
     public int EmployeeDocumentId { get; set; }
 
     public string EmployementCode { get; set; } = null!;
@@ -79,7 +81,7 @@ public partial class Employee
 
     public virtual EmployeeType? EmployeeType { get; set; }
 
-    
+    public virtual Tenant Tenant { get; set; } = null!;
     public virtual ICollection<LeaveAllocation> LeaveAllocations { get; set; } = new List<LeaveAllocation>();
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 

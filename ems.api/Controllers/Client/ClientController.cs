@@ -33,7 +33,7 @@ namespace ems.api.Controllers.Client
             var command = new GetAllClientTypeQuery(clientRequestType);
             var result = await _mediator.Send(command);
 
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Unauthorized(result);
             }
@@ -53,7 +53,7 @@ namespace ems.api.Controllers.Client
             var command = new CreateClientTypeCommand(createClientTypeDTO);
             var result = await _mediator.Send(command);
 
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return BadRequest(result);
             }
@@ -67,7 +67,7 @@ namespace ems.api.Controllers.Client
             _logger.LogInfo("Received request for update a leave" + updateClientTypeDTO.ToString());
             var command = new UpdateClientTypeCommand(updateClientTypeDTO);
             var result = await _mediator.Send(command);
-            if (!result.IsSuccecced)
+            if (!result.IsSucceeded)
             {
                 return Ok(result);
             }

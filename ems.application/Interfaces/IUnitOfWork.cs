@@ -11,6 +11,7 @@ public interface IUnitOfWork : IDisposable
    //
    // INewTokenRepository newTokenRepository { get; } 
  
+     ITenantRepository TenantRepository { get; }
     IRefreshTokenRepository RefreshTokenRepository { get; }
    // IEmployeeRepository EmployeeRepository { get; }
     IAssetRepository AssetRepository { get; }
@@ -22,6 +23,7 @@ public interface IUnitOfWork : IDisposable
     ICandidateRegistrationRepository CandidatesRegistrationRepository { get; }
     ICandidateCategorySkillRepository CandidateCategorySkillRepository { get; }
     IEmployeeTypeRepository EmployeeTypeRepository { get; }
+    IEmailTemplateRepository EmailTemplateRepository { get; }
  
     IUserRoleRepository UserRoleRepository { get; }
     ICategoryRepository CategoryRepository { get; }

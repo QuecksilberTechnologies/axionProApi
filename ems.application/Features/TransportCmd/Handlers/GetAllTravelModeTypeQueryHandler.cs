@@ -48,7 +48,7 @@ namespace ems.application.Features.TransportCmd.Handlers
                 _logger.LogInformation("Successfully retrieved {Count} travelModes.", travelDTOs.Count);
                 return new ApiResponse<List<GetAllTravelModeDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "travelModes fetched successfully.",
                     Data = travelDTOs
                 };
@@ -58,7 +58,7 @@ namespace ems.application.Features.TransportCmd.Handlers
                 _logger.LogError(ex, "Error while fetching roles.");
                 return new ApiResponse<List<GetAllTravelModeDTO>>
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = "Categories fetched successfully.",
                     Data = null
                 };

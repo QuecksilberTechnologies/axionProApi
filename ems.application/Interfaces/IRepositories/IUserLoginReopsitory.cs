@@ -11,6 +11,7 @@ namespace ems.application.Interfaces.IRepositories
     public interface IUserLoginReopsitory
     {
         Task<LoginCredential> AuthenticateUser(LoginRequestDTO loginRequest);
+        Task<long> CreateUser(LoginCredential loginRequest);
        
     }
 

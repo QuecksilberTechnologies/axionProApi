@@ -45,7 +45,7 @@ namespace ems.application.Features.LeaveCmd.Handlers
                 {
                     return new ApiResponse<List<GetAllLeaveTypeDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "No primary role found for the user.",
                         Data = null
                     };
@@ -59,7 +59,7 @@ namespace ems.application.Features.LeaveCmd.Handlers
                 {
                     return new ApiResponse<List<GetAllLeaveTypeDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "No Leave were created.",
                         Data = new List<GetAllLeaveTypeDTO>()
                     };
@@ -69,7 +69,7 @@ namespace ems.application.Features.LeaveCmd.Handlers
 
                 return new ApiResponse<List<GetAllLeaveTypeDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Leave created successfully",
                     Data = leaveTypeDTOs
                 };
@@ -80,7 +80,7 @@ namespace ems.application.Features.LeaveCmd.Handlers
                 return new ApiResponse<List<GetAllLeaveTypeDTO>>
 
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = $"An error occurred: {ex.Message}",
                     Data = null
                 };

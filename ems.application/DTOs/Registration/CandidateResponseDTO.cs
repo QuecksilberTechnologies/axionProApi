@@ -12,6 +12,7 @@ namespace ems.application.DTOs.Registration
 
         public bool Success { get; set; }  // Operation success status (true/false)
         public long? CandidateId { get; set; }  // CandidateId if success, else null
+        public long? TenantId { get; set; }  // CandidateId if success, else null
         public string Message { get; set; }  // Success/Failure message
                                              //   public CandidateInfoDTO CandidateInfoDTO { get; set; }  // Employee Information
 

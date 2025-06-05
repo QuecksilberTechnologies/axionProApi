@@ -41,7 +41,7 @@ namespace ems.application.Features.RoleCmd.Handlers
                 {
                     return new ApiResponse<List<GetAllRoleDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "No roles were created.",
                         Data = new List<GetAllRoleDTO>()
                     };
@@ -51,7 +51,7 @@ namespace ems.application.Features.RoleCmd.Handlers
 
                 return new ApiResponse<List<GetAllRoleDTO>>
                 {
-                    IsSuccecced = true,
+                    IsSucceeded = true,
                     Message = "Role created successfully",
                     Data = roleDTOs
                 };
@@ -61,7 +61,7 @@ namespace ems.application.Features.RoleCmd.Handlers
               //  _logger.LogError(ex, "Error occurred while creating role.");
                 return new ApiResponse<List<GetAllRoleDTO>>
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = $"An error occurred: {ex.Message}",
                     Data = null
                 };
