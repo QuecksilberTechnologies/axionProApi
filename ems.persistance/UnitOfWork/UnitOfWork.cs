@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
 using ems.application.Interfaces.ITokenService;
+using System.Diagnostics.Metrics;
 public class UnitOfWork  : IUnitOfWork
 {
     private readonly WorkforceDbContext _context;
@@ -24,6 +25,8 @@ public class UnitOfWork  : IUnitOfWork
     private IAttendanceRepository? _attendanceRepository;
     private ICandidateRegistrationRepository? _candidateRegistrationRepository;
     private ICandidateCategorySkillRepository? _candidateCategorySkillRepository;
+    private ICountryRepository? _countryRepository;
+
     private IAssetRepository? _assetRepository;
     //private  INewTokenRepository _tokenService;
     private IRefreshTokenRepository _refreshTokenRepository;
@@ -85,6 +88,14 @@ public class UnitOfWork  : IUnitOfWork
         get
         {
             return _employeeTypeBasicMenurepository ??= new EmployeeTypeBasicMenuRepository(_context, _loggerFactory.CreateLogger<EmployeeTypeBasicMenuRepository>());
+        }
+    }
+
+    public ICountryRepository CountryRepository
+    {
+        get
+        {
+            return _countryRepository ??= new CountryRepository(_context, _loggerFactory.CreateLogger<CountryRepository>());
         }
     }
 

@@ -16,6 +16,7 @@ namespace ems.persistance.Data.Context
         public virtual DbSet<CommonItem> CommonItems { get; set; }
         public virtual DbSet<RoleModulePermission> RoleModulePermissions { get; set; }
         public virtual DbSet<CheckOperationPermissionRequestDTO> HasAccessOperations { get; set; }
+        public virtual DbSet<Country> Countries { get; set; }
       
         public virtual DbSet<AssetAssignment> AssetAssignments { get; set; }
 
@@ -627,6 +628,17 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.TypeName)
                     .HasMaxLength(50)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Country>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Country__3214EC070584DCC0");
+
+                entity.ToTable("Country", "AxionPro");
+
+                entity.Property(e => e.CountryCode).HasMaxLength(10);
+                entity.Property(e => e.CountryName).HasMaxLength(100);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
             });
 
             modelBuilder.Entity<Department>(entity =>

@@ -8,6 +8,7 @@ public interface IUnitOfWork : IDisposable
     // Repositories
     IUserLoginReopsitory UserLoginRepository { get; }
     ICommonRepository CommonRepository { get; }
+    ICountryRepository CountryRepository { get; }
    //
    // INewTokenRepository newTokenRepository { get; } 
  

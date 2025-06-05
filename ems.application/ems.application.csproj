@@ -20,12 +20,11 @@
   <ItemGroup>
     <Folder Include="DTOs\BasicMenu\" />
     <Folder Include="DTOs\NewFolder\" />
-    <Folder Include="DTOs\Tenant\" />
     <Folder Include="Enums\" />
     <Folder Include="Features\Cmd - Copy\Commands\" />
     <Folder Include="Features\Cmd - Copy\Handlers\" />
     <Folder Include="Features\Cmd - Copy\Queries\" />
-    <Folder Include="Features\RegistrationCmd\Queries\" />
+    <Folder Include="Features\RegionCmd\Commands\" />
     <Folder Include="Features\Company\Commands\" />
     <Folder Include="Features\Company\Commands\" />
     <Folder Include="Features\DepartmentCmd\Commands\" />

@@ -9,8 +9,10 @@ using ems.application.DTOs.EmailTemplate;
 using ems.application.DTOs.Employee;
 using ems.application.DTOs.Leave;
 using ems.application.DTOs.Operation;
+using ems.application.DTOs.Region;
 using ems.application.DTOs.Registration;
 using ems.application.DTOs.Role;
+using ems.application.DTOs.Tenant;
 using ems.application.DTOs.Transport;
 using ems.application.DTOs.UserLogin;
 using ems.application.DTOs.UserRole;
@@ -159,8 +161,9 @@ namespace ems.application.Mappings
 
             CreateMap<Tenant, TenantCreateRequestDTO>().ReverseMap();
             CreateMap<LoginCredential, Employee>().ReverseMap();
-
-
+            CreateMap<Country, GetAllCountryDTO>().ReverseMap();
+            CreateMap<Tenant, GetAllTenantDTO>().ReverseMap();
+           
 
             CreateMap<CandidateRequestDTO, Candidate>()
          .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))

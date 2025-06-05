@@ -11,6 +11,10 @@ using System.Threading.Tasks;
 using ems.application.DTOs.UserLogin;
 using ems.application.Wrappers;
 using Microsoft.Extensions.Logging;
+using ems.application.Features.UserLoginAndDashboardCmd.Handlers;
+using ems.application.Interfaces.ITokenService;
+using ems.application.Constants;
+using Microsoft.AspNetCore.Identity.Data;
 
 namespace ems.application.Features.RegistrationCmd.Handlers
 {
@@ -20,9 +24,12 @@ namespace ems.application.Features.RegistrationCmd.Handlers
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<CreateTenantCommandHandler> _logger;
-
+        private readonly INewTokenRepository _tokenService;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
+       
+        
         public CreateTenantCommandHandler(
-            ITenantRepository tenantRepository,
+            ITenantRepository tenantRepository, INewTokenRepository tokenService, IRefreshTokenRepository refreshTokenRepository,
             IMapper mapper,
             IUnitOfWork unitOfWork,
             ILogger<CreateTenantCommandHandler> logger)
@@ -31,6 +38,8 @@ namespace ems.application.Features.RegistrationCmd.Handlers
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
+            _tokenService = tokenService;
+            _refreshTokenRepository = refreshTokenRepository;
         }
         public async Task<ApiResponse<TenantCreateResponseDTO>> Handle(CreateTenantCommand request, CancellationToken cancellationToken)
         {
@@ -119,9 +128,12 @@ namespace ems.application.Features.RegistrationCmd.Handlers
 
                 var roleId=  await _unitOfWork.UserRoleRepository.AddUserRoleAsync(userRole);
 
+                string token = await _tokenService.GenerateToken(tenantEntity.TenantEmail.ToString());
+              
+                //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJzdHJpbmciLCJuYmYiOjE3NDkxNTQzMDgsImV4cCI6MTc0OTE1NjEwOCwiaWF0IjoxNzQ5MTU0MzA4LCJpc3MiOiJFTVNBcHAiLCJhdWQiOiJFTVNVc2VycyJ9.Bm_OOPQwqeJx8Qpz2h6lG4G7 - y9a7oWuxJmiLKY5E1Y
 
 
-                await _unitOfWork.CommitTransactionAsync();
+               // await _unitOfWork.CommitTransactionAsync();
 
                 return new ApiResponse<TenantCreateResponseDTO>
                 {

@@ -1,6 +1,7 @@
 ﻿using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,8 @@ namespace ems.persistance.Repositories
             _logger = logger;
         }
 
+       
+        public async Task<List<Tenant>> GetAllTenantAsync() => await _context.Tenants.ToListAsync();
         public async Task<long> AddTenantAsync(Tenant tenant)
         {
             try
@@ -87,10 +90,7 @@ namespace ems.persistance.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<Tenant>> GetAllTenantAsync()
-        {
-            throw new NotImplementedException();
-        }
+      
 
         public Task<Tenant> GetByCodeAsync(string tenantCode)
         {
@@ -109,5 +109,7 @@ namespace ems.persistance.Repositories
         {
             throw new NotImplementedException();
         }
+
+       
     }
 }

@@ -1,5 +1,9 @@
-﻿using ems.application.DTOs.Registration;
+﻿using ems.application.DTOs.Region;
+using ems.application.DTOs.Registration;
+using ems.application.DTOs.Tenant;
+using ems.application.Features.RegionCmd.Queries;
 using ems.application.Features.RegistrationCmd.Commands;
+using ems.application.Features.RegistrationCmd.Queries;
 using ems.application.Features.UserLoginAndDashboardCmd.Commands;
 using ems.application.Interfaces.ILogger;
 using MediatR;
@@ -40,6 +44,23 @@ public class CompanyController : ControllerBase
         {
             return Ok(result);
         }
+        return Ok(result);
+    }
+
+    [HttpGet("getalltenant")]
+    public async Task<IActionResult> GetAllTenantAsync([FromQuery] TenantRequestDTO code)
+    {
+        _logger.LogInfo($"Getting email templates for code: {code}");
+
+        var query = new GetAllTenantQuery(code);
+        var result = await _mediator.Send(query);
+
+        if (!result.IsSucceeded)
+        {
+            _logger.LogInfo($"No templates found for code: {code}");
+            return NotFound(result); // NotFound better than Unauthorized here
+        }
+
         return Ok(result);
     }
 }
