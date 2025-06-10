@@ -1,11 +1,14 @@
-﻿using System;
+﻿using ems.domain.Common;
+using System;
 using System.Collections.Generic;
 
 namespace ems.domain.Entity;
 
-public partial class AssetHistory
+public partial class AssetHistory :BaseEntity
 {
     public int Id { get; set; }
+
+    public long? TenantId { get; set; }
 
     public int AssetId { get; set; }
 
@@ -33,11 +36,7 @@ public partial class AssetHistory
 
     public DateTime? ScrapDate { get; set; }
 
-    public string? Remarks { get; set; }
-
-    public long CreatedBy { get; set; }
-
-    public DateTime? CreatedAt { get; set; }
+    public string? Remarks { get; set; } 
 
     public virtual AssignmentStatus AssignmentStatus { get; set; } = null!;
 

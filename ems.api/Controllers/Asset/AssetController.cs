@@ -19,7 +19,7 @@ namespace ems.api.Controllers.Asset
             _mediator = mediator;
             _logger = logger;
         }
-        [HttpPost("updateasset")]
+        [HttpPost("update-asset")]
         // [Authorize]
         public async Task<IActionResult> UpdateAsset([FromBody] UpdateAssetDTO updateAssetDTO)
         {
@@ -33,7 +33,7 @@ namespace ems.api.Controllers.Asset
             return Ok(result);
         }
 
-        [HttpPost("addasset")]
+        [HttpPost("add-asset")]
         // [Authorize]
         public async Task<IActionResult> CreateAsset([FromBody] CreateAssetDTO createAssetDTO)
         {
@@ -46,7 +46,7 @@ namespace ems.api.Controllers.Asset
             }
             return Ok(result);
         }
-        [HttpGet("getallasset")]
+        [HttpGet("get-all-asset")]
         public async Task<IActionResult> GetAllAssets([FromQuery] AssetRequestDTO? AssetRequestDTO)
         {
             if (AssetRequestDTO == null)
@@ -67,7 +67,29 @@ namespace ems.api.Controllers.Asset
 
             return Ok(result);
         }
+        [HttpGet("get-all-asset-by")]
+        public async Task<IActionResult> GetAllAssets([FromQuery] AssetStatusRequestDTO? assetStatusRequestDTO)
+        {
+            if (assetStatusRequestDTO == null)
+            {
+                // _logger.LogWarning("Received null request for getting Assets.");
+                // return BadRequest(new ApiResponse<List<GetAllAssetDTO>>(false, "Invalid request", null));
+            }
+
+            // _logger.LogInformation("Received request to get Assets for userId: {LoginId}", AssetRequestDTO.Id);
+
+            var query = new GetAllAssetQuery(assetStatusRequestDTO);  //  Fix: No parameter needed in GetAllAssetQuery
+            var result = await _mediator.Send(query);
+
+            if (!result.IsSucceeded)
+            {
+                return Unauthorized(result);
+            }
+
+            return Ok(result);
+        }
     }
+}
 
 }
 

@@ -14,7 +14,9 @@ namespace ems.application.Interfaces.ITokenService
        
             bool ValidateToken(string token);
         public Task<string>  GenerateRefreshToken();
-
+        // ✅ Naye methods for extracting info
+        Task<string> GetUserInfoFromToken(string token);
+        DateTime? GetExpiryFromToken(string token);
 
     }
 

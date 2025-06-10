@@ -28,4 +28,8 @@
     <ProjectReference Include="..\ems.persistance\ems.persistance.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\VerifyTenantEmail\" />
+  </ItemGroup>
+
 </Project>

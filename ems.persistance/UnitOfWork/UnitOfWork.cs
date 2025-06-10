@@ -153,8 +153,9 @@ public class UnitOfWork  : IUnitOfWork
 
     public IUserLoginReopsitory UserLoginRepository => new UserLoginReopsitory(_context, _loggerFactory.CreateLogger<UserLoginReopsitory>());
     public IRefreshTokenRepository RefreshTokenRepository =>  new RefreshTokenRepository(_context, _loggerFactory.CreateLogger<RefreshTokenRepository>());
+    public IAssetRepository AssetRepository => new AssetRepository(_context, _loggerFactory.CreateLogger<AssetRepository>());
 
-    public IAssetRepository AssetRepository => new  AssetRepository(_context, _loggerFactory.CreateLogger<AssetRepository>());
+
     public ITravelRepository TravelRepository => new TravelRepository(_context, _loggerFactory.CreateLogger<TravelRepository>());
 
     public IOperationRepository OperationRepository => new OperationRepository(_context, _loggerFactory.CreateLogger<OperationRepository>());

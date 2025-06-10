@@ -102,14 +102,49 @@ namespace ems.persistance.Repositories
             throw new NotImplementedException();
         }
 
-        
 
 
-        public Task UpdateTenantAsync(Tenant tenant)
+
+        public async Task<Tenant> UpdateTenantAsync(Tenant tenant)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var existingTenant = await _context.Tenants
+                    .FirstOrDefaultAsync(x => x.Id == tenant.Id);
+
+                if (existingTenant == null)
+                {
+                    return null; // Tenant not found
+                }
+
+                existingTenant.IsActive = true;
+                existingTenant.IsVerified = true;
+
+                _context.Tenants.Update(existingTenant);
+                int result = await _context.SaveChangesAsync();
+
+                if (result > 0)
+                {
+                    // Update successful
+                    return existingTenant;
+                }
+                else
+                {
+                    // Nothing updated (maybe values were already true)
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Optional: Agar aapke paas ILogger<TenantRepository> injected hai to use yahan log kar sakte ho
+                Console.WriteLine($"Error while updating tenant: {ex.Message}");
+
+                // Fail-safe: return null ya custom exception throw kar sakte ho
+                return null;
+            }
         }
 
-       
+
+
     }
 }

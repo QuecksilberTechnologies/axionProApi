@@ -1,11 +1,14 @@
-﻿using System;
+﻿using ems.domain.Common;
+using System;
 using System.Collections.Generic;
 
 namespace ems.domain.Entity;
 
-public partial class Asset
+public partial class Asset : BaseEntity
 {
     public int Id { get; set; }
+
+    public long TenantId { get; set; }
 
     public string AssetName { get; set; } = null!;
 
@@ -31,17 +34,7 @@ public partial class Asset
 
     public int AssetStatusId { get; set; }
 
-    public bool? IsAssigned { get; set; }
-
-    public bool? IsActive { get; set; }
-
-    public long AddedBy { get; set; }
-
-    public DateTime? AddedDate { get; set; }
-
-    public long? UpdatedBy { get; set; }
-
-    public DateTime? UpdatedDate { get; set; }
+    public bool? IsAssigned { get; set; }  
 
     public virtual ICollection<AssetAssignment> AssetAssignments { get; set; } = new List<AssetAssignment>();
 
@@ -49,3 +42,5 @@ public partial class Asset
 
     public virtual AssetType AssetType { get; set; } = null!;
 }
+
+ 

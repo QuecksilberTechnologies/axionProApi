@@ -2,6 +2,8 @@
 using ems.application.Interfaces.IContext;
 using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
+ 
+
 
 using Microsoft.EntityFrameworkCore;
 
@@ -144,6 +146,7 @@ namespace ems.persistance.Data.Context
 
         public virtual DbSet<TenderServiceType> TenderServiceTypes { get; set; }
 
+        public virtual DbSet<TenantEmailConfig> TenantEmailConfigs { get; set; }
         public virtual DbSet<TenderStatus> TenderStatuses { get; set; }
 
         public virtual DbSet<TravelAllowancePolicyByDesignation> TravelAllowancePolicyByDesignations { get; set; }
@@ -204,49 +207,7 @@ namespace ems.persistance.Data.Context
             });
             modelBuilder.Entity<CommonItem>().HasNoKey(); // 
 
-            modelBuilder.Entity<Asset>(entity =>
-            {
-                entity.HasKey(e => e.Id).HasName("PK__Asset__3214EC076178ABAE");
-
-                entity.ToTable("Asset", "AxionPro");
-
-                entity.HasIndex(e => e.SerialNumber, "UQ__Asset__048A00085990C20A").IsUnique();
-
-                entity.HasIndex(e => e.Barcode, "UQ__Asset__177800D3C3732639").IsUnique();
-
-                entity.HasIndex(e => e.Qrcode, "UQ__Asset__5B869AD9466F0980").IsUnique();
-
-                entity.Property(e => e.AddedDate)
-                    .HasDefaultValueSql("(getdate())")
-                    .HasColumnType("datetime");
-                entity.Property(e => e.AssetName).HasMaxLength(100);
-                entity.Property(e => e.Barcode).HasMaxLength(100);
-                entity.Property(e => e.Color).HasMaxLength(50);
-                entity.Property(e => e.Company).HasMaxLength(100);
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
-                entity.Property(e => e.IsAssigned).HasDefaultValue(false);
-                entity.Property(e => e.IsRepairable).HasDefaultValue(true);
-                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
-                entity.Property(e => e.PurchaseDate).HasColumnType("datetime");
-                entity.Property(e => e.Qrcode)
-                    .HasMaxLength(100)
-                    .HasColumnName("QRCode");
-                entity.Property(e => e.SerialNumber).HasMaxLength(100);
-                entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
-                entity.Property(e => e.WarrantyExpiryDate).HasColumnType("datetime");
-
-                entity.HasOne(d => d.AssetStatus).WithMany(p => p.Assets)
-                    .HasForeignKey(d => d.AssetStatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Asset_AssetStatus");
-
-                entity.HasOne(d => d.AssetType).WithMany(p => p.Assets)
-                    .HasForeignKey(d => d.AssetTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Asset_AssetType");
-            });
-
-
+            
             modelBuilder.Entity<EmailTemplate>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__EmailTem__3214EC072FE49A64");
@@ -276,6 +237,45 @@ namespace ems.persistance.Data.Context
             });
 
 
+            modelBuilder.Entity<Asset>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Asset__3214EC076178ABAE");
+
+                entity.ToTable("Asset", "AxionPro");
+
+                entity.HasIndex(e => e.SerialNumber, "UQ__Asset__048A00085990C20A").IsUnique();
+
+                entity.HasIndex(e => e.Barcode, "UQ__Asset__177800D3C3732639").IsUnique();
+
+                entity.HasIndex(e => e.Qrcode, "UQ__Asset__5B869AD9466F0980").IsUnique();
+
+                entity.Property(e => e.AssetName).HasMaxLength(100);
+                entity.Property(e => e.Barcode).HasMaxLength(100);
+                entity.Property(e => e.Color).HasMaxLength(50);
+                entity.Property(e => e.Company).HasMaxLength(100);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsAssigned).HasDefaultValue(false);
+                entity.Property(e => e.IsRepairable).HasDefaultValue(true);
+                entity.Property(e => e.Price).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.PurchaseDate).HasColumnType("datetime");
+                entity.Property(e => e.Qrcode)
+                    .HasMaxLength(100)
+                    .HasColumnName("QRCode");
+                // Common Entities
+                entity.ConfigureBaseEntity();
+                entity.Property(e => e.SerialNumber).HasMaxLength(100);              
+                entity.Property(e => e.WarrantyExpiryDate).HasColumnType("datetime");               
+                entity.HasOne(d => d.AssetStatus).WithMany(p => p.Assets)
+                    .HasForeignKey(d => d.AssetStatusId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Asset_AssetStatus");
+                entity.HasOne(d => d.AssetType).WithMany(p => p.Assets)
+                    .HasForeignKey(d => d.AssetTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Asset_AssetType");
+
+            });
+
             modelBuilder.Entity<AssetAssignment>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__AssetAss__3214EC07CFA2D85C");
@@ -283,19 +283,19 @@ namespace ems.persistance.Data.Context
                 entity.ToTable("AssetAssignment", "AxionPro");
 
                 entity.Property(e => e.ActualReturnDate).HasColumnType("datetime");
+             
                 entity.Property(e => e.AssetConditionAtAssign).HasMaxLength(255);
                 entity.Property(e => e.AssetConditionAtReturn).HasMaxLength(255);
                 entity.Property(e => e.AssignedDate)
-                    .HasDefaultValueSql("(getdate())")
-                    .HasColumnType("datetime");
-                entity.Property(e => e.CreatedAt)
                     .HasDefaultValueSql("(getdate())")
                     .HasColumnType("datetime");
                 entity.Property(e => e.ExpectedReturnDate).HasColumnType("datetime");
                 entity.Property(e => e.IdentificationMethod).HasMaxLength(50);
                 entity.Property(e => e.IdentificationValue).HasMaxLength(100);
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
-                entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+
+                // Common Entities
+                entity.ConfigureBaseEntity();
 
                 entity.HasOne(d => d.Asset).WithMany(p => p.AssetAssignments)
                     .HasForeignKey(d => d.AssetId)
@@ -319,12 +319,12 @@ namespace ems.persistance.Data.Context
 
                 entity.ToTable("AssetHistory", "AxionPro");
 
+                entity.Property(e => e.AddedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
                 entity.Property(e => e.AssetConditionAtAssign).HasMaxLength(100);
                 entity.Property(e => e.AssetConditionAtReturn).HasMaxLength(100);
                 entity.Property(e => e.AssignedDate).HasColumnType("datetime");
-                entity.Property(e => e.CreatedAt)
-                    .HasDefaultValueSql("(getdate())")
-                    .HasColumnType("datetime");
                 entity.Property(e => e.IdentificationMethod).HasMaxLength(50);
                 entity.Property(e => e.IdentificationValue).HasMaxLength(255);
                 entity.Property(e => e.IsScrapped).HasDefaultValue(false);
@@ -332,7 +332,8 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.ReturnedDate).HasColumnType("datetime");
                 entity.Property(e => e.ScrapDate).HasColumnType("datetime");
                 entity.Property(e => e.ScrapReason).HasMaxLength(255);
-
+                // Common Entities
+                entity.ConfigureBaseEntity();
                 entity.HasOne(d => d.AssignmentStatus).WithMany(p => p.AssetHistories)
                     .HasForeignKey(d => d.AssignmentStatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
@@ -355,13 +356,11 @@ namespace ems.persistance.Data.Context
 
                 entity.HasIndex(e => e.StatusName, "UQ__AssetSta__05E7698A7AA7A28E").IsUnique();
 
-                entity.Property(e => e.CreatedAt)
-                    .HasDefaultValueSql("(getdate())")
-                    .HasColumnType("datetime");
-                entity.Property(e => e.Description).HasMaxLength(255);
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                // Common Entities
+                entity.ConfigureBaseEntity();
+                entity.Property(e => e.Description).HasMaxLength(255);               
                 entity.Property(e => e.StatusName).HasMaxLength(50);
-                entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+      
             });
 
             modelBuilder.Entity<AssetType>(entity =>
@@ -372,13 +371,12 @@ namespace ems.persistance.Data.Context
 
                 entity.HasIndex(e => e.TypeName, "UQ__AssetTyp__D4E7DFA8692FD5DF").IsUnique();
 
-                entity.Property(e => e.CreatedAt)
-                    .HasDefaultValueSql("(getdate())")
-                    .HasColumnType("datetime");
+               
                 entity.Property(e => e.Description).HasMaxLength(255);
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+               
                 entity.Property(e => e.TypeName).HasMaxLength(100);
-                entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+                // Common Entities
+                entity.ConfigureBaseEntity();
             });
 
             modelBuilder.Entity<AssignmentStatus>(entity =>
@@ -387,14 +385,14 @@ namespace ems.persistance.Data.Context
 
                 entity.ToTable("AssignmentStatus", "AxionPro");
 
-                entity.Property(e => e.CreatedAt)
-                    .HasDefaultValueSql("(getdate())")
-                    .HasColumnType("datetime");
+            
                 entity.Property(e => e.Description).HasMaxLength(255);
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+               
                 entity.Property(e => e.StatusName).HasMaxLength(50);
-                entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
+                // Common Entities
+                entity.ConfigureBaseEntity();
             });
+
 
             modelBuilder.Entity<Attendance>(entity =>
             {
@@ -1525,6 +1523,24 @@ namespace ems.persistance.Data.Context
                     .HasForeignKey(d => d.ServiceProviderId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__ServicePr__Servi__3DE82FB7");
+            });
+
+            modelBuilder.Entity<TenantEmailConfig>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__TenantEm__3214EC077A90B3A3");
+
+                entity.ToTable("TenantEmailConfig", "AxionPro");
+
+                entity.Property(e => e.FromEmail).HasMaxLength(200);
+                entity.Property(e => e.FromName).HasMaxLength(100);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.SmtpHost).HasMaxLength(200);
+                entity.Property(e => e.SmtpPasswordEncrypted).HasMaxLength(500);
+                entity.Property(e => e.SmtpUsername).HasMaxLength(200);
+
+                entity.HasOne(d => d.Tenant).WithMany(p => p.TenantEmailConfigs)
+                    .HasForeignKey(d => d.TenantId)
+                    .HasConstraintName("FK_TenantEmailConfig_Tenant");
             });
 
             modelBuilder.Entity<Tender>(entity =>

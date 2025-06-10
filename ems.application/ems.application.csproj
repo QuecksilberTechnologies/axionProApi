@@ -24,6 +24,9 @@
     <Folder Include="Features\Cmd - Copy\Commands\" />
     <Folder Include="Features\Cmd - Copy\Handlers\" />
     <Folder Include="Features\Cmd - Copy\Queries\" />
+    <Folder Include="Features\Handlers\" />
+    <Folder Include="Features\Queries\" />
+    <Folder Include="Features\NewFolder\" />
     <Folder Include="Features\RegionCmd\Commands\" />
     <Folder Include="Features\Company\Commands\" />
     <Folder Include="Features\Company\Commands\" />
@@ -36,6 +39,7 @@
     <Folder Include="Features\ServiceProviderCmd\Commands\" />
     <Folder Include="Features\ServiceProviderCmd\Queries\" />
     <Folder Include="Features\UserLoginAndDashboardCmd\Queries\" />
+    <Folder Include="Features\VerifyEmailCmd\Queries\" />
     <Folder Include="Features\WorkstationCmd\Commands\" />
     <Folder Include="Features\WorkstationCmd\Queries\" />
   </ItemGroup>

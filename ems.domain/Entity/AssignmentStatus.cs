@@ -1,9 +1,10 @@
-﻿using System;
+﻿using ems.domain.Common;
+using System;
 using System.Collections.Generic;
 
 namespace ems.domain.Entity;
 
-public partial class AssignmentStatus
+public partial class AssignmentStatus :BaseEntity
 {
     public int Id { get; set; }
 
@@ -11,15 +12,7 @@ public partial class AssignmentStatus
 
     public string? Description { get; set; }
 
-    public bool? IsActive { get; set; }
-
-    public long CreatedBy { get; set; }
-
-    public DateTime? CreatedAt { get; set; }
-
-    public long? UpdatedBy { get; set; }
-
-    public DateTime? UpdatedAt { get; set; }
+ 
 
     public virtual ICollection<AssetAssignment> AssetAssignments { get; set; } = new List<AssetAssignment>();
 

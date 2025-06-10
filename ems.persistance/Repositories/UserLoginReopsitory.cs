@@ -82,7 +82,53 @@ namespace ems.persistance.Repositories
             }
         }
 
-     
+        public async Task<LoginCredential> GetEmployeeIdByUserLogin(string userLogin)
+        {
+            var login = await _context.LoginCredentials.FirstOrDefaultAsync(x => x.LoginId == userLogin && x.IsActive == true);
+
+            if (login == null)
+                return null;
+
+
+            return login;
+
+        }
+
+
+
+        public async Task<bool> UpdateNewPassword(LoginCredential setRequest)
+        {
+            try
+            {
+
+                var user = await _context.LoginCredentials
+                    .FirstOrDefaultAsync(x =>
+                        x.LoginId == setRequest.LoginId &&
+                        x.IsActive == true &&
+                        x.HasFirstLogin == true); // ✅ Only allow update if it's first login
+
+                if (user == null)
+                {
+                    return false; // User not found or first login already done
+                }
+
+                user.Password = setRequest.Password;
+                user.HasFirstLogin = false; // Mark as password updated
+                                            // user.UpdatedById = setRequest.UpdatedById;
+                                            // user.UpdatedDateTime = DateTime.UtcNow;
+
+                _context.LoginCredentials.Update(user);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while updating password for LoginId: {LoginId}", setRequest.LoginId);
+                return false;
+            }
+        }
+
 
         private bool VerifyPassword(string providedPassword, string storedPassword)
         {

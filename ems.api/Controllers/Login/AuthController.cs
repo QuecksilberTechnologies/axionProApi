@@ -3,6 +3,8 @@ using ems.application.Features.EmployeeCmd.Commands;
 using ems.application.Features.UserLoginAndDashboardCmd.Commands;
  
 using ems.application.Interfaces.ILogger;
+using ems.application.Wrappers;
+using ems.domain.Entity;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity.Data;
@@ -117,21 +119,55 @@ namespace ems.api.Controllers.Login
         }
 
 
+        // ...
+
+        [HttpPost("update-login-password")] 
+        public async Task<IActionResult> SetLoginPassword([FromBody] LoginRequestDTO request)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(request.LoginId) || string.IsNullOrWhiteSpace(request.Password))
+                {
+                    return BadRequest(new ApiResponse<SetLoginPasswordResponseDTO>
+                    {
+                        IsSucceeded = false,
+                        Message = "LoginId and Password are required.",
+                        Data = null
+                    });
+                }
+
+                var command = new SetLoginPasswordCommand(request);
+                
+
+                var result = await _mediator.Send(command);
+
+                if (!result.IsSucceeded)
+                    return BadRequest(result);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError( "Exception occurred while setting login password.");
+
+                return StatusCode(500, new ApiResponse<SetLoginPasswordResponseDTO>
+                {
+                    IsSucceeded = false,
+                    Message = "Internal server error occurred.",
+                    Data = null
+                });
+            }
+
+
+
+
+        }
+
+
+        //...
 
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
 }
 
  

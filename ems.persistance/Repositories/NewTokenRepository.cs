@@ -3,6 +3,7 @@ using ems.application.Interfaces.ITokenService;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -18,8 +19,60 @@ public class NewTokenRepository : INewTokenRepository
         _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
+    public async Task<string> GetUserInfoFromToken(string token)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var key = Encoding.UTF8.GetBytes(_configuration["JWTSettings:Secret"]);
 
-    
+        try
+        {
+            var principal = handler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
+            }, out SecurityToken validatedToken);
+
+            var userId = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier || c.Type == "nameid")?.Value;
+            var emailId = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email || c.Type == "email")?.Value;
+            var expiry = (validatedToken as JwtSecurityToken)?.ValidTo;
+
+            var userInfo = new
+            {
+                UserId = userId,
+                Email = emailId,
+                Expiry = expiry?.ToString("o"),
+                IsExpired = expiry < DateTime.UtcNow
+            };
+
+            return JsonConvert.SerializeObject(userInfo);
+        }
+        catch (Exception ex)
+        {
+            // Agar token galat hai to null ya error message return karo
+            var errorResponse = new
+            {
+                UserId = (string)null,
+                Email = (string)null,
+                Expiry = (string)null,
+                IsExpired = true,
+                Error = "Invalid or tampered token."
+            };
+
+            return JsonConvert.SerializeObject(errorResponse);
+        }
+    }
+
+    public DateTime? GetExpiryFromToken(string token)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        return jwtToken.ValidTo; // UTC format
+    }
+
 
     public async Task<string> GenerateRefreshToken()
     {
@@ -33,8 +86,28 @@ public class NewTokenRepository : INewTokenRepository
 
     public bool ValidateToken(string token)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration["JWTSettings:Secret"]);
+
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false, // Optional: set true if issuer must match
+                ValidateAudience = false, // Optional: set true if audience must match
+                ClockSkew = TimeSpan.Zero // No extra buffer time
+            }, out SecurityToken validatedToken);
+
+            return true; // Token is valid
+        }
+        catch
+        {
+            return false; // Token invalid or expired
+        }
     }
+
     public async Task<string> GenerateToken(string userId)
     {
         try

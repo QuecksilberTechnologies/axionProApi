@@ -4,7 +4,7 @@ using MediatR;
 
 namespace ems.application.Features.EmailTemplateCmd.Queries
 {
-    public class GetEmailTemplateByCodeQuery : IRequest<ApiResponse<List<EmailTemplateDTO>>>
+    public class GetEmailTemplateByCodeQuery : IRequest<ApiResponse<EmailTemplateDTO>>
     {
         public string Code { get; set; }
 

@@ -10,8 +10,8 @@ namespace ems.application.Interfaces.IRepositories
   public  interface  IEmailTemplateRepository
     {
        // Task<EmailTemplate?> GetTemplateByCodeAsync(string templateCode);
-        Task<List<EmailTemplate>> GetTemplateByCodeAsync(string TemplateCode);
-        Task<EmailTemplate> GetTemplateByCodeAsync();
+       // Task<List<EmailTemplate>> GetTemplateByCodeAsync(string TemplateCode);
+        Task<EmailTemplate> GetTemplateByCodeAsync(string TemplateCode);
 
         Task<IEnumerable<EmailTemplate>> GetAllTemplatesAsync();
         Task AddTemplateAsync(EmailTemplate template);

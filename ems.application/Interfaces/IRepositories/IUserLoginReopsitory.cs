@@ -12,6 +12,8 @@ namespace ems.application.Interfaces.IRepositories
     {
         Task<LoginCredential> AuthenticateUser(LoginRequestDTO loginRequest);
         Task<long> CreateUser(LoginCredential loginRequest);
+        Task<bool> UpdateNewPassword(LoginCredential setRequest);
+        Task<LoginCredential> GetEmployeeIdByUserLogin(string userLoing);
        
     }
 

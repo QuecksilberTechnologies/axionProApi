@@ -3,6 +3,7 @@ using ems.application.DTOs.EmailTemplate;
 using ems.application.Features.EmailTemplateCmd.Queries;
 using ems.application.Interfaces;
 using ems.application.Wrappers;
+using ems.domain.Entity;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.EmailTemplateCmd.Handlers
 {
-    public class GetEmailTemplateByCodeQueryHandler : IRequestHandler<GetEmailTemplateByCodeQuery, ApiResponse<List<EmailTemplateDTO>>>
+    public class GetEmailTemplateByCodeQueryHandler : IRequestHandler<GetEmailTemplateByCodeQuery, ApiResponse<EmailTemplateDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -28,17 +29,17 @@ namespace ems.application.Features.EmailTemplateCmd.Handlers
             _logger = logger;
         }
 
-        public async Task<ApiResponse<List<EmailTemplateDTO>>> Handle(GetEmailTemplateByCodeQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<EmailTemplateDTO>> Handle(GetEmailTemplateByCodeQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                var templates = await _unitOfWork.EmailTemplateRepository.GetTemplateByCodeAsync(request.Code);
+                EmailTemplate templates = await _unitOfWork.EmailTemplateRepository.GetTemplateByCodeAsync(request.Code);
 
-                if (templates == null || templates.Count == 0)
+                if (templates == null)
                 {
                     _logger.LogWarning("No email templates found for code: {Code}", request.Code);
 
-                    return new ApiResponse<List<EmailTemplateDTO>>
+                    return new ApiResponse<EmailTemplateDTO>
                     {
                         IsSucceeded = false,
                         Message = $"No templates found for code: {request.Code}",
@@ -46,11 +47,11 @@ namespace ems.application.Features.EmailTemplateCmd.Handlers
                     };
                 }
 
-                var templateDTOs = _mapper.Map<List<EmailTemplateDTO>>(templates);
+                var templateDTOs = _mapper.Map<EmailTemplateDTO>(templates);
 
-                _logger.LogInformation("Successfully retrieved {Count} email templates for code: {Code}", templateDTOs.Count, request.Code);
+                _logger.LogInformation("Successfully retrieved {Count} email templates for code: {Code}", templateDTOs, request.Code);
 
-                return new ApiResponse<List<EmailTemplateDTO>>
+                return new ApiResponse<EmailTemplateDTO>
                 {
                     IsSucceeded = true,
                     Message = "Email templates fetched successfully.",
@@ -61,7 +62,7 @@ namespace ems.application.Features.EmailTemplateCmd.Handlers
             {
                 _logger.LogError(ex, "Error occurred while fetching email templates for code: {Code}", request.Code);
 
-                return new ApiResponse<List<EmailTemplateDTO>>
+                return new ApiResponse<EmailTemplateDTO>
                 {
                     IsSucceeded = false,
                     Message = "An error occurred while fetching email templates.",

@@ -3,10 +3,6 @@ using ems.domain.Entity;
 using ems.persistance.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ems.persistance.Repositories
 {
@@ -19,6 +15,22 @@ namespace ems.persistance.Repositories
         {
             _context = context;
             _logger = logger;
+        }
+
+        public async Task<EmailTemplate?> GetTemplateByCodeAsync(string templateCode)
+        {
+            try
+            {
+                return await _context.EmailTemplates
+                    .Where(t => t.TemplateCode == templateCode && t.IsActive)
+                    .OrderByDescending(t => t.AddedDateTime)
+                    .FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while fetching template by code: {TemplateCode}", templateCode);
+                return null;
+            }
         }
 
         public Task AddTemplateAsync(EmailTemplate template)
@@ -39,39 +51,6 @@ namespace ems.persistance.Repositories
         public Task UpdateTemplateAsync(EmailTemplate template)
         {
             throw new NotImplementedException();
-        }
-
-        // ✅ Get list of templates by template code
-        public async Task<List<EmailTemplate>> GetTemplateByCodeAsync(string templateCode)
-        {
-            try
-            {
-                return await _context.EmailTemplates
-                    .Where(t => t.TemplateCode == templateCode && t.IsActive)
-                    .ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while fetching templates by code: {TemplateCode}", templateCode);
-                return new List<EmailTemplate>();
-            }
-        }
-
-        // ✅ Get a single template (latest active one)
-        public async Task<EmailTemplate?> GetTemplateByCodeAsync()
-        {
-            try
-            {
-                return await _context.EmailTemplates
-                    .Where(t => t.IsActive)
-                    .OrderByDescending(t => t.AddedDateTime)
-                    .FirstOrDefaultAsync();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while fetching a single email template.");
-                return null;
-            }
         }
     }
 }

@@ -23,31 +23,36 @@ namespace ems.persistance.Repositories
             this._logger = logger;
         }
 
-        public async Task<List<Asset>> AddAssetAsync(Asset asset)
+        public Task<List<Asset>> AddAssetAsync(Asset asset)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<AssetStatus>> AddAssetStatusByTenantAsync(AssetStatus assetStatus)
         {
             try
             {
+                assetStatus.AddedDateTime = DateTime.Now;
 
-                asset.AddedDate = DateTime.Now; // or DateTime.UtcNow                
-                await _context.Assets.AddAsync(asset);
-                // Changes ko save karenge
+                await _context.AssetStatuses.AddAsync(assetStatus);
                 await _context.SaveChangesAsync();
 
-               
-                return (await GetAllAssetAsync())
-                 .OrderByDescending(r => r.Id) // Latest asset पहले आएगा
-                 .ToList();
+                // ✅ Fetch all asset types for the same tenant
+                var assetTypes = await GetAllAssetTypeByTenantIdAsync(assetStatus.TenantId);
+                _logger.LogInformation("Fetched {Count} asset types for TenantId {TenantId} after adding AssetStatus.",
+                    assetTypes.Count, assetStatus.TenantId);
+
+                // ✅ Return all asset status records (latest first)
+                return await _context.AssetStatuses
+                    .OrderByDescending(r => r.Id)
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
-                // Exception ko log karenge
-                _logger.LogError(ex, "Error occurred while creating asset.");
-                throw;  // Rethrow the exception for further handling
+                _logger.LogError(ex, "Error occurred while creating asset status.");
+                throw;
             }
-
         }
-
-        
 
         public Task<bool> DeleteAssetAsync(int Id)
         {
@@ -59,55 +64,90 @@ namespace ems.persistance.Repositories
             throw new NotImplementedException();
         }
 
-        public async Task<List<Asset>> GetAllAssetAsync()
+        public Task<List<Asset>> GetAllAssetAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<AssetStatus>> GetAllAssetStatusByTenantAsync(AssetStatus assetStatus)
         {
             try
             {
-                _logger.LogInformation("Fetching all Asset from the database...");
-
-                var asset = await _context.Assets.ToListAsync(); // ✅ Corrected EF Core syntax
-
-                if (asset == null || !asset.Any())
+                if (assetStatus.TenantId <= 0)
                 {
-                    _logger.LogWarning("No Asset found in the database.");
-                    return new List<Asset>(); // Empty list return karein instead of null
+                    _logger.LogWarning("TenantId is missing or invalid while fetching Asset Status.");
+                    return new List<AssetStatus>(); // OR throw exception if you want to enforce it harder
                 }
 
-                _logger.LogInformation("Successfully retrieved {Count} Asset.", asset.Count);
-                return asset;
+                _logger.LogInformation("Dynamically fetching Asset Status records for TenantId: {TenantId}", assetStatus.TenantId);
+
+                IQueryable<AssetStatus> query = _context.AssetStatuses
+                    .Where(x => x.TenantId == assetStatus.TenantId); // ✅ mandatory applied here
+
+                if (!string.IsNullOrWhiteSpace(assetStatus.StatusName))
+                    query = query.Where(x => x.StatusName.Contains(assetStatus.StatusName));
+
+                if (assetStatus.IsActive != null)
+                    query = query.Where(x => x.IsActive == assetStatus.IsActive);
+
+                if (assetStatus.IsSoftDeleted != null)
+                    query = query.Where(x => x.IsSoftDeleted == assetStatus.IsSoftDeleted);
+
+                if (assetStatus.AddedById != null)
+                    query = query.Where(x => x.AddedById == assetStatus.AddedById);
+
+                if (assetStatus.UpdatedById != null)
+                    query = query.Where(x => x.UpdatedById == assetStatus.UpdatedById);
+
+                if (assetStatus.DeletedById != null)
+                    query = query.Where(x => x.DeletedById == assetStatus.DeletedById);
+
+                var result = await query.OrderByDescending(x => x.AddedDateTime).ToListAsync();
+
+                _logger.LogInformation("Fetched {Count} Asset Status records for TenantId: {TenantId}", result.Count, assetStatus.TenantId);
+
+                return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while fetching Asset.");
-                return new List<Asset>(); // Exception ke case me empty list return karein
+                _logger.LogError(ex, "Error while dynamically fetching Asset Status records for TenantId: {TenantId}", assetStatus.TenantId);
+                return new List<AssetStatus>();
             }
         }
 
-        public async Task<List<AssetType>> GetAllAssetTypeAsync()
+
+        public Task<List<AssetType>> GetAllAssetTypeAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<AssetType>> GetAllAssetTypeByTenantIdAsync(long byTenanatId)
         {
             try
             {
-                _logger.LogInformation("Fetching all Asset Types from the database...");
+                _logger.LogInformation("Fetching Asset Types for TenantId: {TenantId} from the database...", byTenanatId);
 
-                var assetTypes = await _context.AssetTypes.ToListAsync();
+                var assetTypes = await _context.AssetTypes
+                    .Where(x => x.TenantId == byTenanatId)
+                    .ToListAsync();
 
                 if (assetTypes == null || !assetTypes.Any())
                 {
-                    _logger.LogWarning("No Asset Types found in the database.");
+                    _logger.LogWarning("No Asset Types found in the database for TenantId: {TenantId}.", byTenanatId);
                     return new List<AssetType>();
                 }
 
-                _logger.LogInformation("Successfully retrieved {Count} Asset Types.", assetTypes.Count);
+                _logger.LogInformation("Successfully retrieved {Count} Asset Types for TenantId: {TenantId}.", assetTypes.Count, byTenanatId);
                 return assetTypes;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while fetching Asset Types.");
+                _logger.LogError(ex, "An error occurred while fetching Asset Types for TenantId: {TenantId}.", byTenanatId);
                 return new List<AssetType>();
             }
         }
 
-        public async Task<Asset> GetAssetByIdAsync(int id)
+        public async Task<Asset> GetAssetByIdFromTenantAsync(int id)
         {
             try
             {
@@ -165,6 +205,41 @@ namespace ems.persistance.Repositories
                 throw;  // Exception को रिथ्रो कर दें ताकि calling code को पता चल सके
             }
         }
+
+        public async Task<AssetStatus> UpdateAssetStatusByTenantAsync(AssetStatus assetStatus)
+        {
+            try
+            {
+                // Existing record ko DB se fetch karo (Id + TenantId for safety)
+                var existingStatus = await _context.AssetStatuses
+                    .FirstOrDefaultAsync(x => x.Id == assetStatus.Id && x.TenantId == assetStatus.TenantId);
+
+                if (existingStatus == null)
+                {
+                    _logger.LogWarning("AssetStatus with Id {Id} not found for TenantId {TenantId}.", assetStatus.Id, assetStatus.TenantId);
+                    return null!; // Or throw custom NotFoundException
+                }
+
+                // Update fields
+                existingStatus.StatusName = assetStatus.StatusName;
+                existingStatus.Description = assetStatus.Description;
+                existingStatus.IsActive = assetStatus.IsActive;
+                existingStatus.UpdatedById = assetStatus.UpdatedById;
+                existingStatus.UpdatedDateTime = DateTime.Now;
+
+                // Save to DB
+                await _context.SaveChangesAsync();
+
+                return existingStatus;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while updating AssetStatus.");
+                throw;
+            }
+        }
+
+
         async Task<List<Asset>> IAssetRepository.UpdateAssetAsync(Asset asset)
         {
             try
@@ -184,8 +259,8 @@ namespace ems.persistance.Repositories
                 existingAsset.AssetStatusId = asset.AssetStatusId;
                 existingAsset.IsAssigned = asset.IsAssigned;
                 existingAsset.IsActive = asset.IsActive;
-                existingAsset.UpdatedBy = 1; // ट्रैकिंग के लिए UpdatedBy
-                existingAsset.UpdatedDate = DateTime.UtcNow;
+                existingAsset.UpdatedById = 1; // ट्रैकिंग के लिए UpdatedBy
+               // existingAsset.UpdatedDate = DateTime.UtcNow;
 
                 // बदलावों को सेव करें
                 await _context.SaveChangesAsync();

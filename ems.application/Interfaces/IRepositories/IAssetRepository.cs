@@ -13,7 +13,7 @@ namespace ems.application.Interfaces.IRepositories
         Task<List<Asset>> AddAssetAsync(Asset asset);
 
         // Get a asset by its Id
-        Task<Asset> GetAssetByIdAsync(int Id);
+    //    Task<Asset> GetAssetByIdFromTenantAsync(int TenantId ,);
         Task<bool> IsAssetDuplicate(Asset asset);
 
         // Get all asset
@@ -26,5 +26,20 @@ namespace ems.application.Interfaces.IRepositories
 
         // Delete a asset by its Id
         Task<bool> DeleteAssetAsync(int Id);
+
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="assetStatus"></param>
+        /// <returns></returns>
+
+
+        Task<List<AssetStatus>> GetAllAssetStatusByTenantAsync(AssetStatus assetStatus);        
+        Task<List<AssetStatus>>AddAssetStatusByTenantAsync(AssetStatus assetStatus);
+        Task<AssetStatus>UpdateAssetStatusByTenantAsync(AssetStatus assetStatus);
+      //  Task<AssetStatus>UpdateAssetStatusByTenantAsync(AssetStatus assetStatus);
     }
 }

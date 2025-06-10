@@ -1,9 +1,10 @@
-﻿using System;
+﻿using ems.domain.Common;
+using System;
 using System.Collections.Generic;
 
 namespace ems.domain.Entity;
 
-public partial class AssetAssignment
+public partial class AssetAssignment :BaseEntity
 {
     public int Id { get; set; }
 
@@ -25,17 +26,7 @@ public partial class AssetAssignment
 
     public string IdentificationMethod { get; set; } = null!;
 
-    public string IdentificationValue { get; set; } = null!;
-
-    public bool? IsActive { get; set; }
-
-    public long CreatedBy { get; set; }
-
-    public DateTime? CreatedAt { get; set; }
-
-    public long? UpdatedBy { get; set; }
-
-    public DateTime? UpdatedAt { get; set; }
+    public string IdentificationValue { get; set; } = null!;   
 
     public virtual Asset Asset { get; set; } = null!;
 

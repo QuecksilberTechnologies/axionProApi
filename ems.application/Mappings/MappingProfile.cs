@@ -158,6 +158,7 @@ namespace ems.application.Mappings
 
             //CreateMap<EmailTemplate, EmailTemplateDTO>();
             CreateMap<EmailTemplate, EmailTemplateDTO>().ReverseMap();
+            CreateMap<LoginCredential, SetLoginPasswordRequestDTO>().ReverseMap();
 
             CreateMap<Tenant, TenantCreateRequestDTO>().ReverseMap();
             CreateMap<LoginCredential, Employee>().ReverseMap();

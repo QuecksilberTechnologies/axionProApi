@@ -15,3 +15,4 @@ namespace ems.application.DTOs.EmailTemplate
         public string FromName { get; set; }
     }
 }
+ 
