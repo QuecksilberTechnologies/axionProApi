@@ -16,6 +16,7 @@
     {
 
         public static readonly string invalidCredential = "Invalid credentials";
+        public static readonly string Duplicate = "Name you inserted is already exist";
         public static readonly string userMissingAttendanceProfile = "Attendance settings not configured or not matched! for this employee.";
         public static readonly string attendanceNotAllowed = "Attendance is not allowed for the employee based on current settings";
         public static readonly string outOfGeoFence = "You are outside the geofence area and cannot mark attendance.";
@@ -28,7 +29,16 @@
         public static readonly bool fail= false;
         public static readonly DateTime ExpireTokenDate = DateTime.UtcNow.AddDays(5);
         public static readonly string IP ="100.100.100.100";
+        public static readonly string AdminRoleName = "Admin";
+        public static readonly string AdminRoleRemark = "This is an auto-generated Admin account by AI for the initial setup of the tenant.";
+        public static readonly bool IsByDefaultTrue = true;
+        public static readonly bool IsByDefaultFalse = false;         
+        public static readonly long SystemUserIdByDefaultZero = 0; // For system-generated entries
+        public static readonly string DefaultPassword = "123"; // For system-generated entries
+        public static readonly DateOnly SystemOnlyTodaysDate= DateOnly.MaxValue;
+
 
 
     }
+    
 }

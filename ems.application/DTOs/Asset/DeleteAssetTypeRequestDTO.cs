@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Asset
 {
-    public class AllAssetStatusResponseDTO
+    public class DeleteAssetTypeRequestDTO
     {
+        public int Id { get; set; }
         public long TenantId { get; set; }
-        public string StatusName { get; set; } = string.Empty;
-        public string? Description { get; set; }
- 
+        public long DeletedById { get; set; }
     }
 }

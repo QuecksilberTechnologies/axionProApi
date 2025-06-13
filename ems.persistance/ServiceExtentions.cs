@@ -55,6 +55,8 @@ namespace ems.persistance
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddTransient<ITenantEmailConfigRepository, TenantEmailConfigRepository>();
 
+          
+
             // Debugging Logs
             Console.WriteLine("✅ Persistence Layer Configured Successfully.");
         }

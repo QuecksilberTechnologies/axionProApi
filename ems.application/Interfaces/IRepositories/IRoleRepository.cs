@@ -13,6 +13,8 @@ namespace ems.application.Interfaces.IRepositories
         {
         // Create a new role
            Task<List<Role>> CreateRoleAsync(Role role);
+        
+            Task<Role> AutoCreatedForTenantRoleAsync(Role role);
 
             // Get a role by its Id
             Task<Role> GetRoleByIdAsync(int roleId);

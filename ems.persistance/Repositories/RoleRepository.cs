@@ -135,5 +135,45 @@ namespace ems.persistance.Repositories
             }
         }
 
+        public async Task<Role> AutoCreatedForTenantRoleAsync(Role role)
+        {
+            try
+            {
+                if (role == null)
+                {
+                    _logger.LogWarning("AutoCreatedForTenantRoleAsync: Received null role object.");
+                    throw new ArgumentNullException(nameof(role), "Role object cannot be null.");
+                }
+
+                // Logging input
+                _logger.LogInformation("Creating new Role for TenantId: {TenantId}, RoleName: {RoleName}", role.TenantId, role.RoleName);
+
+                 role.AddedDateTime = DateTime.Now;
+
+                await _context.Roles.AddAsync(role);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Role created successfully with Id: {RoleId}", role.Id);
+
+                // Optionally reload from DB if you want latest tracking
+                var latestRole = await _context.Roles
+                    .OrderByDescending(r => r.Id)
+                    .FirstOrDefaultAsync(r => r.Id == role.Id); // ensure you get the one just created
+
+                return latestRole ?? role;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                _logger.LogError(dbEx, "Database update failed while creating Role.");
+                throw; // Let it bubble up or wrap in custom exception
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred in AutoCreatedForTenantRoleAsync.");
+                throw;
+            }
+        }
+
+
     }
 }

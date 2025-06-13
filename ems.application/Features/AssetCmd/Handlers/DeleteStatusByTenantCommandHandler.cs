@@ -14,51 +14,49 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.AssetCmd.Handlers
 {
-    public class AddStatusByTenantCommandHandler : IRequestHandler<AddStatusByTenantCommand, ApiResponse<AllAssetStatusResponseDTO>>
+    public class DeleteStatusByTenantCommandHandler : IRequestHandler<DeleteStatusByTenantCommand, ApiResponse<bool>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<AddStatusByTenantCommandHandler> _logger;
+        private readonly ILogger<DeleteStatusByTenantCommandHandler> _logger;
 
-        public AddStatusByTenantCommandHandler(
+        public DeleteStatusByTenantCommandHandler(
             IMapper mapper,
             IUnitOfWork unitOfWork,
-            ILogger<AddStatusByTenantCommandHandler> logger)
+            ILogger<DeleteStatusByTenantCommandHandler> logger)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
-        public async Task<ApiResponse<AllAssetStatusResponseDTO>> Handle(AddStatusByTenantCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<bool>> Handle(DeleteStatusByTenantCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 // DTO ko Entity mein map karein
 
-    
-                var assetStatus = _mapper.Map<AssetStatus>(request.assetStatusRequestDTO);
-                 
-                  
 
-               AssetStatus assetsList = await _unitOfWork.AssetRepository.AddAssetStatusByTenantAsync(assetStatus);             
+                AssetStatus assetStatus = _mapper.Map<AssetStatus>(request.deleteAssetStatusRequest);              
+
+                bool isDeleted = await _unitOfWork.AssetRepository.DeleteAssetStatusByTenantAsync(assetStatus);
                 // Entity list to DTO list
-                var resultDTOList = _mapper.Map<AllAssetStatusResponseDTO>(assetsList);
-                return new ApiResponse<AllAssetStatusResponseDTO>
+             
+                return new ApiResponse<bool>
                 {
                     IsSucceeded = true,
-                    Message = "Asset Status created successfully.",
-                    Data = resultDTOList
+                    Message = "Asset Status successfully deleted .",
+                    Data = isDeleted
                 };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while adding asset status.");
-                return new ApiResponse<AllAssetStatusResponseDTO>
+                return  new ApiResponse<bool>
                 {
                     IsSucceeded = false,
                     Message = "Something went wrong while adding asset status.",
-                    Data = null
+                    Data = false
                 };
             }
         }

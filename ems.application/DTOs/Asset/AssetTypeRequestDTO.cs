@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Asset
 {
-    public class AllAssetStatusResponseDTO
+    public class AssetTypeRequestDTO
     {
+       
+        public long EmployeeId { get; set; }
+        public int RoleId { get; set; }
         public long TenantId { get; set; }
-        public string StatusName { get; set; } = string.Empty;
+        public string? TypeName { get; set; }  
         public string? Description { get; set; }
- 
+        public bool IsActive { get; set; }
+       
+         
     }
 }

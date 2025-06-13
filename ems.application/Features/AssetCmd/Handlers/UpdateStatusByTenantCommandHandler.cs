@@ -14,50 +14,48 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.AssetCmd.Handlers
 {
-    public class AddStatusByTenantCommandHandler : IRequestHandler<AddStatusByTenantCommand, ApiResponse<AllAssetStatusResponseDTO>>
+    public class UpdateStatusByTenantCommandHandler : IRequestHandler<UpdateStatusByTenantCommand, ApiResponse<AllAssetStatusResponseDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<AddStatusByTenantCommandHandler> _logger;
+        private readonly ILogger<UpdateStatusByTenantCommandHandler> _logger;
 
-        public AddStatusByTenantCommandHandler(
+        public UpdateStatusByTenantCommandHandler(
             IMapper mapper,
             IUnitOfWork unitOfWork,
-            ILogger<AddStatusByTenantCommandHandler> logger)
+            ILogger<UpdateStatusByTenantCommandHandler> logger)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
-        public async Task<ApiResponse<AllAssetStatusResponseDTO>> Handle(AddStatusByTenantCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<AllAssetStatusResponseDTO>> Handle(UpdateStatusByTenantCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 // DTO ko Entity mein map karein
 
-    
+                request.assetStatusRequestDTO.IsActive = request.assetStatusRequestDTO.IsActive ?? false;
                 var assetStatus = _mapper.Map<AssetStatus>(request.assetStatusRequestDTO);
-                 
-                  
-
-               AssetStatus assetsList = await _unitOfWork.AssetRepository.AddAssetStatusByTenantAsync(assetStatus);             
+                assetStatus.UpdatedDateTime = DateTime.Now;
+                AssetStatus assetsList = await _unitOfWork.AssetRepository.UpdateAssetStatusByTenantAsync(assetStatus);
                 // Entity list to DTO list
                 var resultDTOList = _mapper.Map<AllAssetStatusResponseDTO>(assetsList);
                 return new ApiResponse<AllAssetStatusResponseDTO>
                 {
                     IsSucceeded = true,
-                    Message = "Asset Status created successfully.",
+                    Message = "Asset Status updated successfully.",
                     Data = resultDTOList
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while adding asset status.");
+                _logger.LogError(ex, "An error occurred while Updateing asset status.");
                 return new ApiResponse<AllAssetStatusResponseDTO>
                 {
                     IsSucceeded = false,
-                    Message = "Something went wrong while adding asset status.",
+                    Message = "Something went wrong while Updateing asset status.",
                     Data = null
                 };
             }

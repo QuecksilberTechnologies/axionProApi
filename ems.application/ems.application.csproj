@@ -24,8 +24,6 @@
     <Folder Include="Features\Cmd - Copy\Commands\" />
     <Folder Include="Features\Cmd - Copy\Handlers\" />
     <Folder Include="Features\Cmd - Copy\Queries\" />
-    <Folder Include="Features\Handlers\" />
-    <Folder Include="Features\Queries\" />
     <Folder Include="Features\NewFolder\" />
     <Folder Include="Features\RegionCmd\Commands\" />
     <Folder Include="Features\Company\Commands\" />

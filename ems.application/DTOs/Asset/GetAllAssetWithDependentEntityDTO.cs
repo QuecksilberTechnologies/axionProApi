@@ -10,7 +10,7 @@ namespace ems.application.DTOs.Asset
     {
         public List<GetAllAssetDTO> GetAllAssetDTOs { get; set; }
         public List<GetAllAssetTypeDTO> GetAllAssetTypeDTOs { get; set; }
-        public List<GetAllAssetStatusDTO> GetAllAssetStatusDTOs { get; set; }
+        public List<AllAssetStatusResponseDTO> GetAllAssetStatusDTOs { get; set; }
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using ems.domain.Entity;
+﻿using ems.application.DTOs.Asset;
+using ems.domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,37 +10,39 @@ namespace ems.application.Interfaces.IRepositories
 {
     public interface IAssetRepository
     {
-        // Create a new asset
+
+
+        #region asset
         Task<List<Asset>> AddAssetAsync(Asset asset);
-
-        // Get a asset by its Id
-    //    Task<Asset> GetAssetByIdFromTenantAsync(int TenantId ,);
-        Task<bool> IsAssetDuplicate(Asset asset);
-
-        // Get all asset
         Task<List<Asset>> GetAllAssetAsync();
-        Task<List<AssetType>> GetAllAssetTypeAsync();
-        Task<List<AssetStatus>> GetAssetsStatus();
-
-        // Update an existing asset
+        Task<bool> IsAssetDuplicate(Asset asset);
+        // Get a asset by its Id
+        //    Task<Asset> GetAssetByIdFromTenantAsync(int TenantId ,);
         Task<List<Asset>> UpdateAssetAsync(Asset asset);
-
         // Delete a asset by its Id
         Task<bool> DeleteAssetAsync(int Id);
+        #endregion
 
+       
 
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="assetStatus"></param>
-        /// <returns></returns>
-
-
-        Task<List<AssetStatus>> GetAllAssetStatusByTenantAsync(AssetStatus assetStatus);        
-        Task<List<AssetStatus>>AddAssetStatusByTenantAsync(AssetStatus assetStatus);
+        #region AssetStatus
+        Task<List<AssetStatus>> GetAllAssetsStatus();
+        Task<List<AssetStatus>> GetAllAssetStatusByTenantAsync(AssetStatus? assetStatus);        
+        Task<AssetStatus>AddAssetStatusByTenantAsync(AssetStatus? assetStatus);
         Task<AssetStatus>UpdateAssetStatusByTenantAsync(AssetStatus assetStatus);
-      //  Task<AssetStatus>UpdateAssetStatusByTenantAsync(AssetStatus assetStatus);
+         Task<bool>DeleteAssetStatusByTenantAsync(AssetStatus assetStatus);
+        #endregion
+
+
+        #region AssetTypeCompleted
+        Task<AssetType> AddAssetTypeAsync(AssetType assetType);
+        Task<List<AssetType>> GetAllAssetTypeByTenantAsync(GetAssetTypeRequestDTO? assetType);
+        Task<AssetType?> UpdateAssetTypeByTenantAsync(AssetType? assetType);
+        Task<List<AssetType>> GetAllAssetTypeAsync();
+        Task<bool> DeleteAssetTypeByTenantAsync(AssetType assetType);
+
+
+
+        #endregion
     }
 }

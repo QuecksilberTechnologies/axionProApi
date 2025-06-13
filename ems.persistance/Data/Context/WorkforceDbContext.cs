@@ -763,15 +763,15 @@ namespace ems.persistance.Data.Context
 
                 entity.ToTable("Employee", "AxionPro");
 
-                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+             
                 entity.Property(e => e.EmployementCode).HasMaxLength(50);
-                entity.Property(e => e.FirstName).HasMaxLength(100);
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.FirstName).HasMaxLength(100);                
                 entity.Property(e => e.LastName).HasMaxLength(100);
                 entity.Property(e => e.MiddleName).HasMaxLength(100);
                 entity.Property(e => e.OfficialEmail).HasMaxLength(255);
                 entity.Property(e => e.Remark).HasMaxLength(200);
-                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+                // Common Entities
+                entity.ConfigureBaseEntity();
 
                 entity.HasOne(d => d.Designation).WithMany(p => p.Employees)
                     .HasForeignKey(d => d.DesignationId)
@@ -1232,6 +1232,7 @@ namespace ems.persistance.Data.Context
                     .IsUnicode(false);
             });
 
+
             modelBuilder.Entity<LoginCredential>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__LoginCre__3214EC0750429DFA");
@@ -1240,8 +1241,12 @@ namespace ems.persistance.Data.Context
 
                 entity.HasIndex(e => e.LoginId, "UQ_LoginId").IsUnique();
 
+                entity.Property(e => e.AddedById).HasDefaultValue(0L);
+                
+                entity.Property(e => e.HasFirstLogin).HasDefaultValue(true);
                 entity.Property(e => e.IpAddressLocal).HasMaxLength(50);
                 entity.Property(e => e.IpAddressPublic).HasMaxLength(50);
+                
                 entity.Property(e => e.Latitude).HasDefaultValue(0.0);
                 entity.Property(e => e.LoginDevice).HasDefaultValue(0);
                 entity.Property(e => e.LoginId).HasMaxLength(255);
@@ -1249,16 +1254,9 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.MacAddress).HasMaxLength(255);
                 entity.Property(e => e.Password).HasMaxLength(255);
                 entity.Property(e => e.Remark).HasMaxLength(255);
+                // Common Entities
+                entity.ConfigureBaseEntity();
 
-                entity.HasOne(d => d.Employee).WithMany(p => p.LoginCredentials)
-                    .HasForeignKey(d => d.EmployeeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_LoginCredential_Employee");
-
-                entity.HasOne(d => d.Tenant).WithMany(p => p.LoginCredentials)
-                    .HasForeignKey(d => d.TenantId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_LoginCredential_Tenant");
             });
 
 
@@ -1451,9 +1449,18 @@ namespace ems.persistance.Data.Context
                 entity.ToTable("Role", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.Remark).HasMaxLength(200);
                 entity.Property(e => e.RoleName).HasMaxLength(100);
-                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.UpdatedDateTime)
+                    .HasDefaultValueSql("((0))")
+                    .HasColumnType("datetime");
+                // Common Entities
+                entity.ConfigureBaseEntity();
+                entity.HasOne(d => d.Tenant).WithMany(p => p.Roles)
+                    .HasForeignKey(d => d.TenantId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Role_Tenant");
             });
 
             modelBuilder.Entity<RoleModuleAndPermission>(entity =>

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.AssetCmd.Commands
 {
-    public class AddStatusByTenantCommand : IRequest<ApiResponse<AllAssetStatusResponseDTO>>
+    public class UpdateStatusByTenantCommand : IRequest<ApiResponse<AllAssetStatusResponseDTO>>
     {
-        public AddAssetStatusRequestDTO assetStatusRequestDTO { get; set; }
+        public UpdateAssetStatusRequestDTO assetStatusRequestDTO { get; set; }
 
-        public AddStatusByTenantCommand(AddAssetStatusRequestDTO assetStatusRequestDTO)
+        public UpdateStatusByTenantCommand(UpdateAssetStatusRequestDTO assetStatusRequestDTO)
         {
             this.assetStatusRequestDTO = assetStatusRequestDTO;
         }

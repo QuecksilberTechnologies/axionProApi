@@ -51,12 +51,12 @@ namespace ems.application.Features.AssetCmd.Handlers
 
                 // सभी asset types को fetch करें (assuming एक repository method उपलब्ध है)
                 List<AssetType> assetTypes = await _unitOfWork.AssetRepository.GetAllAssetTypeAsync();
-                List<AssetStatus> assetsStatus = await _unitOfWork.AssetRepository.GetAssetsStatus();
+                List<AssetStatus> assetsStatus = await _unitOfWork.AssetRepository.GetAllAssetsStatus();
 
                 // Asset entities को respective DTOs में map करें
                 List<GetAllAssetDTO> assetDTOs = _mapper.Map<List<GetAllAssetDTO>>(assets);
                 List<GetAllAssetTypeDTO> assetTypeDTOs = _mapper.Map<List<GetAllAssetTypeDTO>>(assetTypes);
-                List<GetAllAssetStatusDTO> assetStatusDTOs = _mapper.Map<List<GetAllAssetStatusDTO>>(assetsStatus);
+                List<AllAssetStatusResponseDTO> assetStatusDTOs = _mapper.Map<List<AllAssetStatusResponseDTO>>(assetsStatus);
 
                 // Composite DTO तैयार करें
                 var compositeDTO = new GetAllAssetWithDependentEntityDTO

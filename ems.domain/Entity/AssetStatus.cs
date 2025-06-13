@@ -12,9 +12,8 @@ public partial class AssetStatus :BaseEntity
 
     public string StatusName { get; set; } = null!;
 
-    public string? Description { get; set; }
+    public string? Description { get; set; } 
 
- 
 
     public virtual ICollection<Asset> Assets { get; set; } = new List<Asset>();
 }

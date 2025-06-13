@@ -126,7 +126,7 @@ namespace ems.persistance.Repositories
 
 
 
-        public async Task<List<RoleModulePermission>> GetModulePermissionsAsync(int empId, string roleIds, bool hasAccess, bool isActive)
+        public async Task<List<RoleModulePermission>> GetModulePermissionsAsync(long empId, string roleIds, bool hasAccess, bool isActive)
         {
             try
             {
@@ -173,7 +173,7 @@ namespace ems.persistance.Repositories
         }
 
 
-        public async Task<string> UpdateLoginCredential(LoginRequestDTO loginRequest)
+        public async Task<bool> UpdateLoginCredential(LoginRequestDTO loginRequest)
         {
             try
             {
@@ -204,24 +204,26 @@ namespace ems.persistance.Repositories
                 if (errorMsgParam.Value != DBNull.Value && !string.IsNullOrEmpty(errorMsgParam.Value.ToString()))
                 {
                     _logger.LogError("Update failed for LoginId: {LoginId}, Error: {ErrorMessage}", loginRequest.LoginId, errorMsgParam.Value);
-                    return $"Error: {errorMsgParam.Value}";
+                    return false;
                 }
 
-                return (statusParam.Value != DBNull.Value && (int)statusParam.Value == 1) ? "Success" : "No record updated";
+                return true;
+                    //(statusParam.Value != DBNull.Value && (int)statusParam.Value == 1) ? "Success" : "No record updated";
             }
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "SQL Exception occurred while updating login credential for LoginId: {LoginId}", loginRequest.LoginId);
-                return "Database error occurred while updating login credential.";
+              //  return "Database error occurred while updating login credential.";
+                return false;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while updating login credential for LoginId: {LoginId}", loginRequest.LoginId);
-                return "An unexpected error occurred.";
+                return   false; // "An unexpected error occurred.";
             }
         }
 
-        public async Task<int> ValidateUserLoginAsync(string loginId)
+        public async Task<long> ValidateUserLoginAsync(string loginId)
         {
             try
             {
@@ -250,6 +252,12 @@ namespace ems.persistance.Repositories
                 return -1;  // Error Case
             }
         }
+        
+        
+        
+        
+        
+        
         public async Task<bool> GetHasAccessOperation(CheckOperationPermissionRequestDTO checkOperationPermissionRequest)
         {
             try
@@ -287,6 +295,21 @@ namespace ems.persistance.Repositories
                 _logger.LogError($"Error in GetHasAccessOperation: {ex.Message}");
                 return false;
             }
+        }
+
+        public Task<bool> HasPermissionAsync(long userId, string permissionCode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> IsTenantValidAsync(long userId, long tenantId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<int> ValidateUserPasswordAsync(string loginId)
+        {
+            throw new NotImplementedException();
         }
 
         //public async Task<int> ValidateUserLoginAsync(string loginId)

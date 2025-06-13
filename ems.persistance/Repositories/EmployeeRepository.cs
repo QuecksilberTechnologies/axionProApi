@@ -46,10 +46,11 @@ namespace ems.persistance.Repositories
                 _logger?.LogInformation("Fetching employee details for ID: {EmployeeId}", employeeId);
 
                 var employee = await context.Employees
-                    .Where(e => e.Id == employeeId && e.IsActive)
+                    .Where(e => e.Id == employeeId && e.IsActive==true)
                     .Select(e => new Employee
                     {
                         Id = e.Id,
+                        TenantId = e.TenantId,
                         DesignationId = e.DesignationId,
                         DepartmentId = e.DepartmentId,
                         EmployeeTypeId = e.EmployeeTypeId,
@@ -57,6 +58,7 @@ namespace ems.persistance.Repositories
                         FirstName = e.FirstName,
                         MiddleName= e.MiddleName, 
                         LastName =  e.LastName
+
                     })
                     .FirstOrDefaultAsync();
 
@@ -77,7 +79,7 @@ namespace ems.persistance.Repositories
                 _logger?.LogInformation("Fetching employee details for ID: {EmployeeId}", employeeId);
 
                 Employee? employee = await context.Employees
-                    .Where(e => e.Id == employeeId && e.IsActive)
+                    .Where(e => e.Id == employeeId && e.IsActive == true)
                     .FirstOrDefaultAsync();
 
                 return employee; // पूरी entity return करें

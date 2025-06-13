@@ -36,7 +36,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
             IUnitOfWork unitOfWork, 
             ILogger<CreateTenantCommandHandler> logger , IEmailService emailService)
 
-        {
+           {
              _emailService = emailService;
             _tenantRepository = tenantRepository;
             _mapper = mapper;
@@ -44,11 +44,12 @@ namespace ems.application.Features.RegistrationCmd.Handlers
             _logger = logger;
             _tokenService = tokenService;
             _refreshTokenRepository = refreshTokenRepository;
-        }
+           }
         public async Task<ApiResponse<TenantCreateResponseDTO>> Handle(CreateTenantCommand request, CancellationToken cancellationToken)
         {
             try
             {
+                // Step 1: Check if Tenant already exists by email
                 bool isEmailExists = await _unitOfWork.TenantRepository.CheckTenantByEmail(request.TenantCreateRequestDTO.TenantEmail);
                 if (isEmailExists)
                 {
@@ -60,33 +61,14 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                     };
                 }
 
+                // Step 2: Map DTO to Entity
                 var tenantEntity = _mapper.Map<Tenant>(request.TenantCreateRequestDTO);
 
-                // 👇 Add Employee into tenantEntity directly
-                tenantEntity.Employees.Add(new Employee
-                {  
-                    TenantId = tenantEntity.Id,
-                    OfficialEmail = tenantEntity.TenantEmail,
-                    HasPermanent = true,
-                    IsActive = true,
-                    AddedById = tenantEntity.Id,
-                    AddedDateTime = DateTime.Now,
-                });
-
-                tenantEntity.TenantProfiles.Add(new TenantProfile
-                {
-                    TenantId = tenantEntity.Id,
-
-                });
-
-
-
+                // Step 3: Begin Transaction
                 await _unitOfWork.BeginTransactionAsync();
 
+                // Step 4: Add Tenant
                 long newTenantId = await _unitOfWork.TenantRepository.AddTenantAsync(tenantEntity);
-               
-
-
                 if (newTenantId <= 0)
                 {
                     await _unitOfWork.RollbackTransactionAsync();
@@ -96,53 +78,113 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                         Message = "Tenant creation failed.",
                         Data = null
                     };
-                }             
+                }
 
-
-
-                var createdEmployee = tenantEntity.Employees.FirstOrDefault(); // 👈
-                //    var loginInfo = _mapper.Map<LoginCredential>(createdEmployee);
-                var loginCredential = new LoginCredential
+                // Step 5: Create Employee for Tenant
+                var employee = new Employee
                 {
-                    TenantId = tenantEntity.Id,
-                    LoginId = tenantEntity.TenantEmail,
-                    EmployeeId = createdEmployee?.Id ?? 0,
-                    IsActive = true,
-                    Password = "123"
+                    TenantId = newTenantId,
+                    OfficialEmail = tenantEntity.TenantEmail,
+                    HasPermanent = ConstantValues.IsByDefaultTrue,
+                    IsActive = ConstantValues.IsByDefaultTrue,
+                    AddedById = newTenantId,
+                    AddedDateTime = DateTime.Now,
+                    UpdatedById = ConstantValues.SystemUserIdByDefaultZero,
+                    UpdatedDateTime = null,
+                    DeletedById = ConstantValues.SystemUserIdByDefaultZero,
+                    DeletedDateTime = null,
+                    IsSoftDeleted = ConstantValues.IsByDefaultFalse,
                 };
 
-                long newLoginId = await _unitOfWork.UserLoginRepository.CreateUser(loginCredential);
+                var createdEmployee = await _unitOfWork.Employees.AddAsync(employee);
+                long employeeId = createdEmployee?.Id ?? 0;
 
-                var tenantProfile = tenantEntity.TenantProfiles.FirstOrDefault(); // 👈
+                if (employeeId == 0)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return new ApiResponse<TenantCreateResponseDTO>
+                    {
+                        IsSucceeded = false,
+                        Message = "Employee creation failed.",
+                        Data = null
+                    };
+                }
 
+                // Step 6: Create TenantProfile
+                var tenantProfile = new TenantProfile
+                {
+                    TenantId = newTenantId
+                };
                 long newTenantProfileId = await _unitOfWork.TenantRepository.AddTenantProfileAsync(tenantProfile);
 
-
-                UserRole userRole = new UserRole
+                // Step 7: Create Admin Role
+                var role = new Role
                 {
-                    EmployeeId = createdEmployee?.Id ?? 0,
-                    RoleId = 49,
-                    IsPrimaryRole = true,
-                    IsActive = true,
-                    AddedById = createdEmployee?.Id ?? 0,
+                    TenantId = newTenantId,
+                    RoleName = ConstantValues.AdminRoleName,
+                    IsActive = ConstantValues.IsByDefaultTrue,
+                    IsSoftDeleted = ConstantValues.IsByDefaultFalse,
+                    Remark = ConstantValues.AdminRoleRemark,
+                    AddedById = newTenantId,
                     AddedDateTime = DateTime.Now,
-                    AssignedDateTime = DateTime.Now
+                    UpdatedById = ConstantValues.SystemUserIdByDefaultZero,
+                    UpdatedDateTime = null,
+                    DeletedById = ConstantValues.SystemUserIdByDefaultZero,
+                    DeletedDateTime = null
+                };
+                var createdRole = await _unitOfWork.RoleRepository.AutoCreatedForTenantRoleAsync(role);
+
+                // Step 8: Create LoginCredential
+                var loginCredential = new LoginCredential
+                {
+                    TenantId = newTenantId,
+                    LoginId = tenantEntity.TenantEmail,
+                    EmployeeId = employeeId,
+                    IsActive = ConstantValues.IsByDefaultTrue,
+                    Password = ConstantValues.DefaultPassword,
+                    HasFirstLogin = ConstantValues.IsByDefaultTrue,
+                    IsSoftDeleted = ConstantValues.IsByDefaultFalse,
+                    Remark = ConstantValues.AdminRoleRemark,
+                    AddedById = newTenantId,
+                    AddedDateTime = DateTime.Now,
+                    UpdatedById = ConstantValues.SystemUserIdByDefaultZero,
+                    UpdatedDateTime = null,
+                    DeletedById = ConstantValues.SystemUserIdByDefaultZero,
+                    DeletedDateTime = null 
 
                 };
+                long newLoginId = await _unitOfWork.UserLoginRepository.CreateUser(loginCredential);
 
-                var emailTemplate = await _unitOfWork.EmailTemplateRepository.GetTemplateByCodeAsync("ACCOUNT_VERIFICATION");
-                var roleId=  await _unitOfWork.UserRoleRepository.AddUserRoleAsync(userRole);
+                // Step 9: Assign Role to Employee
+                UserRole userRole = new UserRole
+                {
+                    EmployeeId = employeeId,
+                    RoleId = createdRole.Id,
+                    IsPrimaryRole = ConstantValues.IsByDefaultTrue,
+                    IsActive = ConstantValues.IsByDefaultTrue,
+                    AddedById = employeeId,
+                    AddedDateTime = DateTime.Now,
+                    AssignedDateTime = DateTime.Now,
+                    Remark = ConstantValues.AdminRoleRemark,
+                    AssignedById = employeeId,
+                    RoleStartDate = ConstantValues.SystemOnlyTodaysDate,
+                    ApprovalRequired = ConstantValues.IsByDefaultFalse,
+                    UpdatedById = ConstantValues.SystemUserIdByDefaultZero,
+                    UpdatedDateTime = null,
+                    DeletedById = ConstantValues.SystemUserIdByDefaultZero,
+                    DeletedDateTime = null
+                };
+                int roleId = (int)await _unitOfWork.UserRoleRepository.AddUserRoleAsync(userRole);
 
-                string token = await _tokenService.GenerateToken(tenantEntity.TenantEmail.ToString());
-
-                var res = await _tokenService.GetUserInfoFromToken(token);
+                // Step 10: Generate Token for Email
+                string token = await _tokenService.GenerateToken(tenantEntity.TenantEmail);
 
                 //eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJzdHJpbmciLCJuYmYiOjE3NDkxNTQzMDgsImV4cCI6MTc0OTE1NjEwOCwiaWF0IjoxNzQ5MTU0MzA4LCJpc3MiOiJFTVNBcHAiLCJhdWQiOiJFTVNVc2VycyJ9.Bm_OOPQwqeJx8Qpz2h6lG4G7 - y9a7oWuxJmiLKY5E1Y
                 // await _unitOfWork.CommitTransactionAsync();
 
                 // Assume request.TenantCreateRequestDTO ke andar ye fields available hain
                 var firstName = request.TenantCreateRequestDTO.ContactPersonName;
-              
+
                 var email = request.TenantCreateRequestDTO.TenantEmail;
                 var loginId = request.TenantCreateRequestDTO.TenantEmail; // assuming loginId = email
 
@@ -163,10 +205,10 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                 string toEmail = "mca.deepesh@gmail.com";
                 string subject = "Verification Email";
                 string userName = "Deepesh Gupta";
-               
+
                 long tenantId_ = 17;
 
-               
+
                 string emailBodyTemplate = @"
                            <html>
                              <body style='font-family: Arial, sans-serif; padding: 20px;'>
@@ -194,27 +236,25 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                     body: emailBodyTemplate,
                     token: token,
                     tenantId: 17
-                );            
+                );
+                // Step 12: Commit Transaction
+                await _unitOfWork.CommitTransactionAsync();
 
-                   await _unitOfWork.CommitTransactionAsync();
-
-
-
+                // Step 13: Return Response
                 return new ApiResponse<TenantCreateResponseDTO>
                 {
                     IsSucceeded = true,
-                    Message = "employee registration successful.",
+                    Message = "Employee registration successful.",
                     Data = new TenantCreateResponseDTO
                     {
                         Success = true,
-                        EmployeeId = createdEmployee?.Id ?? 0,
+                        EmployeeId = employeeId,
                         TenantId = newTenantId,
-                        TenantProfileId =newTenantProfileId,
+                        TenantProfileId = newTenantProfileId,
                         LoginId = tenantEntity.TenantEmail,
                         EmailSent = isSent,
-                        Password = "123",
-                        RoleId= roleId,
-
+                        Password = ConstantValues.DefaultPassword,
+                        RoleId = roleId
                     }
                 };
             }

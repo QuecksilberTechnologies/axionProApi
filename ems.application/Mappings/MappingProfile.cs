@@ -19,6 +19,7 @@ using ems.application.DTOs.UserRole;
 using ems.domain.Entity;
 
 using FluentValidation;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -57,8 +58,31 @@ namespace ems.application.Mappings
                                                        ? DateOnly.FromDateTime(src.WarrantyExpiryDate.Value)
                                                        : default));
 
-            CreateMap<AssetStatus, GetAllAssetStatusDTO>();
+           
+            CreateMap<AssetStatus, AddAssetStatusRequestDTO>().ReverseMap();
+            CreateMap<AllAssetStatusResponseDTO, AssetStatus>().ReverseMap();
+
+
+            CreateMap<AssetType, AssetTypeRequestDTO>().ReverseMap();
+            CreateMap<AssetType, AssetTypeResponseDTO>().ReverseMap(); // 🔥 Yeh zaroori hai
+
+            CreateMap<AssetType, GetAssetTypeRequestDTO>().ReverseMap();
+            //   CreateMap<AssetType, AssetTypeResponseDTO>().ReverseMap(); // 🔥 Yeh zaroori hai
+
+            CreateMap<AssetType, UpdateAssetTypeRequestDTO>().ReverseMap();
+                   
+
+            CreateMap<AssetType, DeleteAssetTypeRequestDTO>().ReverseMap();
             
+
+            CreateMap<AssetStatus, UpdateAssetStatusRequestDTO>().ReverseMap();
+            CreateMap<UpdateAssetStatusRequestDTO, AssetStatus>().ReverseMap();
+
+
+            CreateMap<AssetStatus, DeleteAssetStatusRequestDTO>().ReverseMap();
+           
+
+
 
             CreateMap<CreateDesignationDTO, Designation>();
             CreateMap<Designation, GetAllDesignationDTO>();

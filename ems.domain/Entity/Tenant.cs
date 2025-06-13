@@ -32,6 +32,7 @@ public partial class Tenant
     public virtual ICollection<TenantEmailConfig> TenantEmailConfigs { get; set; } = new List<TenantEmailConfig>();
 
     public virtual ICollection<TenantProfile> TenantProfiles { get; set; } = new List<TenantProfile>();
+    public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 
-    
+
 }

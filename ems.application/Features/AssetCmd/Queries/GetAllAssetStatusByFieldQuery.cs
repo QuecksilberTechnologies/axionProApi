@@ -7,13 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Features.AssetCmd.Commands
+namespace ems.application.Features.AssetCmd.Queries
 {
-    public class AddStatusByTenantCommand : IRequest<ApiResponse<AllAssetStatusResponseDTO>>
+    public class GetAllAssetStatusByFieldQuery : IRequest<ApiResponse<List<AllAssetStatusResponseDTO>>>
     {
         public AddAssetStatusRequestDTO assetStatusRequestDTO { get; set; }
 
-        public AddStatusByTenantCommand(AddAssetStatusRequestDTO assetStatusRequestDTO)
+        public GetAllAssetStatusByFieldQuery(AddAssetStatusRequestDTO assetStatusRequestDTO)
         {
             this.assetStatusRequestDTO = assetStatusRequestDTO;
         }
