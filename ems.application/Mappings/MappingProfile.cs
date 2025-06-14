@@ -50,16 +50,27 @@ namespace ems.application.Mappings
 
             CreateMap<CreateAssetDTO, Asset>();
             CreateMap<Asset, GetAllAssetWithDependentEntityDTO>();
-            CreateMap<UpdateAssetDTO, Asset>();
-            CreateMap<AssetType, GetAllAssetTypeDTO>();
-            CreateMap<Asset, GetAllAssetDTO>()
-                .ForMember(dest => dest.WarrantyExpiryDate,
-                           opt => opt.MapFrom(src => src.WarrantyExpiryDate.HasValue
-                                                       ? DateOnly.FromDateTime(src.WarrantyExpiryDate.Value)
-                                                       : default));
 
+
+            CreateMap<AssetType, GetAllAssetTypeDTO>();
+
+            CreateMap<Asset, AssetResponseDTO>();
+                //.ForMember(dest => dest.WarrantyExpiryDate,
+                //           opt => opt.MapFrom(src => src.WarrantyExpiryDate.HasValue
+                //                                       ? DateOnly.FromDateTime(src.WarrantyExpiryDate.Value)
+                //                                       : default));
            
+            CreateMap<Asset, AssetRequestDTO>().ReverseMap();
+
+            CreateMap<AssetResponseDTO, Asset>().ReverseMap();
+           
+            
+            CreateMap<UpdateAssetDTO, Asset>().ReverseMap();
+
+            CreateMap<DeleteAssetRequestDTO, Asset>().ReverseMap();
+
             CreateMap<AssetStatus, AddAssetStatusRequestDTO>().ReverseMap();
+           
             CreateMap<AllAssetStatusResponseDTO, AssetStatus>().ReverseMap();
 
 

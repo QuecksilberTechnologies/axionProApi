@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.AssetCmd.Commands
 {
-    public class CreateAssetCommand : IRequest<ApiResponse<List<GetAllAssetWithDependentEntityDTO>>>
+    public class CreateAssetCommand : IRequest<ApiResponse<List<AssetResponseDTO>>>
     {
         public CreateAssetDTO createAssetDTO { get; set; }
 

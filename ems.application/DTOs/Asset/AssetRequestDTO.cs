@@ -8,11 +8,42 @@ namespace ems.application.DTOs.Asset
 {
     public class AssetRequestDTO
     {
-        public long Id { get; set; }
-        public int SelfRoleId { get; set; }
-        public int DesignationId { get; set; }
-        public int AssetId { get; set; }
+        public long TenantId { get; set; }
 
+        public int RoleId { get; set; }
+
+        public long EmployeeId { get; set; }
+
+        public bool? IsActive { get; set; }
+
+        public int? AssetTypeId { get; set; }
+
+        public int? AssetStatusId { get; set; }
+
+        public bool? IsAssigned { get; set; }
+
+        public string? Company { get; set; }
+
+        public string? AssetName { get; set; }
+        
+        public string? Color { get; set; }
+
+        public bool? IsRepairable { get; set; }
+
+        public string? SerialNumber { get; set; }
+
+        public string? Barcode { get; set; }
+
+        public string? Qrcode { get; set; }
+        public DateTime? PurchaseDate { get; set; }
+        // 👉 Warranty filters         
+        public DateTime? WarrantyExpiryDate { get; set; }
+        public DateTime?  AddedById { get; set; }
+        public DateTime?  UpdatedById { get; set; }
+      
+
+        
     }
+
 
 }

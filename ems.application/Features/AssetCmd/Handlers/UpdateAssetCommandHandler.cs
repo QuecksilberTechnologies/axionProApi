@@ -13,36 +13,40 @@ using System.Text;
 using System.Threading.Tasks;
 using ems.application.Features.AssetCmd.Commands;
 using ems.application.DTOs.Asset;
+using Microsoft.Extensions.Logging;
 
 namespace ems.application.Features.AssetCmd.Handlers
 {
-    public class UpdateAssetCommandHandler : IRequestHandler<UpdateAssetCommand, ApiResponse<List<GetAllAssetWithDependentEntityDTO>>>
+    public class UpdateAssetCommandHandler : IRequestHandler<UpdateAssetCommand, ApiResponse<AssetResponseDTO>>
     {
         private readonly IAssetRepository _assetRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        // private readonly ILogger<UpdateAssetCommandHandler> _logger; // यदि logger का उपयोग करना हो
+         private readonly ILogger<UpdateAssetCommand> _logger; // यदि logger का उपयोग करना हो
 
-        public UpdateAssetCommandHandler(IAssetRepository assetRepository, IMapper mapper, IUnitOfWork unitOfWork)
+        public UpdateAssetCommandHandler(IAssetRepository assetRepository, IMapper mapper, IUnitOfWork unitOfWork, ILogger<UpdateAssetCommand> logger)
         {
             _assetRepository = assetRepository;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
-        public async Task<ApiResponse<List<GetAllAssetWithDependentEntityDTO>>> Handle(UpdateAssetCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<AssetResponseDTO>> Handle(UpdateAssetCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 // DTO से Asset में mapping
-                Asset asset = _mapper.Map<Asset>(request.updateAssetDTO);
-
+                 Asset existingAssetValue = _mapper.Map<Asset>(request.updateAssetDTO);
+                
+                existingAssetValue.UpdatedDateTime = DateTime.Now;
+                
                 // Asset को update करना
-                List<Asset> assets = await _assetRepository.UpdateAssetAsync(asset);
+                Asset assets = await _assetRepository.UpdateAssetAsync(existingAssetValue);
 
-                if (assets == null || !assets.Any())
+                if (assets == null )
                 {
-                    return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
+                    return new ApiResponse<AssetResponseDTO>
                     {
                         IsSucceeded = false,
                         Message = "No asset was updated.",
@@ -51,9 +55,9 @@ namespace ems.application.Features.AssetCmd.Handlers
                 }
 
                 // Updated Asset list को DTO में map करना
-                List<GetAllAssetWithDependentEntityDTO> allAssetDTOs = _mapper.Map<List<GetAllAssetWithDependentEntityDTO>>(assets);
+                AssetResponseDTO allAssetDTOs = _mapper.Map<AssetResponseDTO>(assets);
 
-                return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
+                return new ApiResponse<AssetResponseDTO>
                 {
                     IsSucceeded = true,
                     Message = "Asset updated successfully.",
@@ -63,7 +67,7 @@ namespace ems.application.Features.AssetCmd.Handlers
             catch (Exception ex)
             {
                 // _logger.LogError(ex, "Error occurred while updating asset.");
-                return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
+                return new ApiResponse<AssetResponseDTO>
                 {
                     IsSucceeded = false,
                     Message = $"An error occurred: {ex.Message}",

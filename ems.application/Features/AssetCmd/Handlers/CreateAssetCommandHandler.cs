@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.AssetCmd.Handlers
 {
-    public class CreateAssetCommandHandler : IRequestHandler<CreateAssetCommand, ApiResponse<List<GetAllAssetWithDependentEntityDTO>>>
+    public class CreateAssetCommandHandler : IRequestHandler<CreateAssetCommand, ApiResponse<List<AssetResponseDTO>>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -30,13 +30,13 @@ namespace ems.application.Features.AssetCmd.Handlers
             _logger = logger;
         }
 
-        public async Task<ApiResponse<List<GetAllAssetWithDependentEntityDTO>>> Handle(CreateAssetCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<AssetResponseDTO>>> Handle(CreateAssetCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 if (request == null || request.createAssetDTO == null)
                 {
-                    return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
+                    return new ApiResponse<List<AssetResponseDTO>>
                     {
                         IsSucceeded = false,
                         Message = "Invalid request or missing asset creation.",
@@ -46,12 +46,12 @@ namespace ems.application.Features.AssetCmd.Handlers
 
                 // Map CreateAssetDTO to Asset entity
                 Asset asset = _mapper.Map<Asset>(request.createAssetDTO);
-
+                asset.AddedById = request.createAssetDTO.EmployeeId;
                 // Duplicate check
                 bool isAssetDuplicate = await _unitOfWork.AssetRepository.IsAssetDuplicate(asset);
                 if (isAssetDuplicate)
                 {
-                    return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
+                    return new ApiResponse<List<AssetResponseDTO>>
                     {
                         IsSucceeded = false,
                         Message = "Asset already exists.",
@@ -60,34 +60,35 @@ namespace ems.application.Features.AssetCmd.Handlers
                 }
 
                 // Add asset and fetch updated asset list
-                List<Asset> assets = await _unitOfWork.AssetRepository.AddAssetAsync(asset);
-                List<AssetType> assetTypes = await _unitOfWork.AssetRepository.GetAllAssetTypeAsync();
-
+                List<Asset> assets = await _unitOfWork.AssetRepository.AddAssetAsync(asset);                
+                //List<AssetType> assetTypes = await _unitOfWork.AssetRepository.GetAllAssetTypeAsync(asset.TenantId, asset.IsActive);
+                //List<AssetStatus> assetsStatus = await _unitOfWork.AssetRepository.GetAllAssetsStatus(asset.TenantId, asset.IsActive);
+                
                 // Map to DTO lists
-                List<GetAllAssetDTO> assetDTOs = _mapper.Map<List<GetAllAssetDTO>>(assets);
-                List<GetAllAssetTypeDTO> assetTypeDTOs = _mapper.Map<List<GetAllAssetTypeDTO>>(assetTypes);
+                  List<AssetResponseDTO> assetDTOs = _mapper.Map<List<AssetResponseDTO>>(assets);
+               // List<GetAllAssetTypeDTO> assetTypeDTOs = _mapper.Map<List<GetAllAssetTypeDTO>>(assetTypes);
 
                 // Create composite DTO
-                var compositeDTO = new GetAllAssetWithDependentEntityDTO
-                {
-                    GetAllAssetDTOs = assetDTOs,
-                    GetAllAssetTypeDTOs = assetTypeDTOs
-                };
+                //var compositeDTO = new GetAllAssetWithDependentEntityDTO
+                //{
+                //    GetAllAssetDTOs = assetDTOs,
+                //    GetAllAssetTypeDTOs = assetTypeDTOs
+                //};
 
                 // Wrap composite DTO in a list (as per return type)
-                var resultDTOList = new List<GetAllAssetWithDependentEntityDTO> { compositeDTO };
+            //    var resultDTOList = new List<GetAllAssetDTO> { compositeDTO };
 
-                return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
+                return new ApiResponse<List<AssetResponseDTO>>
                 {
                     IsSucceeded = true,
                     Message = "Asset created successfully.",
-                    Data = resultDTOList
+                    Data = assetDTOs
                 };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while processing the asset creation request.");
-                return new ApiResponse<List<GetAllAssetWithDependentEntityDTO>>
+                return new ApiResponse<List<AssetResponseDTO>>
                 {
                     IsSucceeded = false,
                     Message = "An error occurred while processing the request.",

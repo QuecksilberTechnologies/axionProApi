@@ -8,13 +8,13 @@ public partial class Asset : BaseEntity
 {
     public int Id { get; set; }
 
-    public long TenantId { get; set; }
+    public long TenantId { get; set; } 
 
-    public string AssetName { get; set; } = null!;
+    public string AssetName { get; set; }
 
     public int AssetTypeId { get; set; }
 
-    public string Company { get; set; } = null!;
+    public string Company { get; set; } 
 
     public string? Color { get; set; }
 

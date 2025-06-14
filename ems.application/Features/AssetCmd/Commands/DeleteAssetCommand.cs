@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.AssetCmd.Commands
 {
-    public class DeleteAssetCommand : IRequest<ApiResponse<List<GetAllAssetWithDependentEntityDTO>>>
+    public class DeleteAssetCommand : IRequest<ApiResponse<bool>>
     {
-        public CreateAssetDTO createAssetDTO { get; set; }
+        public DeleteAssetRequestDTO deleteAssetDTO { get; set; }
 
-        public DeleteAssetCommand(CreateAssetDTO createAssetDTO)
+        public DeleteAssetCommand(DeleteAssetRequestDTO deleteAssetDTO)
         {
-            this.createAssetDTO = createAssetDTO;
+            this.deleteAssetDTO = deleteAssetDTO;
         }
 
     }

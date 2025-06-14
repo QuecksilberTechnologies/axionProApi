@@ -292,7 +292,7 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.ExpectedReturnDate).HasColumnType("datetime");
                 entity.Property(e => e.IdentificationMethod).HasMaxLength(50);
                 entity.Property(e => e.IdentificationValue).HasMaxLength(100);
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                 entity.Property(e => e.IsActive).HasDefaultValue(true);
 
                 // Common Entities
                 entity.ConfigureBaseEntity();
@@ -332,7 +332,6 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.ReturnedDate).HasColumnType("datetime");
                 entity.Property(e => e.ScrapDate).HasColumnType("datetime");
                 entity.Property(e => e.ScrapReason).HasMaxLength(255);
-                // Common Entities
                 entity.ConfigureBaseEntity();
                 entity.HasOne(d => d.AssignmentStatus).WithMany(p => p.AssetHistories)
                     .HasForeignKey(d => d.AssignmentStatusId)

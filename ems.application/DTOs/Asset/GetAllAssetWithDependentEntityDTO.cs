@@ -8,7 +8,7 @@ namespace ems.application.DTOs.Asset
 {
     public class GetAllAssetWithDependentEntityDTO
     {
-        public List<GetAllAssetDTO> GetAllAssetDTOs { get; set; }
+        public List<AssetResponseDTO> GetAllAssetDTOs { get; set; }
         public List<GetAllAssetTypeDTO> GetAllAssetTypeDTOs { get; set; }
         public List<AllAssetStatusResponseDTO> GetAllAssetStatusDTOs { get; set; }
 

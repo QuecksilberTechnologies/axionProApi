@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Asset
 {
-    public class GetAllAssetDTO
+    public class AssetResponseDTO
     {
         public int Id { get; set; }
+        public long TenantId { get; set; }  
         public string AssetName { get; set; }
         public int AssetTypeId { get; set; }
         public string Company { get; set; }
@@ -19,7 +20,7 @@ namespace ems.application.DTOs.Asset
         public string Barcode { get; set; }
         public string QRCode { get; set; }
         public DateTime PurchaseDate { get; set; }
-        public DateOnly WarrantyExpiryDate { get; set; }
+        public DateTime WarrantyExpiryDate { get; set; }
         public int AssetStatusId { get; set; }
         public bool IsAssigned { get; set; }
         public bool IsActive { get; set; }

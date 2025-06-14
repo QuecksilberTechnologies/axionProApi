@@ -8,6 +8,10 @@ namespace ems.application.DTOs.Asset
 {
     public class CreateAssetDTO
     {
+
+        public long TenantId { get; set; }
+        public long EmployeeId { get; set; }
+        public int RoleId { get; set; }
         public string AssetName { get; set; }
         public int AssetTypeId { get; set; }
         public string Company { get; set; }
@@ -22,6 +26,7 @@ namespace ems.application.DTOs.Asset
         public int AssetStatusId { get; set; }
         public bool IsAssigned { get; set; }
         public bool IsActive { get; set; }
-        public LoaderOptimization AddedBy { get; set; }
+        
+       
     }
 }
