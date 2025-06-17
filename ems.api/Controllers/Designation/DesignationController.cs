@@ -24,7 +24,7 @@ namespace ems.api.Controllers.Designation
         }
 
 
-        [HttpGet("getalldesignation")]
+        [HttpGet("get-all-designation-by-tenant")]
         public async Task<IActionResult> GetAllDesignationAsyc([FromQuery] DesignationRequestDTO designationRequestDTO)
         {
             _logger.LogInfo($"Received request to get designation from userId: {designationRequestDTO.Id}");

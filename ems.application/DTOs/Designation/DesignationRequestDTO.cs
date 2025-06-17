@@ -9,7 +9,7 @@ namespace ems.application.DTOs.Designation
     public class DesignationRequestDTO
     {
         public long Id { get; set; }
-        public int SelfRoleId { get; set; }
+        public int RoleId { get; set; }
         public int DesignationId { get; set; }
         public int DesignationtId { get; set; }
     }

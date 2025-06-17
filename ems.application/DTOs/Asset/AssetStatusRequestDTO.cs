@@ -15,7 +15,7 @@ namespace ems.application.DTOs.Asset
         public string? StatusName { get; set; }  
         public string? Description { get; set; }
         public bool? IsActive { get; set; }
-        public long AddedById { get; set; }
+     
 
 
     }

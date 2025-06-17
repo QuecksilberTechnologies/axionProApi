@@ -8,7 +8,8 @@ namespace ems.application.DTOs.Asset
 {
     public class AllAssetStatusResponseDTO
     {
-        public long TenantId { get; set; }
+        public long Id { get; set; }
+        public long TenantId { get; set; }       
         public string StatusName { get; set; } = string.Empty;
         public string? Description { get; set; }
  

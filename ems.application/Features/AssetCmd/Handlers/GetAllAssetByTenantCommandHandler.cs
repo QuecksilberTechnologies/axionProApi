@@ -27,19 +27,30 @@ namespace ems.application.Features.AssetCmd.Handlers
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
-
         public async Task<ApiResponse<List<AssetResponseDTO>>> Handle(GetAllAssetByTenantCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                // Request se filter object banayein (agar DTO pass ho raha hai to)
-                Asset filterAsset = _mapper.Map<Asset>(request.getAssetTypeRequest); // ❗ Ensure correct DTO name
+                // Map request DTO to filter entity
+                Asset filterAsset = _mapper.Map<Asset>(request.getAssetTypeRequest);
 
-                // Repository call
+                // Fetch asset list
                 List<Asset> assets = await _unitOfWork.AssetRepository.GetAllAssetAsync(filterAsset);
 
-                // Map result to DTO
+                // Map to response DTO
                 List<AssetResponseDTO> getAllAssetDTOs = _mapper.Map<List<AssetResponseDTO>>(assets);
+
+                if (getAllAssetDTOs == null || !getAllAssetDTOs.Any())
+                {
+                    _logger.LogWarning("No assets found.");
+
+                    return new ApiResponse<List<AssetResponseDTO>>
+                    {
+                        IsSucceeded = false,
+                        Message = "No assets found.",
+                        Data = new List<AssetResponseDTO>()
+                    };
+                }
 
                 _logger.LogInformation("Successfully retrieved {AssetCount} asset(s).", getAllAssetDTOs.Count);
 
@@ -52,14 +63,17 @@ namespace ems.application.Features.AssetCmd.Handlers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while fetching assets.");
+                _logger.LogError(ex, "Error occurred while fetching assets.");
+
                 return new ApiResponse<List<AssetResponseDTO>>
                 {
                     IsSucceeded = false,
-                    Message = "Error occurred while fetching assets.",
-                    Data = null
+                    Message = "An error occurred while fetching assets.",
+                    Data = new List<AssetResponseDTO>()
                 };
             }
         }
+
+
     }
 }

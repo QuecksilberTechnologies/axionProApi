@@ -1,9 +1,11 @@
-﻿using ems.api.Middlewares;
+﻿using ems.api.Common;
+using ems.api.Middlewares;
 using ems.application;
 using ems.infrastructure;
 using ems.persistance;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
 using Serilog.Events;
 using System.Text;
@@ -52,16 +54,21 @@ try
     {
         options.AddPolicy("AllowReactApp", policy =>
         {
-       
 
-                  policy.WithOrigins("http://localhost:3001", "http://localhost:3000", "http://quecksilber.in", "http://localhost:4200") // React app URL
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+
+            policy.WithOrigins("http://localhost:3001", "http://localhost:3000", "http://quecksilber.in", "http://localhost:4200") // React app URL
+            .AllowAnyHeader()
+            .AllowAnyMethod();
         });
     });
 
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+    builder.Services.AddSwaggerGen(c =>
+    {
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "EMS API", Version = "v1" });
+        c.SchemaFilter<NullSchemaFilter>(); // ✅ This line is important
+    });
+
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
     builder.Services.AddPersistence(builder.Configuration);
@@ -99,6 +106,3 @@ finally
 {
     Log.CloseAndFlush();
 }
-
-
-

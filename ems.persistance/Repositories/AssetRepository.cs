@@ -273,11 +273,10 @@ namespace ems.persistance.Repositories
                     return new List<AssetStatus>();
                 }
 
-                // ✅ Sanitize input: convert "" to null and 0 to null (for optional fields)
+                // Input sanitize
                 assetStatus.IsSoftDeleted = ConstantValues.IsByDefaultFalse;
                 assetStatus.StatusName = string.IsNullOrWhiteSpace(assetStatus.StatusName) ? null : assetStatus.StatusName;
-                assetStatus.IsActive = assetStatus.IsActive == null ? true : assetStatus.IsActive; // false is valid, so keep it
-                                                                                                   // assetStatus.IsSoftDeleted = assetStatus.IsSoftDeleted == null ? false : assetStatus.IsSoftDeleted;
+                assetStatus.IsActive = assetStatus.IsActive ?? true;
                 assetStatus.AddedById = assetStatus.AddedById == 0 ? null : assetStatus.AddedById;
                 assetStatus.UpdatedById = assetStatus.UpdatedById == 0 ? null : assetStatus.UpdatedById;
                 assetStatus.DeletedById = assetStatus.DeletedById == 0 ? null : assetStatus.DeletedById;
@@ -285,15 +284,23 @@ namespace ems.persistance.Repositories
                 _logger.LogInformation("Dynamically fetching Asset Status records for TenantId: {TenantId}", assetStatus.TenantId);
 
                 IQueryable<AssetStatus> query = _context.AssetStatuses
-                    .Where(x => x.TenantId == assetStatus.TenantId);
+                    .Where(x => x.TenantId == assetStatus.TenantId && x.IsSoftDeleted == false);
 
-                query = query
-                    .Where(x => assetStatus.StatusName == null || x.StatusName.Contains(assetStatus.StatusName))
-                    .Where(x => !assetStatus.IsActive.HasValue || x.IsActive == assetStatus.IsActive)
-                    .Where(x => !assetStatus.IsSoftDeleted.HasValue || x.IsSoftDeleted == assetStatus.IsSoftDeleted)
-                    .Where(x => !assetStatus.AddedById.HasValue || x.AddedById == assetStatus.AddedById)
-                    .Where(x => !assetStatus.UpdatedById.HasValue || x.UpdatedById == assetStatus.UpdatedById)
-                    .Where(x => !assetStatus.DeletedById.HasValue || x.DeletedById == assetStatus.DeletedById);
+                // Dynamic filters
+                if (!string.IsNullOrWhiteSpace(assetStatus.StatusName))
+                    query = query.Where(x => x.StatusName.Contains(assetStatus.StatusName));
+
+                if (assetStatus.IsActive.HasValue)
+                    query = query.Where(x => x.IsActive == assetStatus.IsActive);
+
+                if (assetStatus.AddedById.HasValue)
+                    query = query.Where(x => x.AddedById == assetStatus.AddedById);
+
+                if (assetStatus.UpdatedById.HasValue)
+                    query = query.Where(x => x.UpdatedById == assetStatus.UpdatedById);
+
+                if (assetStatus.DeletedById.HasValue)
+                    query = query.Where(x => x.DeletedById == assetStatus.DeletedById);
 
                 var result = await query.OrderByDescending(x => x.AddedDateTime).ToListAsync();
 

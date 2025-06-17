@@ -39,7 +39,7 @@ namespace ems.api.Controllers.Role
         }
 
         [HttpPost("addrole")]
-           [Authorize]
+         //  [Authorize]
         public async Task<IActionResult> CreateRole([FromBody] CreateRoleDTO createRoleDTO)
         {
             _logger.LogInfo("Received request for create a new role" + createRoleDTO.ToString());
