@@ -38,18 +38,34 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                 _unitOfWork = unitOfWork;
                 _logger = logger;
             }
-  
+
         public async Task<ApiResponse<List<GetAllTenantDTO>>> Handle(GetAllTenantQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                // ✅ Correcting the method call
+                // ✅ Mapping the DTO to entity
+                var tenantDTO = _mapper.Map<Tenant>(request.tenantRequestDTO);
 
-                List<Tenant> tenants = await _unitOfWork.TenantRepository.GetAllTenantAsync();
+                // ✅ Fetching from DB
+                List<Tenant> tenants = await _unitOfWork.TenantRepository.GetAllTenantAsync(tenantDTO);
 
+                // ✅ Mapping to response DTO
                 var getAllTenantsDTOs = _mapper.Map<List<GetAllTenantDTO>>(tenants);
 
+                // ✅ Condition: if null or empty
+                if (getAllTenantsDTOs == null || !getAllTenantsDTOs.Any())
+                {
+                    _logger.LogWarning("No tenants found.");
+                    return new ApiResponse<List<GetAllTenantDTO>>
+                    {
+                        IsSucceeded = false,
+                        Message = "No tenants found.",
+                        Data = new List<GetAllTenantDTO>() // can also return null if needed
+                    };
+                }
+
                 _logger.LogInformation("Successfully retrieved {Count} Tenants.", getAllTenantsDTOs.Count);
+
                 return new ApiResponse<List<GetAllTenantDTO>>
                 {
                     IsSucceeded = true,
@@ -63,12 +79,12 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                 return new ApiResponse<List<GetAllTenantDTO>>
                 {
                     IsSucceeded = false,
-                    Message = "Tenants not fetched .",
+                    Message = "Tenants not fetched.",
                     Data = null
                 };
             }
         }
 
-         
+
     }
 }

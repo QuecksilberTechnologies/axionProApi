@@ -13,7 +13,7 @@ namespace ems.application.Interfaces.IRepositories
         Task<Tenant> GetTenantByIdAsync(long id);
         Task<bool> CheckTenantByEmail(string email);
         Task<Tenant> GetByCodeAsync(string tenantCode);
-        Task<List<Tenant>> GetAllTenantAsync();
+        Task<List<Tenant>> GetAllTenantAsync(Tenant tenant);
         Task<long> AddTenantAsync(Tenant tenant);
         Task<long> AddTenantProfileAsync(TenantProfile tenantProfile);
         Task <Tenant> UpdateTenantAsync(Tenant? tenant);

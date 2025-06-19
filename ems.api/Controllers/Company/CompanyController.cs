@@ -40,7 +40,7 @@ public class CompanyController : ControllerBase
     }
     [HttpPost("tenant")]
     // [Authorize]
-    public async Task<IActionResult> TenantCreation([FromBody] TenantCreateRequestDTO tenantCreateRequestDTO)
+    public async Task<IActionResult> TenantCreation([FromBody] application.DTOs.Registration.TenantRequestDTO tenantCreateRequestDTO)
     {
         _logger.LogInfo("Received request for register a new Tenant" + tenantCreateRequestDTO.ToString());
         var command = new CreateTenantCommand(tenantCreateRequestDTO);
@@ -52,8 +52,8 @@ public class CompanyController : ControllerBase
         return Ok(result);
     }
 
-    [HttpGet("getalltenant")]
-    public async Task<IActionResult> GetAllTenantAsync([FromQuery] TenantRequestDTO code)
+    [HttpGet("get-all-tenant")]
+    public async Task<IActionResult> GetAllTenantAsync([FromQuery] application.DTOs.Tenant.GetTenantRequestDTO code)
     {
         _logger.LogInfo($"Getting email templates for code: {code}");
 
@@ -68,6 +68,23 @@ public class CompanyController : ControllerBase
 
         return Ok(result);
     }
+    [HttpGet("get-tenant-subscription-planId-by-tenant-Id")]
+    public async Task<IActionResult> GetAllTenantSubscriptionPlanAsync([FromQuery] TenantSubscriptionPlanRequestDTO  code)
+    {
+        _logger.LogInfo($"Getting email templates for code: {code}");
+
+        var query = new TenantSubscriptionQuery(code);
+        var result = await _mediator.Send(query);
+
+        if (!result.IsSucceeded)
+        {
+            _logger.LogInfo($"No templates found for code: {code}");
+            return NotFound(result); // NotFound better than Unauthorized here
+        }
+
+        return Ok(result);
+    }
+
     [HttpPost("verify")]
     public async Task<IActionResult> VerifyEmail([FromBody] VerifyEmailRequestDTO request)
     {

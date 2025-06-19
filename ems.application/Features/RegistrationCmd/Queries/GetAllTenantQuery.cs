@@ -12,9 +12,9 @@ namespace ems.application.Features.RegistrationCmd.Queries
 {
      public class GetAllTenantQuery : IRequest<ApiResponse<List<GetAllTenantDTO>>>
     {
-        public TenantRequestDTO? tenantRequestDTO { get; set; }
+        public GetTenantRequestDTO? tenantRequestDTO { get; set; }
 
-        public GetAllTenantQuery(TenantRequestDTO tenantRequestDTO)
+        public GetAllTenantQuery(GetTenantRequestDTO tenantRequestDTO)
         {
             this.tenantRequestDTO = tenantRequestDTO;
         }

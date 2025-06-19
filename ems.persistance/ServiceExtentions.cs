@@ -54,6 +54,9 @@ namespace ems.persistance
             services.AddScoped<ITenantRepository, TenantRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
             services.AddTransient<ITenantEmailConfigRepository, TenantEmailConfigRepository>();
+            services.AddTransient<ISubscriptionRepository, SubscriptionRepository>();
+
+            services.AddTransient<ITenantSubscriptionRepository, TenantSubscriptionRepository>();
 
           
 

@@ -36,6 +36,7 @@
     <Folder Include="Features\EmployeeCmd\NewFolder\Queries\" />
     <Folder Include="Features\ServiceProviderCmd\Commands\" />
     <Folder Include="Features\ServiceProviderCmd\Queries\" />
+    <Folder Include="Features\SubscriptionCmd\Queries\" />
     <Folder Include="Features\UserLoginAndDashboardCmd\Queries\" />
     <Folder Include="Features\VerifyEmailCmd\Queries\" />
     <Folder Include="Features\WorkstationCmd\Commands\" />

@@ -1,0 +1,89 @@
+﻿using AutoMapper;
+using ems.application.DTOs.SubscriptionModule;
+using ems.application.Features.SubscriptionCmd.Commands;
+using ems.application.Interfaces;
+using ems.application.Interfaces.IRepositories;
+using ems.application.Wrappers;
+using ems.domain.Entity;
+using MediatR;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace ems.application.Features.SubscriptionCmd.Handlers
+{
+    public class GetSubscriptionPlanCommandHandler : IRequestHandler<GetSubscriptionPlanCommand, ApiResponse<List<SubscriptionPlanResponseDTO>>>
+    {
+        private readonly ISubscriptionRepository _subscriptionRepository;
+        private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<GetSubscriptionPlanCommandHandler> _logger;
+
+      
+        public GetSubscriptionPlanCommandHandler(ISubscriptionRepository subscriptionRepository, IMapper mapper, IUnitOfWork unitOfWork  , ILogger<GetSubscriptionPlanCommandHandler> logger)
+        {
+            _subscriptionRepository = subscriptionRepository;
+            _mapper = mapper;
+            _unitOfWork = unitOfWork;
+        }
+
+        public async Task<ApiResponse<List<SubscriptionPlanResponseDTO>>> Handle(GetSubscriptionPlanCommand request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                // ✅ Validation
+                if (request == null)
+                {
+                    _logger.LogWarning("SubscriptionPlanRequestDTO is null.");
+                    return new ApiResponse<List<SubscriptionPlanResponseDTO>>
+                    {
+                        IsSucceeded = false,
+                        Message = "Request cannot be null.",
+                        Data = null
+                    };
+                }
+
+                if (request.subscriptionPlanRequestDTO.TenantId == 0 || request.subscriptionPlanRequestDTO.TenantId <= 0)
+                {
+                    _logger.LogWarning("Invalid TenantId: {TenantId}", request.subscriptionPlanRequestDTO.TenantId);
+                    return new ApiResponse<List<SubscriptionPlanResponseDTO>>
+                    {
+                        IsSucceeded = false,
+                        Message = "TenantId is required and must be greater than 0.",
+                        Data = null
+                    };
+                }
+
+             //   var subscriptions = _mapper.Map<SubscriptionPlan>(request.subscriptionPlanRequestDTO);
+
+                // ✅ Get all plans
+                List<SubscriptionPlan> subscriptionPlans = await _unitOfWork.SubscriptionRepository.GetAllPlansAsync();
+
+
+               // List<SubscriptionPlanResponseDTO> mappedPlans = _mapper.Map < List < SubscriptionPlanResponseDTO >> (subscriptionPlans);
+                var mappedPlans = _mapper.Map<List<SubscriptionPlanResponseDTO>>(subscriptionPlans);
+
+
+                return new ApiResponse<List<SubscriptionPlanResponseDTO>>
+                {
+                    IsSucceeded = true,
+                    Message = "Plans fetched successfully.",
+                    Data = mappedPlans
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while fetching plans.");
+                return new ApiResponse<List<SubscriptionPlanResponseDTO>>
+                {
+                    IsSucceeded = false,
+                    Message = "Something went wrong while fetching plans.",
+                    Data = null
+                };
+            }
+        }
+    }
+}

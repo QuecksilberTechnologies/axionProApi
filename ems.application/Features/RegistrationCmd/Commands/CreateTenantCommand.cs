@@ -12,9 +12,9 @@ namespace ems.application.Features.RegistrationCmd.Commands
 {
     public class CreateTenantCommand : IRequest<ApiResponse<TenantCreateResponseDTO>>
     {
-        public TenantCreateRequestDTO TenantCreateRequestDTO { get; set; }
+        public TenantRequestDTO TenantCreateRequestDTO { get; set; }
 
-        public CreateTenantCommand(TenantCreateRequestDTO createRequestDTO)
+        public CreateTenantCommand(TenantRequestDTO createRequestDTO)
         {
             TenantCreateRequestDTO = createRequestDTO;
         }

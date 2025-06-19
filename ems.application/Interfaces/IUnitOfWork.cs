@@ -1,5 +1,6 @@
 ﻿using ems.application.Interfaces.IRepositories;
 using ems.application.Interfaces.ITokenService;
+using ems.domain.Entity;
 
 namespace ems.application.Interfaces;
 
@@ -9,10 +10,14 @@ public interface IUnitOfWork : IDisposable
     IUserLoginReopsitory UserLoginRepository { get; }
     ICommonRepository CommonRepository { get; }
     ICountryRepository CountryRepository { get; }
-   //
-   // INewTokenRepository newTokenRepository { get; } 
- 
-     ITenantRepository TenantRepository { get; }
+    //
+    // INewTokenRepository newTokenRepository { get; } 
+
+    ISubscriptionRepository SubscriptionRepository { get; }
+     
+     
+    ITenantRepository TenantRepository { get; }
+    ITenantSubscriptionRepository TenantSubscriptionRepository { get; }
     IRefreshTokenRepository RefreshTokenRepository { get; }
    // IEmployeeRepository EmployeeRepository { get; }
     IAssetRepository AssetRepository { get; }

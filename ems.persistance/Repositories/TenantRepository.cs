@@ -21,8 +21,60 @@ namespace ems.persistance.Repositories
             _logger = logger;
         }
 
-       
-        public async Task<List<Tenant>> GetAllTenantAsync() => await _context.Tenants.ToListAsync();
+        public async Task<List<Tenant>> GetAllTenantAsync(Tenant tenant)
+        {
+            try
+            {
+                // ✅ Null check
+                if (tenant == null)
+                {
+                    _logger.LogWarning("Tenant filter is null while fetching tenants.");
+                    return new List<Tenant>();
+                }
+
+                // ✅ Build base query
+                IQueryable<Tenant> query = _context.Tenants.Where(x => x.IsActive == true);
+
+                // ✅ Apply dynamic filters based on non-null or non-empty values
+                if (!string.IsNullOrWhiteSpace(tenant.CompanyName))
+                    query = query.Where(x => x.CompanyName.Contains(tenant.CompanyName));
+
+                if (!string.IsNullOrWhiteSpace(tenant.CompanyEmailDomain))
+                    query = query.Where(x => x.CompanyEmailDomain.Contains(tenant.CompanyEmailDomain));
+
+                if (!string.IsNullOrWhiteSpace(tenant.TenantEmail))
+                    query = query.Where(x => x.TenantEmail.Contains(tenant.TenantEmail));
+
+                if (!string.IsNullOrWhiteSpace(tenant.ContactPersonName))
+                    query = query.Where(x => x.ContactPersonName.Contains(tenant.ContactPersonName));
+
+                if (!string.IsNullOrWhiteSpace(tenant.ContactNumber))
+                    query = query.Where(x => x.ContactNumber.Contains(tenant.ContactNumber));
+
+                if (!string.IsNullOrWhiteSpace(tenant.TenantCode))
+                    query = query.Where(x => x.TenantCode.Contains(tenant.TenantCode));
+
+                if (tenant.CountryId > 0)
+                    query = query.Where(x => x.CountryId == tenant.CountryId);
+
+              //  query = query.Where(x => x.IsActive == tenant.IsActive);
+                //query = query.Where(x => x.IsVerified == tenant.IsVerified);
+
+                // ✅ Execute query
+                var result = await query.ToListAsync();
+
+                _logger.LogInformation("Fetched {Count} tenants matching the criteria.", result.Count);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching tenant list.");
+                return new List<Tenant>();
+            }
+        }
+
+
         public async Task<long> AddTenantAsync(Tenant tenant)
         {
             try

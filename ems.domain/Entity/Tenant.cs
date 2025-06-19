@@ -33,6 +33,7 @@ public partial class Tenant
 
     public virtual ICollection<TenantProfile> TenantProfiles { get; set; } = new List<TenantProfile>();
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
+    public virtual ICollection<TenantSubscription> TenantSubscriptions { get; set; } = new List<TenantSubscription>();
 
 
 }

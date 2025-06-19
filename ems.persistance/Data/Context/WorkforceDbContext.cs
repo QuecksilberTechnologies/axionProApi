@@ -14,6 +14,13 @@ namespace ems.persistance.Data.Context
 
         public virtual DbSet<AccoumndationAllowancePolicyByDesignation> AccoumndationAllowancePolicyByDesignations { get; set; }
 
+        public virtual DbSet<Module> Modules { get; set; }
+        public virtual DbSet<TenantSubscription> TenantSubscriptions { get; set; }
+        public virtual DbSet<SubscriptionPlan> SubscriptionPlans { get; set; }
+        public virtual DbSet<PlanModuleMapping> PlanModuleMappings { get; set; }
+
+        public virtual DbSet<ModuleOperationMapping> ModuleOperationMappings { get; set; }
+
         public virtual DbSet<Asset> Assets { get; set; }
         public virtual DbSet<CommonItem> CommonItems { get; set; }
         public virtual DbSet<RoleModulePermission> RoleModulePermissions { get; set; }
@@ -737,6 +744,27 @@ namespace ems.persistance.Data.Context
                 entity.HasOne(d => d.Tenant).WithMany(p => p.TenantEmailConfigs)
                     .HasForeignKey(d => d.TenantId)
                     .HasConstraintName("FK_TenantEmailConfig_Tenant");
+            });
+            modelBuilder.Entity<TenantSubscription>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__TenantSu__3214EC07CF143048");
+
+                entity.ToTable("TenantSubscription", "AxionPro");
+
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.PaymentMode).HasMaxLength(50);
+                entity.Property(e => e.PaymentTxnId).HasMaxLength(100);
+                entity.Property(e => e.SubscriptionStartDate).HasDefaultValueSql("(getdate())");
+
+                entity.HasOne(d => d.SubscriptionPlan).WithMany(p => p.TenantSubscriptions)
+                    .HasForeignKey(d => d.SubscriptionPlanId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TenantSubscription_Plan");
+
+                entity.HasOne(d => d.Tenant).WithMany(p => p.TenantSubscriptions)
+                    .HasForeignKey(d => d.TenantId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TenantSubscription_Tenant");
             });
 
             modelBuilder.Entity<TenantProfile>(entity =>
@@ -1510,6 +1538,23 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.WebsiteUrl)
                     .HasMaxLength(255)
                     .HasColumnName("WebsiteURL");
+            });
+
+            modelBuilder.Entity<SubscriptionPlan>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Subscrip__3214EC07BED0F0D0");
+
+                entity.ToTable("SubscriptionPlan", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.MonthlyPrice).HasColumnType("decimal(10, 2)");
+                entity.Property(e => e.PerDayPrice).HasColumnType("decimal(10, 2)");
+                entity.Property(e => e.PlanName).HasMaxLength(100);
+                
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.YearlyPrice).HasColumnType("decimal(10, 2)");                 
+       
             });
 
             modelBuilder.Entity<ServiceProviderContact>(entity =>

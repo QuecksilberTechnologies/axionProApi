@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Registration
 {
-    public class TenantCreateRequestDTO
+    public class TenantRequestDTO
     {
        
         public string CompanyName { get; set; } = null!;

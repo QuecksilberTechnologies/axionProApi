@@ -12,6 +12,7 @@ using ems.application.DTOs.Operation;
 using ems.application.DTOs.Region;
 using ems.application.DTOs.Registration;
 using ems.application.DTOs.Role;
+using ems.application.DTOs.SubscriptionModule;
 using ems.application.DTOs.Tenant;
 using ems.application.DTOs.Transport;
 using ems.application.DTOs.UserLogin;
@@ -61,6 +62,11 @@ namespace ems.application.Mappings
                 //                                       : default));
            
             CreateMap<Asset, AssetRequestDTO>().ReverseMap();
+
+ 
+            CreateMap<SubscriptionPlanResponseDTO,SubscriptionPlan >().ReverseMap();
+
+
 
             CreateMap<AssetResponseDTO, Asset>().ReverseMap();
            
@@ -195,11 +201,17 @@ namespace ems.application.Mappings
             CreateMap<EmailTemplate, EmailTemplateDTO>().ReverseMap();
             CreateMap<LoginCredential, SetLoginPasswordRequestDTO>().ReverseMap();
 
-            CreateMap<Tenant, TenantCreateRequestDTO>().ReverseMap();
+            CreateMap<Tenant, TenantRequestDTO>().ReverseMap();
             CreateMap<LoginCredential, Employee>().ReverseMap();
             CreateMap<Country, GetAllCountryDTO>().ReverseMap();
-            CreateMap<Tenant, GetAllTenantDTO>().ReverseMap();
+            CreateMap<Tenant,  GetTenantRequestDTO>().ReverseMap(); 
+            CreateMap<GetAllTenantDTO, Tenant>().ReverseMap();
            
+            
+          
+            CreateMap<TenantSubscriptionPlanRequestDTO, TenantSubscription>().ReverseMap();
+            CreateMap<TenantSubscriptionPlanResponseDTO, TenantSubscription>().ReverseMap();
+            
 
             CreateMap<CandidateRequestDTO, Candidate>()
          .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))

@@ -8,11 +8,22 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Storage;
 using ems.application.Interfaces.ITokenService;
 using System.Diagnostics.Metrics;
+using ems.domain.Entity;
+using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using FluentValidation;
 public class UnitOfWork  : IUnitOfWork
 {
+
+    
+
     private readonly WorkforceDbContext _context;
+
+
     private readonly ILoggerFactory _loggerFactory;
-    private IDbContextTransaction? _currentTransaction;
+    private IDbContextTransaction? _currentTransaction; 
+
+
     private ILeaveRepository? _leaveRepository;
     private ITenantRepository? _tenantRepository;
     private IEmployeeRepository? _employeeRepository;
@@ -33,14 +44,17 @@ public class UnitOfWork  : IUnitOfWork
     private ICommonRepository _commonRepository;
     private IUserLoginReopsitory? _userLoginReopsitory;
     private IEmailTemplateRepository _emailTemplateRepository;
-
-
+    private ISubscriptionRepository? _subscriptionRepository;
+    private ITenantSubscriptionRepository? _tenantSubscriptionRepository;
+    
     // private IClientRepository? _clientRepository;
 
 
-    public UnitOfWork(WorkforceDbContext context, ILoggerFactory loggerFactory)
+
+    public UnitOfWork(WorkforceDbContext context, IMapper mapper, ILoggerFactory loggerFactory)
     {
         _context = context;
+       // _mapper = mapper;
         _loggerFactory = loggerFactory;
     }
 
@@ -91,6 +105,9 @@ public class UnitOfWork  : IUnitOfWork
         }
     }
 
+
+
+
     public ICountryRepository CountryRepository
     {
         get
@@ -123,6 +140,14 @@ public class UnitOfWork  : IUnitOfWork
         }
     }
 
+
+    public ITenantSubscriptionRepository TenantSubscriptionRepository
+    {
+        get
+        {
+            return _tenantSubscriptionRepository ??= new TenantSubscriptionRepository(_context, _loggerFactory.CreateLogger<TenantSubscriptionRepository>());
+        }
+    }
     public IEmployeeTypeRepository EmployeeTypeRepository
     {
         get
@@ -152,8 +177,14 @@ public class UnitOfWork  : IUnitOfWork
     //public ICommonRepository CommonRepository => new CommonRepository(_context, _loggerFactory.CreateLogger<CommonRepository>());
 
     public IUserLoginReopsitory UserLoginRepository => new UserLoginReopsitory(_context, _loggerFactory.CreateLogger<UserLoginReopsitory>());
+    
+    
     public IRefreshTokenRepository RefreshTokenRepository =>  new RefreshTokenRepository(_context, _loggerFactory.CreateLogger<RefreshTokenRepository>());
     public IAssetRepository AssetRepository => new AssetRepository(_context, _loggerFactory.CreateLogger<AssetRepository>());
+    public ISubscriptionRepository SubscriptionRepository => new SubscriptionRepository(_context, _loggerFactory.CreateLogger<SubscriptionRepository>());
+
+
+
 
 
     public ITravelRepository TravelRepository => new TravelRepository(_context, _loggerFactory.CreateLogger<TravelRepository>());
@@ -206,7 +237,6 @@ public class UnitOfWork  : IUnitOfWork
         }
     }
 
-  
 
 
 
