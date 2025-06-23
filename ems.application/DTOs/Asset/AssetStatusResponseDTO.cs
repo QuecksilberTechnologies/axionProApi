@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Asset
 {
-    public class AllAssetStatusResponseDTO
+    public class AssetStatusResponseDTO
     {
         public long Id { get; set; }
         public long TenantId { get; set; }       

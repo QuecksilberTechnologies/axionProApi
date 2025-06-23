@@ -6,15 +6,26 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.ProjectModule
 {
-    public class ProjectModuleDetailDTO
+    public class ModuleDetailResponseDTO
     {
-        public int Id { get; set; }
+        public int ModuleId { get; set; }
+
         public string? ModuleName { get; set; }
-        public string? ModuleURL { get; set; }
-        public bool IsActive { get; set; }
+
+        public string? SubModuleURL { get; set; }
+
+        public string? ImageIconWeb { get; set; }
+
+        public string? ImageIconMobile { get; set; }
+
+        public bool? IsModuleDisplayInUI { get; set; }
+
+        public bool? IsActive { get; set; }
+
         public string? Remark { get; set; }
-        public string? IconImage { get; set; }
-        public List<ProjectSubModuleDetailDTO> SubModules { get; set; } = new List<ProjectSubModuleDetailDTO>();
+
+        public int? ParentModuleId { get; set; }
+
 
     }
 

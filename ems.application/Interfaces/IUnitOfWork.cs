@@ -7,6 +7,7 @@ namespace ems.application.Interfaces;
 public interface IUnitOfWork : IDisposable
 {
     // Repositories
+    IModuleRepository ModuleRepository { get; }
     IUserLoginReopsitory UserLoginRepository { get; }
     ICommonRepository CommonRepository { get; }
     ICountryRepository CountryRepository { get; }
@@ -14,9 +15,9 @@ public interface IUnitOfWork : IDisposable
     // INewTokenRepository newTokenRepository { get; } 
 
     ISubscriptionRepository SubscriptionRepository { get; }
-     
-     
-    ITenantRepository TenantRepository { get; }
+    IPlanModuleMappingRepository PlanModuleMappingRepository { get; }
+
+     ITenantRepository TenantRepository { get; }
     ITenantSubscriptionRepository TenantSubscriptionRepository { get; }
     IRefreshTokenRepository RefreshTokenRepository { get; }
    // IEmployeeRepository EmployeeRepository { get; }

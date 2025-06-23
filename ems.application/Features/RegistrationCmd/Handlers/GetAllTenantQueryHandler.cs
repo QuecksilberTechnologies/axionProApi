@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 namespace ems.application.Features.RegistrationCmd.Handlers
 {
  
-        public class GetAllTenantQueryHandler : IRequestHandler<GetAllTenantQuery, ApiResponse<List<GetAllTenantDTO>>>
+        public class GetAllTenantQueryHandler : IRequestHandler<GetAllTenantQuery, ApiResponse<List<TenantResponseDTO>>>
          {
             private readonly ITenantRepository _tenantRepository;
             private readonly IMapper _mapper;
@@ -39,7 +39,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                 _logger = logger;
             }
 
-        public async Task<ApiResponse<List<GetAllTenantDTO>>> Handle(GetAllTenantQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<TenantResponseDTO>>> Handle(GetAllTenantQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -50,23 +50,23 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                 List<Tenant> tenants = await _unitOfWork.TenantRepository.GetAllTenantAsync(tenantDTO);
 
                 // ✅ Mapping to response DTO
-                var getAllTenantsDTOs = _mapper.Map<List<GetAllTenantDTO>>(tenants);
+                var getAllTenantsDTOs = _mapper.Map<List<TenantResponseDTO>>(tenants);
 
                 // ✅ Condition: if null or empty
                 if (getAllTenantsDTOs == null || !getAllTenantsDTOs.Any())
                 {
                     _logger.LogWarning("No tenants found.");
-                    return new ApiResponse<List<GetAllTenantDTO>>
+                    return new ApiResponse<List<TenantResponseDTO>>
                     {
                         IsSucceeded = false,
                         Message = "No tenants found.",
-                        Data = new List<GetAllTenantDTO>() // can also return null if needed
+                        Data = new List<TenantResponseDTO>() // can also return null if needed
                     };
                 }
 
                 _logger.LogInformation("Successfully retrieved {Count} Tenants.", getAllTenantsDTOs.Count);
 
-                return new ApiResponse<List<GetAllTenantDTO>>
+                return new ApiResponse<List<TenantResponseDTO>>
                 {
                     IsSucceeded = true,
                     Message = "Tenants fetched successfully.",
@@ -76,7 +76,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while fetching Tenants.");
-                return new ApiResponse<List<GetAllTenantDTO>>
+                return new ApiResponse<List<TenantResponseDTO>>
                 {
                     IsSucceeded = false,
                     Message = "Tenants not fetched.",

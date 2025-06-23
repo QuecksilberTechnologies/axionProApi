@@ -24,41 +24,30 @@ namespace ems.persistance.Repositories
             _logger = logger;
         }
 
-        public async Task<List<Role>> CreateRoleAsync(Role role)
+
+        public async Task<List<Role>> GetAllRolesAsync(Role role)
         {
             try
             {
-                 
-                role.AddedDateTime = DateTime.Now; // or DateTime.UtcNow                
-                await _context.Roles.AddAsync(role);
-                // Changes ko save karenge
-                await _context.SaveChangesAsync();
+                _logger.LogInformation("Fetching roles for TenantId: {TenantId}", role.TenantId);
 
-                // Added role ko return karenge
-                // `GetAllRolesAsync()` se returned IEnumerable ko List mein convert karenge
-                return (await GetAllRolesAsync())
-                 .OrderByDescending(r => r.Id) // Latest Role पहले आएगा
-                 .ToList();
-            }
-            catch (Exception ex)
-            {
-                // Exception ko log karenge
-                _logger.LogError(ex, "Error occurred while creating role.");
-                throw;  // Rethrow the exception for further handling
-            }
-        }
-        public async Task<List<Role>> GetAllRolesAsync()
-        {
-            try
-            {
-                _logger.LogInformation("Fetching all roles from the database...");
+                IQueryable<Role> query = _context.Roles.AsQueryable();
 
-                var roles = await _context.Roles.ToListAsync(); // ✅ Corrected EF Core syntax
+                // ✅ Apply filters
+                if (role.TenantId > 0)
+                    query = query.Where(r => r.TenantId == role.TenantId);
+
+                query = query.Where(r => r.IsActive == true);
+
+                // ✅ Optional: check for soft delete if column exists
+                // query = query.Where(r => r.IsSoftDeleted == false);
+
+                var roles = await query.OrderBy(r => r.RoleName).ToListAsync();
 
                 if (roles == null || !roles.Any())
                 {
-                    _logger.LogWarning("No roles found in the database.");
-                    return new List<Role>(); // Empty list return karein instead of null
+                    _logger.LogWarning("No roles found for TenantId: {TenantId}", role.TenantId);
+                    return new List<Role>();
                 }
 
                 _logger.LogInformation("Successfully retrieved {Count} roles.", roles.Count);
@@ -66,11 +55,10 @@ namespace ems.persistance.Repositories
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while fetching roles.");
-                return new List<Role>(); // Exception ke case me empty list return karein
+                _logger.LogError(ex, "An error occurred while fetching roles for TenantId: {TenantId}", role.TenantId);
+                return new List<Role>();
             }
         }
-
 
         public Task<bool> DeleteRoleAsync(int roleId)
         {
@@ -83,7 +71,7 @@ namespace ems.persistance.Repositories
             try
             {
                 // Role ko Id ke basis par find karenge
-                var role = await _context.Roles.Where(r => r.Id == roleId).FirstOrDefaultAsync(); // Agar record milta hai toh return karega, nahi toh null
+                var role = await _context.Roles.Where(r => r.Id == roleId && ( r.IsSoftDeleted ==false && r.IsActive ==true)).FirstOrDefaultAsync(); // Agar record milta hai toh return karega, nahi toh null
 
                 if (role == null)
                 {
@@ -99,39 +87,50 @@ namespace ems.persistance.Repositories
                 throw;  // Rethrow the exception for further handling
             }
         }
-
-
-        public async Task<List<Role>> UpdateRoleAsync(Role role)
+        public async Task<Role> CreateRoleAsync(Role role)
         {
             try
             {
-                // Role को db से ढूंढेंगे जो हमें update करना है
+                role.AddedDateTime = DateTime.Now; // or DateTime.UtcNow                
+                await _context.Roles.AddAsync(role);
+                await _context.SaveChangesAsync();
+
+                // Abhi ye role object updated state mein hai (Id bhi set ho gaya hoga DB se)
+                return role;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while creating role.");
+                throw;
+            }
+        }
+
+        public async Task<Role> UpdateRoleAsync(Role role)
+        {
+            try
+            {
                 var existingRole = await _context.Roles.FirstOrDefaultAsync(r => r.Id == role.Id);
 
                 if (existingRole == null)
                 {
                     _logger.LogWarning("Role with ID {RoleId} not found.", role.Id);
-                    return new List<Role>(); // Agar role nahi milta, to empty list return karenge
+                    return null; // Empty object dena accha practice nahi, isliye null return karo
                 }
 
-                // Existing role ke fields ko update karenge
                 existingRole.RoleName = role.RoleName;
                 existingRole.Remark = role.Remark;
                 existingRole.IsActive = role.IsActive;
-                existingRole.UpdatedById = role.UpdatedById; // Assuming Update operation needs tracking
+                existingRole.UpdatedById = role.UpdatedById;
                 existingRole.UpdatedDateTime = DateTime.Now; // or DateTime.UtcNow
 
-                // Changes ko save karenge
                 await _context.SaveChangesAsync();
 
-                // Updated role ko return karenge
-                return (await GetAllRolesAsync()).ToList(); // `GetAllRolesAsync()` ko call karenge taaki updated data fetch ho sake
+                return existingRole;
             }
             catch (Exception ex)
             {
-                // Exception ko log karenge
                 _logger.LogError(ex, "Error occurred while updating role with ID {RoleId}.", role.Id);
-                throw;  // Rethrow the exception for further handling
+                throw;
             }
         }
 

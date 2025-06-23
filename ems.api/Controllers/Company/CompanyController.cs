@@ -38,7 +38,7 @@ public class CompanyController : ControllerBase
         _logger.LogInfo("Company is created");
         return Ok();
     }
-    [HttpPost("tenant")]
+    [HttpPost("create-tenant")]
     // [Authorize]
     public async Task<IActionResult> TenantCreation([FromBody] application.DTOs.Registration.TenantRequestDTO tenantCreateRequestDTO)
     {
@@ -53,7 +53,7 @@ public class CompanyController : ControllerBase
     }
 
     [HttpGet("get-all-tenant")]
-    public async Task<IActionResult> GetAllTenantAsync([FromQuery] application.DTOs.Tenant.GetTenantRequestDTO code)
+    public async Task<IActionResult> GetAllTenantAsync([FromQuery] application.DTOs.Tenant.TenantRequestDTO code)
     {
         _logger.LogInfo($"Getting email templates for code: {code}");
 

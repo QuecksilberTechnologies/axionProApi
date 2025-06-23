@@ -11,9 +11,9 @@ namespace ems.application.Features.AssetCmd.Commands
 {
     public class UpdateAssetCommand : IRequest<ApiResponse<AssetResponseDTO>>
     {
-        public UpdateAssetDTO updateAssetDTO { get; set; }
+        public UpdateAssetRequestDTO updateAssetDTO { get; set; }
 
-        public UpdateAssetCommand(UpdateAssetDTO updateAssetDTO)
+        public UpdateAssetCommand(UpdateAssetRequestDTO updateAssetDTO)
         {
             this.updateAssetDTO = updateAssetDTO;
         }

@@ -9,10 +9,11 @@ namespace ems.application.DTOs.Role
 
     public class RoleRequestDTO
     {
-        public long Id { get; set; }
-        public int SelfRoleId { get; set; }
-        public int DesignationId { get; set; }
+        public long TenantId { get; set; }
+        public long EmployeeId { get; set; }
         public int RoleId { get; set; }
+        public int DesignationId { get; set; }
+        
 
 
     }

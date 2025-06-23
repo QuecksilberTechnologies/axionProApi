@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.RoleCmd.Handlers
 {
-    public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, ApiResponse<List<GetAllRoleDTO>>>
+    public class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, ApiResponse<RoleResponseDTO>>
     {
         private readonly IRoleRepository _roleRepository;
         private readonly IMapper _mapper;
@@ -30,26 +30,26 @@ namespace ems.application.Features.RoleCmd.Handlers
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
-        public async Task<ApiResponse<List<GetAllRoleDTO>>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<RoleResponseDTO>> Handle(CreateRoleCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 Role roleEntity = _mapper.Map<Role>(request.createRoleDTO);
-                List<Role> createdRoles = await _roleRepository.CreateRoleAsync(roleEntity);
+                Role createdRoles = await _roleRepository.CreateRoleAsync(roleEntity);
 
-                if (createdRoles == null || !createdRoles.Any())
+                if (createdRoles == null)
                 {
-                    return new ApiResponse<List<GetAllRoleDTO>>
+                    return new ApiResponse<RoleResponseDTO>
                     {
                         IsSucceeded = false,
                         Message = "No roles were created.",
-                        Data = new List<GetAllRoleDTO>()
+                        Data = new RoleResponseDTO()
                     };
                 }
 
-                List<GetAllRoleDTO> roleDTOs = _mapper.Map<List<GetAllRoleDTO>>(createdRoles);
+                RoleResponseDTO roleDTOs = _mapper.Map<RoleResponseDTO>(createdRoles);
 
-                return new ApiResponse<List<GetAllRoleDTO>>
+                return new ApiResponse<RoleResponseDTO>
                 {
                     IsSucceeded = true,
                     Message = "Role created successfully",
@@ -59,7 +59,7 @@ namespace ems.application.Features.RoleCmd.Handlers
             catch (Exception ex)
             {
               //  _logger.LogError(ex, "Error occurred while creating role.");
-                return new ApiResponse<List<GetAllRoleDTO>>
+                return new ApiResponse<RoleResponseDTO>
                 {
                     IsSucceeded = false,
                     Message = $"An error occurred: {ex.Message}",

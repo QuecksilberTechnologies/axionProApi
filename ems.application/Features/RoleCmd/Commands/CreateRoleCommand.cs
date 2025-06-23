@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace ems.application.Features.RoleCmd.Commands
 {
 
-    public class CreateRoleCommand : IRequest<ApiResponse<List<GetAllRoleDTO>>>
+    public class CreateRoleCommand : IRequest<ApiResponse<RoleResponseDTO>>
      {
         public CreateRoleDTO createRoleDTO { get; set; }
 

@@ -51,8 +51,8 @@ namespace ems.api.Controllers.Role
             }
             return Ok(result);
         }
-        [Authorize]
-        [HttpGet("getallrole")]
+     //   [Authorize]
+        [HttpGet("get-allrole-by-tenant")]
         public async Task<IActionResult> GetAllRoles([FromQuery] RoleRequestDTO? roleRequestDTO)
         {
             if (roleRequestDTO == null)

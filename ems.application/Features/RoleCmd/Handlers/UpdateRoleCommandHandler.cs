@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.RoleCmd.Handlers
 {
-    public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, ApiResponse<List<GetAllRoleDTO>>>
+    public class UpdateRoleCommandHandler : IRequestHandler<UpdateRoleCommand, ApiResponse<RoleResponseDTO>>
     {
         private readonly IRoleRepository _roleRepository;
         private readonly IMapper _mapper;
@@ -34,7 +34,7 @@ namespace ems.application.Features.RoleCmd.Handlers
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<ApiResponse<List<GetAllRoleDTO>>> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<RoleResponseDTO>> Handle(UpdateRoleCommand request, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Handling UpdateRoleCommand for RoleId: {RoleId}", request.updateRoleDTO.Id);
 
@@ -46,29 +46,29 @@ namespace ems.application.Features.RoleCmd.Handlers
 
                 // Update role in the repository
                 _logger.LogInformation("Updating role in the repository...");
-                List<Role> updatedRoles = await _roleRepository.UpdateRoleAsync(roleEntity);
+                Role updatedRoles = await _roleRepository.UpdateRoleAsync(roleEntity);
 
                 // If no roles were updated, return an appropriate message
-                if (updatedRoles == null || !updatedRoles.Any())
+                if (updatedRoles == null)
                 {
                     _logger.LogWarning("No roles were updated for RoleId: {RoleId}", request.updateRoleDTO.Id);
-                    return new ApiResponse<List<GetAllRoleDTO>>
+                    return new ApiResponse<RoleResponseDTO>
                     {
                         IsSucceeded = false,
                         Message = "No roles were updated.",
-                        Data = new List<GetAllRoleDTO>()
+                        Data = new RoleResponseDTO()
                     };
                 }
 
                 _logger.LogInformation("Successfully updated roles in database. Mapping to DTO...");
 
                 // Map the updated roles to DTOs
-                List<GetAllRoleDTO> roleDTOs = _mapper.Map<List<GetAllRoleDTO>>(updatedRoles);
+                RoleResponseDTO roleDTOs = _mapper.Map<RoleResponseDTO>(updatedRoles);
                 _logger.LogDebug("Mapped updated roles to DTO: {@RoleDTOs}", roleDTOs);
 
                 // Return the success response
                 _logger.LogInformation("UpdateRoleCommand handled successfully.");
-                return new ApiResponse<List<GetAllRoleDTO>>
+                return new ApiResponse<RoleResponseDTO>
                 {
                     IsSucceeded = true,
                     Message = "Roles updated successfully",
@@ -78,7 +78,7 @@ namespace ems.application.Features.RoleCmd.Handlers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred while updating roles for RoleId: {RoleId}", request.updateRoleDTO.Id);
-                return new ApiResponse<List<GetAllRoleDTO>>
+                return new ApiResponse<RoleResponseDTO>
                 {
                     IsSucceeded = false,
                     Message = $"An error occurred: {ex.Message}",

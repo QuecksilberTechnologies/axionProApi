@@ -46,7 +46,7 @@ namespace ems.api.Controllers.Asset
 
         [HttpPost("update-asset-by-admin")]
         // [Authorize]
-        public async Task<IActionResult> UpdateAsset([FromBody] UpdateAssetDTO updateAssetDTO)
+        public async Task<IActionResult> UpdateAsset([FromBody] UpdateAssetRequestDTO updateAssetDTO)
         {
             _logger.LogInfo("Received request for update a new Asset" + updateAssetDTO.ToString());
             var command = new UpdateAssetCommand(updateAssetDTO);
@@ -75,7 +75,7 @@ namespace ems.api.Controllers.Asset
 
         [HttpPost("add-asset-by-admin")]
         //[authorize]
-        public async Task<IActionResult> createasset([FromBody] CreateAssetDTO createassetdto)
+        public async Task<IActionResult> createasset([FromBody] CreateAssetRequestDTO createassetdto)
         {
             _logger.LogInfo("received request for create a new asset" + createassetdto);
             var command = new CreateAssetCommand(createassetdto);
@@ -92,7 +92,7 @@ namespace ems.api.Controllers.Asset
         
         [HttpPost("add-asset-status-by-admin")]
         // [Authorize]
-        public async Task<IActionResult> CreateAssetStatus([FromBody] AddAssetStatusRequestDTO addAssetStatusRequestDTO)
+        public async Task<IActionResult> CreateAssetStatus([FromBody] AssetStatusRequestDTO addAssetStatusRequestDTO)
         {
             _logger.LogInfo("Received request for create a new Asset" + addAssetStatusRequestDTO.ToString());
             var command = new AddStatusByTenantCommand(addAssetStatusRequestDTO);
@@ -117,7 +117,7 @@ namespace ems.api.Controllers.Asset
             return Ok(result);
         }
         [HttpPost("get-all-asset-status")]
-        public async Task<IActionResult> GetAllAssets([FromBody] AddAssetStatusRequestDTO? assetStatusRequestDTO)
+        public async Task<IActionResult> GetAllAssets([FromBody] AssetStatusRequestDTO? assetStatusRequestDTO)
         {
             if (assetStatusRequestDTO == null)
             {
@@ -170,7 +170,7 @@ namespace ems.api.Controllers.Asset
 
         [HttpPost("gell-all-asset-type")]
         // [Authorize]
-        public async Task<IActionResult> GetAllAssetTypeByTenant([FromBody] GetAssetTypeRequestDTO getAllAssetTypeDTO)
+        public async Task<IActionResult> GetAllAssetTypeByTenant([FromBody] AssetTypeRequestDTO getAllAssetTypeDTO)
         {
             _logger.LogInfo("Received request for create a new Asset Type" + getAllAssetTypeDTO.ToString());
             var command = new GetAllAssetTypeByTenantCommand(getAllAssetTypeDTO);

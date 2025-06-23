@@ -755,6 +755,7 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.PaymentMode).HasMaxLength(50);
                 entity.Property(e => e.PaymentTxnId).HasMaxLength(100);
                 entity.Property(e => e.SubscriptionStartDate).HasDefaultValueSql("(getdate())");
+              
 
                 entity.HasOne(d => d.SubscriptionPlan).WithMany(p => p.TenantSubscriptions)
                     .HasForeignKey(d => d.SubscriptionPlanId)
@@ -766,6 +767,7 @@ namespace ems.persistance.Data.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TenantSubscription_Tenant");
             });
+
 
             modelBuilder.Entity<TenantProfile>(entity =>
             {
@@ -784,21 +786,141 @@ namespace ems.persistance.Data.Context
                     .HasForeignKey(d => d.TenantId)
                     .HasConstraintName("FK_TenantProfile_Tenant");
             });
+            modelBuilder.Entity<Module>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Module__3214EC078891AB2D");
+
+                entity.ToTable("Module", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.ImageIconMobile)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+                entity.Property(e => e.ImageIconWeb)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsCommonMenu).HasDefaultValue(false);
+                entity.Property(e => e.IsModuleDisplayInUi)
+                    .HasDefaultValue(true)
+                    .HasColumnName("IsModuleDisplayInUI");
+                entity.Property(e => e.ModuleCode).HasMaxLength(50);
+                entity.Property(e => e.ModuleName).HasMaxLength(100);
+                entity.Property(e => e.Remark).HasMaxLength(200);
+                entity.Property(e => e.SubModuleUrl)
+                    .HasMaxLength(200)
+                    .HasColumnName("SubModuleURL");
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.ParentModule).WithMany(p => p.InverseParentModule)
+                    .HasForeignKey(d => d.ParentModuleId)
+                    .HasConstraintName("FK_Module_ParentModule");
+            });
+
+            modelBuilder.Entity<PlanModuleMapping>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__PlanModu__3214EC0729948732");
+
+                entity.ToTable("PlanModuleMapping", "AxionPro");
+
+                entity.HasIndex(e => new { e.SubscriptionPlanId, e.ModuleId }, "UQ_PlanModule").IsUnique();
+
+                entity.Property(e => e.AddedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.Remark)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+                entity.Property(e => e.UpdatedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+
+                entity.HasOne(d => d.Module).WithMany(p => p.PlanModuleMappings)
+                    .HasForeignKey(d => d.ModuleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PMM_Module");
+
+                entity.HasOne(d => d.SubscriptionPlan).WithMany(p => p.PlanModuleMappings)
+                    .HasForeignKey(d => d.SubscriptionPlanId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PMM_SubscriptionPlan");
+            });
+
+            modelBuilder.Entity<Operation>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Operatio__3214EC079C437610");
+
+                entity.ToTable("Operation", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.OperationName).HasMaxLength(200);
+                entity.Property(e => e.Remark).HasMaxLength(200);
+                entity.Property(e => e.UpdateDateTime).HasColumnType("datetime");
+            });
+            modelBuilder.Entity<ModuleOperationMapping>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__ModuleOp__3214EC07BF86A196");
+
+                entity.ToTable("ModuleOperationMapping", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.DisplayName)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+                entity.Property(e => e.IconUrl)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("IconURL");
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsCommonItem).HasDefaultValue(false);
+                entity.Property(e => e.IsOperational).HasDefaultValue(true);
+                entity.Property(e => e.PageUrl)
+                    .HasMaxLength(255)
+                    .IsUnicode(false)
+                    .HasColumnName("PageURL");
+                entity.Property(e => e.Priority).HasDefaultValue(0);
+                entity.Property(e => e.Remark)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+
+             
+
+                entity.HasOne(d => d.Operation).WithMany(p => p.ModuleOperationMappings)
+                    .HasForeignKey(d => d.OperationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ModuleOperation_Operation");
+            });
+
+
             modelBuilder.Entity<Employee>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC07E3264254");
 
                 entity.ToTable("Employee", "AxionPro");
+                entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC07E3264254");
 
-             
+                entity.ToTable("Employee", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.EmployementCode).HasMaxLength(50);
-                entity.Property(e => e.FirstName).HasMaxLength(100);                
+                entity.Property(e => e.FirstName).HasMaxLength(100);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsSoftDeleted).HasDefaultValue(false);
                 entity.Property(e => e.LastName).HasMaxLength(100);
                 entity.Property(e => e.MiddleName).HasMaxLength(100);
                 entity.Property(e => e.OfficialEmail).HasMaxLength(255);
                 entity.Property(e => e.Remark).HasMaxLength(200);
-                // Common Entities
-                entity.ConfigureBaseEntity();
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Designation).WithMany(p => p.Employees)
                     .HasForeignKey(d => d.DesignationId)
@@ -1335,6 +1457,38 @@ namespace ems.persistance.Data.Context
                     .HasConstraintName("FK__MealAllow__Polic__3B0BC30C");
             });
 
+
+            modelBuilder.Entity<Module>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Module__3214EC078891AB2D");
+
+                entity.ToTable("Module", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.ImageIconMobile)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+                entity.Property(e => e.ImageIconWeb)
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsModuleDisplayInUi)
+                    .HasDefaultValue(true)
+                    .HasColumnName("IsModuleDisplayInUI");
+                entity.Property(e => e.ModuleCode).HasMaxLength(50);
+                entity.Property(e => e.ModuleName).HasMaxLength(100);
+                entity.Property(e => e.Remark).HasMaxLength(200);
+                entity.Property(e => e.SubModuleUrl)
+                    .HasMaxLength(200)
+                    .HasColumnName("SubModuleURL");
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.ParentModule).WithMany(p => p.InverseParentModule)
+                    .HasForeignKey(d => d.ParentModuleId)
+                    .HasConstraintName("FK_Module_ParentModule");
+            });
             modelBuilder.Entity<Operation>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Operatio__3214EC079C437610");
@@ -1552,6 +1706,7 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.PlanName).HasMaxLength(100);
                 
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsFree).HasDefaultValue(true);
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.YearlyPrice).HasColumnType("decimal(10, 2)");                 
        

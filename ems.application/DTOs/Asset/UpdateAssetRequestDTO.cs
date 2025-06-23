@@ -8,7 +8,7 @@ namespace ems.application.DTOs.Asset
 {
    
 
-        public class UpdateAssetDTO
+        public class UpdateAssetRequestDTO
         {
             public int Id { get; set; }
             public int RoleId { get; set; }

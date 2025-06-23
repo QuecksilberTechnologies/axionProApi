@@ -8,6 +8,7 @@ using ems.application.DTOs.Designation;
 using ems.application.DTOs.EmailTemplate;
 using ems.application.DTOs.Employee;
 using ems.application.DTOs.Leave;
+using ems.application.DTOs.Module;
 using ems.application.DTOs.Operation;
 using ems.application.DTOs.Region;
 using ems.application.DTOs.Registration;
@@ -49,8 +50,8 @@ namespace ems.application.Mappings
         public MappingProfile()
         {
 
-            CreateMap<CreateAssetDTO, Asset>();
-            CreateMap<Asset, GetAllAssetWithDependentEntityDTO>();
+            CreateMap<CreateAssetRequestDTO, Asset>();
+         //   CreateMap<Asset, GetAllAssetWithDependentEntityDTO>();
 
 
             CreateMap<AssetType, GetAllAssetTypeDTO>();
@@ -71,19 +72,19 @@ namespace ems.application.Mappings
             CreateMap<AssetResponseDTO, Asset>().ReverseMap();
            
             
-            CreateMap<UpdateAssetDTO, Asset>().ReverseMap();
+            CreateMap<UpdateAssetRequestDTO, Asset>().ReverseMap();
 
             CreateMap<DeleteAssetRequestDTO, Asset>().ReverseMap();
 
-            CreateMap<AssetStatus, AddAssetStatusRequestDTO>().ReverseMap();
+            CreateMap<AssetStatus, AssetStatusRequestDTO>().ReverseMap();
            
-            CreateMap<AllAssetStatusResponseDTO, AssetStatus>().ReverseMap();
+            CreateMap<AssetStatusResponseDTO, AssetStatus>().ReverseMap();
 
 
             CreateMap<AssetType, AssetTypeRequestDTO>().ReverseMap();
             CreateMap<AssetType, AssetTypeResponseDTO>().ReverseMap(); // 🔥 Yeh zaroori hai
 
-            CreateMap<AssetType, GetAssetTypeRequestDTO>().ReverseMap();
+           
             //   CreateMap<AssetType, AssetTypeResponseDTO>().ReverseMap(); // 🔥 Yeh zaroori hai
 
             CreateMap<AssetType, UpdateAssetTypeRequestDTO>().ReverseMap();
@@ -98,7 +99,11 @@ namespace ems.application.Mappings
 
             CreateMap<AssetStatus, DeleteAssetStatusRequestDTO>().ReverseMap();
            
+            
+            
+            CreateMap<domain.Entity.Module, CommonItemDTO>().ReverseMap();
 
+            
 
 
             CreateMap<CreateDesignationDTO, Designation>();
@@ -108,6 +113,17 @@ namespace ems.application.Mappings
             CreateMap<CreateDepartmentDTO, Department>();
             CreateMap<Department, GetAllDepartmentDTO>();
             CreateMap<UpdateDepartmentDTO, Department>();
+
+
+            
+            CreateMap<CreateSubModuleRequestDTO, domain.Entity.Module>();
+            CreateMap<CreateModuleRequestDTO, domain.Entity.Module>().ReverseMap();
+            CreateMap<ModuleResponseDTO, domain.Entity.Module>();
+
+
+        
+
+
 
             CreateMap<CreateOperationDTO, Operation>();
             CreateMap<Operation, GetAllOperationDTO>();
@@ -135,7 +151,9 @@ namespace ems.application.Mappings
                 CreateMap<UpdateRoleDTO, Role>();  // ✅ Yeh likhna hoga!
                                                 // Role Entity to GetAllRoleDTO Mapping
                 // Direct entity to DTO mapping
-               CreateMap<Role, GetAllRoleDTO>();
+               CreateMap<Role, RoleRequestDTO>().ReverseMap();
+               CreateMap<RoleResponseDTO, Role>().ReverseMap();
+
                       CreateMap<UserRole, UserRoleDTO>()
                           .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName)) // Example
                           .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive == true));
@@ -201,14 +219,23 @@ namespace ems.application.Mappings
             CreateMap<EmailTemplate, EmailTemplateDTO>().ReverseMap();
             CreateMap<LoginCredential, SetLoginPasswordRequestDTO>().ReverseMap();
 
-            CreateMap<Tenant, TenantRequestDTO>().ReverseMap();
+            CreateMap<Tenant, DTOs.Registration.TenantRequestDTO>().ReverseMap();
             CreateMap<LoginCredential, Employee>().ReverseMap();
             CreateMap<Country, GetAllCountryDTO>().ReverseMap();
-            CreateMap<Tenant,  GetTenantRequestDTO>().ReverseMap(); 
-            CreateMap<GetAllTenantDTO, Tenant>().ReverseMap();
-           
-            
-          
+            CreateMap<Tenant, DTOs.Tenant.TenantRequestDTO>().ReverseMap(); 
+            CreateMap<TenantResponseDTO, Tenant>().ReverseMap();
+
+            CreateMap<SubscriptionPlan, SubscriptionPlanResponseDTO>()
+               .ForMember(dest => dest.Modules, opt => opt.MapFrom(src => src.PlanModuleMappings
+               .Where(pmm => pmm.Module != null)
+                .Select(pmm => new ModuleResponseDTO
+                   {
+                   ModuleId = pmm.Module.Id,
+             ModuleName = pmm.Module.ModuleName,
+            ParentModuleId = pmm.Module.ParentModuleId
+        }).ToList()));
+
+
             CreateMap<TenantSubscriptionPlanRequestDTO, TenantSubscription>().ReverseMap();
             CreateMap<TenantSubscriptionPlanResponseDTO, TenantSubscription>().ReverseMap();
             

@@ -13,10 +13,10 @@ namespace ems.application.Interfaces.IRepositories
 {
     public interface ICommonRepository
     {
-        Task<long> ValidateUserLoginAsync(string loginId);
+        Task<long> ValidateActiveUserLoginOnlyAsync(string loginId);
         Task<int> ValidateUserPasswordAsync(string loginId);
         Task<bool> UpdateLoginCredential(LoginRequestDTO loginId);
-        Task<List<CommonItem>> GetCommonItemAsync();
+            
         Task<List<RoleModulePermission>> GetModulePermissionsAsync(long empId,string roleIds, bool hasAccess, bool isActive);
         Task<bool> GetHasAccessOperation(CheckOperationPermissionRequestDTO checkOperationPermissionRequest);
         Task<bool> HasPermissionAsync(long userId, string permissionCode);

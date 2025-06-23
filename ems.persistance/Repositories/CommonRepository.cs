@@ -1,4 +1,6 @@
-﻿using ems.application.DTOs.Operation;
+﻿using AutoMapper;
+using ems.application.DTOs.Module;
+using ems.application.DTOs.Operation;
 using ems.application.DTOs.ProjectModule;
 using ems.application.DTOs.UserLogin;
 using ems.application.DTOs.UserRole;
@@ -15,13 +17,16 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Runtime.Intrinsics.X86;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Module = ems.domain.Entity.Module;
 
 namespace ems.persistance.Repositories
 {
@@ -108,23 +113,8 @@ namespace ems.persistance.Repositories
         //    } await _context.Database.ExecuteSqlRawAsync
         //} 
 
-        public async Task<List<CommonItem>> GetCommonItemAsync()
-        {
-            try
-            {
-                var sqlQuery = "EXEC AxionPro.GetCommonItem";
-                var result = await _context.CommonItems
-                    .FromSqlRaw(sqlQuery)
-                    .ToListAsync();
-                return result;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error fetching dashboard menu: {ex.Message}", ex);
-            }
-        }
 
-
+      
 
         public async Task<List<RoleModulePermission>> GetModulePermissionsAsync(long empId, string roleIds, bool hasAccess, bool isActive)
         {
@@ -223,7 +213,7 @@ namespace ems.persistance.Repositories
             }
         }
 
-        public async Task<long> ValidateUserLoginAsync(string loginId)
+        public async Task<long> ValidateActiveUserLoginOnlyAsync(string loginId)
         {
             try
             {
@@ -235,7 +225,7 @@ namespace ems.persistance.Repositories
                     Direction = ParameterDirection.Output
                 };
 
-                string sqlQuery = "EXEC AxionPro.ValidateUserLogin @LoginId, @Result OUTPUT";
+                string sqlQuery = "EXEC AxionPro.ValidateActiveUserLoginOnly @LoginId, @Result OUTPUT";
 
                 await _context.Database.ExecuteSqlRawAsync(sqlQuery, loginParam, resultParam);
 
@@ -311,6 +301,11 @@ namespace ems.persistance.Repositories
         {
             throw new NotImplementedException();
         }
+
+      
+
+
+
 
         //public async Task<int> ValidateUserLoginAsync(string loginId)
         //{

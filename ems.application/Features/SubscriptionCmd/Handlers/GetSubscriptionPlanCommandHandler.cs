@@ -62,9 +62,11 @@ namespace ems.application.Features.SubscriptionCmd.Handlers
                 // ✅ Get all plans
                 List<SubscriptionPlan> subscriptionPlans = await _unitOfWork.SubscriptionRepository.GetAllPlansAsync();
 
+               // _unitOfWork.PlanModuleMappingRepository.GetModulesBySubscriptionPlanIdAsync
 
-               // List<SubscriptionPlanResponseDTO> mappedPlans = _mapper.Map < List < SubscriptionPlanResponseDTO >> (subscriptionPlans);
-                var mappedPlans = _mapper.Map<List<SubscriptionPlanResponseDTO>>(subscriptionPlans);
+
+              // List<SubscriptionPlanResponseDTO> mappedPlans = _mapper.Map < List < SubscriptionPlanResponseDTO >> (subscriptionPlans);
+              var mappedPlans = _mapper.Map<List<SubscriptionPlanResponseDTO>>(subscriptionPlans);
 
 
                 return new ApiResponse<List<SubscriptionPlanResponseDTO>>

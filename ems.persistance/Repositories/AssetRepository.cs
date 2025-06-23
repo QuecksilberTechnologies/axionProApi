@@ -432,7 +432,7 @@ namespace ems.persistance.Repositories
                 throw; // bubble up for higher-level handling
             }
         }
-        public async Task<List<AssetType>> GetAllAssetTypeByTenantAsync(GetAssetTypeRequestDTO? assetType)
+        public async Task<List<AssetType>> GetAllAssetTypeByTenantAsync(AssetTypeRequestDTO? assetType)
         {
             try
             {

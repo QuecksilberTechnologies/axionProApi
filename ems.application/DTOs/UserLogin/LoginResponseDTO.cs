@@ -1,4 +1,5 @@
 ﻿ using ems.application.DTOs.Employee;
+using ems.application.DTOs.Module;
 using ems.application.DTOs.ProjectModule;
 using ems.domain.Entity;
 using System;
@@ -21,7 +22,7 @@ namespace ems.application.DTOs.UserLogin
         public EmployeeLoginInfoDTO? EmployeeInfo { get; set; }
         public string? Allroles { get; set; }
 
-        public List<CommonItem>? CommonItems { get; set; }
+        public List<CommonItemDTO>? CommonItems { get; set; }
         public List<List<RoleModulePermission>>? OperationalMenus { get; set; }
         
 

@@ -12,7 +12,7 @@ namespace ems.application.Interfaces.IRepositories
     public interface IRoleRepository
         {
         // Create a new role
-           Task<List<Role>> CreateRoleAsync(Role role);
+           Task<Role> CreateRoleAsync(Role role);
         
             Task<Role> AutoCreatedForTenantRoleAsync(Role role);
 
@@ -20,10 +20,10 @@ namespace ems.application.Interfaces.IRepositories
             Task<Role> GetRoleByIdAsync(int roleId);
 
             // Get all roles
-            Task<List<Role>> GetAllRolesAsync();
+            Task<List<Role>> GetAllRolesAsync(Role role);
 
         // Update an existing role
-         Task<List<Role>> UpdateRoleAsync(Role role);
+         Task<Role> UpdateRoleAsync(Role role);
 
             // Delete a role by its Id
             Task<bool> DeleteRoleAsync(int roleId);

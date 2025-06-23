@@ -92,9 +92,17 @@ namespace ems.persistance.Repositories
                 _logger?.LogInformation("Fetching active roles for EmployeeId: {EmployeeId}", employeeId);
 
                 var userRoles = await _context.UserRoles
-                                              .Where(ur => ur.EmployeeId == employeeId && ur.IsActive ==true) // ✅ Filter for active roles
-                                              .Include(ur => ur.Role)  // ✅ Ensure Role details are loaded
-                                              .ToListAsync();
+                       .Where(ur =>
+                        ur.EmployeeId == employeeId &&
+                        ur.IsActive == ConstantValues.IsByDefaultTrue &&
+                        ur.IsSoftDeleted == ConstantValues.IsByDefaultFalse &&
+                        ur.Role != null && // ✅ null check
+                        ur.Role.IsActive == ConstantValues.IsByDefaultTrue &&
+                        ur.Role.IsSoftDeleted == ConstantValues.IsByDefaultFalse)
+                        .Include(ur => ur.Role)
+                       .ToListAsync();
+
+                   
 
                 if (userRoles == null || userRoles.Count == 0)
                 {

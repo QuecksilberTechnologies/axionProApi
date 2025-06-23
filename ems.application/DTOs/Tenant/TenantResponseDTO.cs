@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Tenant
 {
-    public class GetAllTenantDTO
+    public class TenantResponseDTO
     {
         public long Id { get; set; }
 

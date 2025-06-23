@@ -24,6 +24,7 @@ public class UnitOfWork  : IUnitOfWork
     private IDbContextTransaction? _currentTransaction; 
 
 
+    private IPlanModuleMappingRepository? _planModuleMappingRepository;
     private ILeaveRepository? _leaveRepository;
     private ITenantRepository? _tenantRepository;
     private IEmployeeRepository? _employeeRepository;
@@ -46,6 +47,7 @@ public class UnitOfWork  : IUnitOfWork
     private IEmailTemplateRepository _emailTemplateRepository;
     private ISubscriptionRepository? _subscriptionRepository;
     private ITenantSubscriptionRepository? _tenantSubscriptionRepository;
+    private IModuleRepository? _moduleRepository;
     
     // private IClientRepository? _clientRepository;
 
@@ -96,6 +98,14 @@ public class UnitOfWork  : IUnitOfWork
                     return _tenantRepository ??= new TenantRepository(_context, _loggerFactory.CreateLogger<TenantRepository>());
                    }
             }
+    
+        public IModuleRepository ModuleRepository
+    {
+        get
+        {
+            return _moduleRepository ??= new ModuleRepository(_context, _loggerFactory.CreateLogger<ModuleRepository>());
+        }
+    }
 
     public IEmployeeTypeBasicMenuRepository EmployeeTypeBasicMenuRepository
     {
@@ -105,6 +115,13 @@ public class UnitOfWork  : IUnitOfWork
         }
     }
 
+    public IPlanModuleMappingRepository PlanModuleMappingRepository
+    {
+        get
+        {
+            return _planModuleMappingRepository ??= new PlanModuleMappingRepository(_context, _loggerFactory.CreateLogger<PlanModuleMappingRepository>());
+        }
+    }
 
 
 

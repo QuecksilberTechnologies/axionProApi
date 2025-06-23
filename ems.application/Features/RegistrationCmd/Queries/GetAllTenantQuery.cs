@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.RegistrationCmd.Queries
 {
-     public class GetAllTenantQuery : IRequest<ApiResponse<List<GetAllTenantDTO>>>
+     public class GetAllTenantQuery : IRequest<ApiResponse<List<TenantResponseDTO>>>
     {
-        public GetTenantRequestDTO? tenantRequestDTO { get; set; }
+        public TenantRequestDTO? tenantRequestDTO { get; set; }
 
-        public GetAllTenantQuery(GetTenantRequestDTO tenantRequestDTO)
+        public GetAllTenantQuery(TenantRequestDTO tenantRequestDTO)
         {
             this.tenantRequestDTO = tenantRequestDTO;
         }

@@ -1,4 +1,5 @@
-﻿using ems.application.Interfaces.IRepositories;
+﻿using ems.application.Constants;
+using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
 using Microsoft.EntityFrameworkCore;
@@ -46,7 +47,7 @@ namespace ems.persistance.Repositories
                 _logger?.LogInformation("Fetching employee details for ID: {EmployeeId}", employeeId);
 
                 var employee = await context.Employees
-                    .Where(e => e.Id == employeeId && e.IsActive==true)
+                    .Where(e => e.Id == employeeId && e.IsActive==ConstantValues.IsByDefaultTrue && e.IsSoftDeleted==ConstantValues.IsByDefaultFalse)
                     .Select(e => new Employee
                     {
                         Id = e.Id,

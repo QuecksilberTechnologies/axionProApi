@@ -39,7 +39,7 @@ namespace ems.application.Features.LeaveCmd.Handlers
                 // ab wo roleid se 
                 // ✅ Step 1: User ID se Primary Role Fetch Karo
                 string Password = "123";
-                var primaryRoleId = await _commonRepository.ValidateUserLoginAsync(request.createLeaveTypeDTO.AddedById.ToString() );
+                var primaryRoleId = await _commonRepository.ValidateActiveUserLoginOnlyAsync(request.createLeaveTypeDTO.AddedById.ToString() );
 
                 if (primaryRoleId !=1)
                 {

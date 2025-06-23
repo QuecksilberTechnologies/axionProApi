@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.AssetCmd.Handlers
 {
-    public class AddStatusByTenantCommandHandler : IRequestHandler<AddStatusByTenantCommand, ApiResponse<AllAssetStatusResponseDTO>>
+    public class AddStatusByTenantCommandHandler : IRequestHandler<AddStatusByTenantCommand, ApiResponse<AssetStatusResponseDTO>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -30,7 +30,7 @@ namespace ems.application.Features.AssetCmd.Handlers
             _logger = logger;
         }
 
-        public async Task<ApiResponse<AllAssetStatusResponseDTO>> Handle(AddStatusByTenantCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<AssetStatusResponseDTO>> Handle(AddStatusByTenantCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -43,8 +43,8 @@ namespace ems.application.Features.AssetCmd.Handlers
 
                AssetStatus assetsList = await _unitOfWork.AssetRepository.AddAssetStatusByTenantAsync(assetStatus);             
                 // Entity list to DTO list
-                var resultDTOList = _mapper.Map<AllAssetStatusResponseDTO>(assetsList);
-                return new ApiResponse<AllAssetStatusResponseDTO>
+                var resultDTOList = _mapper.Map<AssetStatusResponseDTO>(assetsList);
+                return new ApiResponse<AssetStatusResponseDTO>
                 {
                     IsSucceeded = true,
                     Message = "Asset Status created successfully.",
@@ -54,7 +54,7 @@ namespace ems.application.Features.AssetCmd.Handlers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while adding asset status.");
-                return new ApiResponse<AllAssetStatusResponseDTO>
+                return new ApiResponse<AssetStatusResponseDTO>
                 {
                     IsSucceeded = false,
                     Message = "Something went wrong while adding asset status.",

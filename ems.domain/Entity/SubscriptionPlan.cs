@@ -16,7 +16,10 @@ public partial class SubscriptionPlan
     public decimal MonthlyPrice { get; set; }
 
     public decimal? YearlyPrice { get; set; }
-
+    public bool IsFree { get; set; }
+    public bool IsMostPopular { get; set; }
+    public bool IsCustom { get; set; }
+    public string? CurrencyKey { get; set; }
     public bool IsActive { get; set; }
 
     public DateTime? AddedDateTime { get; set; }
@@ -26,6 +29,8 @@ public partial class SubscriptionPlan
     public long? UpdatedById { get; set; }
 
     public DateTime? UpdatedDateTime { get; set; }
+
+    public virtual ICollection<PlanModuleMapping> PlanModuleMappings { get; set; } = new List<PlanModuleMapping>();
 
     public virtual ICollection<TenantSubscription> TenantSubscriptions { get; set; } = new List<TenantSubscription>();
 }

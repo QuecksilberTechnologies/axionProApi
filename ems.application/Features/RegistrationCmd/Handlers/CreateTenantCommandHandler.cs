@@ -218,7 +218,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                                          The link will expire in <strong>5 minutes</strong>.
                                         </p>
                                      <p>
-                                      <a href='http://localhost:4200/registration-profile/registration-policies?token={{Token}}'
+                                      <a href='http://localhost:4200/registration-verify?token={{Token}}'
                                       style='display:inline-block; background-color:#2E86C1; color:white; padding:10px 15px; text-decoration:none; border-radius:5px;'>
                                       Click here to verify
                                       </a>

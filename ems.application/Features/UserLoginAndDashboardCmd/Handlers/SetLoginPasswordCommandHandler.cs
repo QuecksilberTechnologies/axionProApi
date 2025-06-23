@@ -47,7 +47,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
         {
             var loginId = request.setLoginPasswordRequest.LoginId;
 
-            long empId = await _unitOfWork.CommonRepository.ValidateUserLoginAsync(loginId);
+            long empId = await _unitOfWork.CommonRepository.ValidateActiveUserLoginOnlyAsync(loginId);
 
             _logger.LogInformation("Validation result for LoginId {LoginId}: {EmpId}", loginId, empId);
 

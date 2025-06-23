@@ -37,10 +37,10 @@ namespace ems.application.Features.AssetCmd.Handlers
             try
             {
                 // Step 1: Map request DTO to AssetType entity
-                  AssetType asset = _mapper.Map<AssetType>(request.getAssetTypeRequest);               
+                  AssetType asset = _mapper.Map<AssetType>(request.AssetTypeRequest);               
 
                 // Step 2: Add asset type and get updated list
-                List<AssetType> assetTypeList = await _unitOfWork.AssetRepository.GetAllAssetTypeByTenantAsync(request.getAssetTypeRequest);
+                List<AssetType> assetTypeList = await _unitOfWork.AssetRepository.GetAllAssetTypeByTenantAsync(request.AssetTypeRequest);
 
                 // Step 3: Map entity list to response DTO
 

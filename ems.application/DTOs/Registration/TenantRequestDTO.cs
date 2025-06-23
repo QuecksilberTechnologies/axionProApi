@@ -9,6 +9,7 @@ namespace ems.application.DTOs.Registration
     public class TenantRequestDTO
     {
        
+        public int? SubscriptionPlanId { get; set; } 
         public string CompanyName { get; set; } = null!;
 
         public string TenantCode { get; set; } = null!;

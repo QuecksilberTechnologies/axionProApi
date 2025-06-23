@@ -6,8 +6,7 @@ namespace ems.domain.Entity;
 public partial class ModuleOperationMapping
 {
     public int Id { get; set; }
-
-    public int ModuleId { get; set; }
+   
 
     public int OperationId { get; set; }
 
@@ -34,8 +33,6 @@ public partial class ModuleOperationMapping
     public int? UpdatedById { get; set; }
 
     public DateTime? UpdatedDateTime { get; set; }
-
-    public virtual Module Module { get; set; } = null!;
-
+ 
     public virtual Operation Operation { get; set; } = null!;
 }

@@ -20,6 +20,7 @@ using ems.application.Features.AssetCmd.Handlers;
 using ems.domain.Entity;
 using ems.application.DTOs.UserRole;
 using Microsoft.VisualBasic;
+using ems.application.DTOs.Module;
 
 namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 {
@@ -57,7 +58,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 };
 
                 // 🔐 Step 1: Validate if user exists
-                 long empId = await _unitOfWork.CommonRepository.ValidateUserLoginAsync(loginRequest.LoginId);
+                 long empId = await _unitOfWork.CommonRepository.ValidateActiveUserLoginOnlyAsync(loginRequest.LoginId);
                 _logger.LogInformation("Validation result for LoginId {LoginId}: EmployeeId = {empId}", loginRequest.LoginId, empId);
 
                 if (empId < 1)
@@ -94,7 +95,12 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 
                 // 👨‍💼 Step 5: Fetch Employee Info
                 var employee = await _unitOfWork.Employees.GetEmployeeInfoForLoginByIdAsync(empId);
-                 
+                if (employee==null)
+                {
+                    _logger.LogWarning("Employee may not active or deleted please  contact admin  {LoginId}", loginRequest.LoginId);
+
+                }
+
                 // 👥 Step 6: Fetch all roles
                 var userRoles = await _unitOfWork.UserRoleRepository.GetEmployeeRolesWithDetailsByIdAsync(empId);
                 string? allRoleIdsCsv = userRoles?
@@ -132,12 +138,18 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 employeeInfo.UserSecondryRoles = userRoleDTOs;
 
                 // 🧩 Step 9: Load Common Items
-                var commonItems = await _unitOfWork.CommonRepository.GetCommonItemAsync();
+                //  var commonItems = await _unitOfWork.CommonRepository.GetCommonItemAsync();
 
+                var parent = await _unitOfWork.ModuleRepository.GetCommonMenuParentAsync();
+                if (parent == null) return null;
+
+               List < Module > children = await _unitOfWork.ModuleRepository.GetCommonMenuTreeAsync(parent.Id);
+
+                List<CommonItemDTO> childDTOs = _mapper.Map<List<CommonItemDTO>>(children);
+                
                 // 🔐 Step 10: Fetch Permissions
                 bool isActive = true, hasAccess = true;
-                var rolePermissions = await _unitOfWork.CommonRepository
-                    .GetModulePermissionsAsync(empId, allRoleIdsCsv, hasAccess, isActive);
+                var rolePermissions = await _unitOfWork.CommonRepository.GetModulePermissionsAsync(empId, allRoleIdsCsv, hasAccess, isActive);
 
                 var permissionList = new List<List<RoleModulePermission>> { rolePermissions };
 
@@ -148,7 +160,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                     RefreshToken = refreshToken,
                     Success = ConstantValues.isSucceeded,
                     EmployeeInfo = employeeInfo,
-                    CommonItems = commonItems,
+                    CommonItems = childDTOs,
                     OperationalMenus = permissionList,
                     Allroles = allRoleIdsCsv?.Trim()
                 };

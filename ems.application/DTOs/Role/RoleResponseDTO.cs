@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Role
 {
-    public class GetAllRoleDTO
+    public class RoleResponseDTO
     {
         public int Id { get; set; }
 

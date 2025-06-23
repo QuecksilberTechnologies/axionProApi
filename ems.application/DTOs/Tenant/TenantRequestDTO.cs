@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 namespace ems.application.DTOs.Tenant
 {
   
-        public class GetTenantRequestDTO
+        public class TenantRequestDTO
          {
             public long EmployeeId { get; set; }
             public int RoleId { get; set; }
+            public int SubscriptionPlanId { get; set; }
             public int DesignationId { get; set; }
             public long? Id { get; set; }
             public string? CompanyName { get; set; } 

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.RoleCmd.Commands
 {
-    public class UpdatedRoleCommand : IRequest<ApiResponse<List<GetAllRoleDTO>>>
+    public class UpdatedRoleCommand : IRequest<ApiResponse<List<RoleResponseDTO>>>
     {
         public UpdateRoleDTO updateRoleDTO { get; set; }
 

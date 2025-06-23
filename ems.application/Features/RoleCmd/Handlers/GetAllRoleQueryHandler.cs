@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.RoleCmd.Handlers
 {
-    public class GetAllRoleQueryHandler : IRequestHandler<GetAllRoleQuery, ApiResponse<List<GetAllRoleDTO>>>
+    public class GetAllRoleQueryHandler : IRequestHandler<GetAllRoleQuery, ApiResponse<List<RoleResponseDTO>>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -29,12 +29,17 @@ namespace ems.application.Features.RoleCmd.Handlers
             _logger = logger;
         }
 
-        public async Task<ApiResponse<List<GetAllRoleDTO>>> Handle(GetAllRoleQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<RoleResponseDTO>>> Handle(GetAllRoleQuery request, CancellationToken cancellationToken)
         {
             try
             {
+
+
                 // ✅ Correcting the method call
-                List<Role> roles = await _unitOfWork.RoleRepository.GetAllRolesAsync();
+                var role = _mapper.Map<Role>(request.RoleRequest);
+
+                
+                List<Role> roles = await _unitOfWork.RoleRepository.GetAllRolesAsync( role);
                  
                 //if (roles == null || !roles.Any())
                 //{
@@ -43,10 +48,10 @@ namespace ems.application.Features.RoleCmd.Handlers
                 //}
 
                 //// ✅ Map Role entities to DTOs
-                var roleDTOs = _mapper.Map<List<GetAllRoleDTO>>(roles);
+                var roleDTOs = _mapper.Map<List<RoleResponseDTO>>(roles);
                 
                 _logger.LogInformation("Successfully retrieved {Count} roles.", roleDTOs.Count);
-                return new ApiResponse<List<GetAllRoleDTO>>
+                return new ApiResponse<List<RoleResponseDTO>>
                 {
                     IsSucceeded = true,
                     Message = "Categories fetched successfully.",
@@ -62,7 +67,7 @@ namespace ems.application.Features.RoleCmd.Handlers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while fetching roles.");
-                return new ApiResponse<List<GetAllRoleDTO>>
+                return new ApiResponse<List<RoleResponseDTO>>
                 {
                     IsSucceeded = false,
                     Message = "Categories fetched successfully.",

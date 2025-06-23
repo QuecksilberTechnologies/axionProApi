@@ -27,7 +27,7 @@ namespace ems.api.Controllers.Operation
         }
 
 
-        [HttpGet("getalloperation")]
+        [HttpGet("get-all-operation")]
         public async Task<IActionResult> GetAllOperationAsyc([FromQuery] OperationRequestDTO operationRequestDTO)
         {
             _logger.LogInfo($"Received request to get operationRequestDTO from userId: {operationRequestDTO.Id}");
@@ -41,7 +41,7 @@ namespace ems.api.Controllers.Operation
             }
             return Ok(result);
         }
-        [HttpPost("addoperation")]
+        [HttpPost("add-operation")]
         public async Task<IActionResult> CreateTravelModeType([FromBody] CreateOperationDTO createOperationDTO)
         {
             if (createOperationDTO == null)
@@ -63,7 +63,7 @@ namespace ems.api.Controllers.Operation
             return Ok(result);
         }
 
-        [HttpPost("updateoperation")]
+        [HttpPost("update-operation")]
         public async Task<IActionResult> UpdateOperation([FromBody] UpdateOperationDTO updateOperationDTO)
         {
             _logger.LogInfo("Received request for update a leave" + updateOperationDTO.ToString());
@@ -76,7 +76,7 @@ namespace ems.api.Controllers.Operation
             return Ok(result);
         }
          [Authorize]
-        [HttpGet("haspageoperationaccess")]
+        [HttpGet("has-page-operation-access")]
         public async Task<IActionResult> HasPageOperationAccess([FromQuery] CheckOperationPermissionRequestDTO? checkOperationPermissionRequest)
         {
             if (checkOperationPermissionRequest == null)

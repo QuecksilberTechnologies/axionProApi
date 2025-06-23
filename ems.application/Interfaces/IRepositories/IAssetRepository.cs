@@ -39,7 +39,7 @@ namespace ems.application.Interfaces.IRepositories
 
         #region AssetTypeCompleted
         Task<AssetType> AddAssetTypeAsync(AssetType assetType);
-        Task<List<AssetType>> GetAllAssetTypeByTenantAsync(GetAssetTypeRequestDTO? assetType);
+        Task<List<AssetType>> GetAllAssetTypeByTenantAsync(AssetTypeRequestDTO? assetType);
         Task<AssetType?> UpdateAssetTypeByTenantAsync(AssetType? assetType);
         Task<List<AssetType>> GetAllAssetTypeAsync(long? TenantId, bool? IsActive);
         Task<bool> DeleteAssetTypeByTenantAsync(AssetType assetType);

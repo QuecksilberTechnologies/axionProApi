@@ -11,11 +11,11 @@ namespace ems.application.Features.AssetCmd.Commands
 {
     public class GetAllAssetTypeByTenantCommand : IRequest<ApiResponse<List<AssetTypeResponseDTO>>>
     {
-        public GetAssetTypeRequestDTO getAssetTypeRequest { get; set; }
+        public AssetTypeRequestDTO AssetTypeRequest { get; set; }
 
-        public GetAllAssetTypeByTenantCommand(GetAssetTypeRequestDTO getAssetTypeRequest)
+        public GetAllAssetTypeByTenantCommand(AssetTypeRequestDTO AssetTypeRequest)
         {
-            this.getAssetTypeRequest = getAssetTypeRequest;
+            this.AssetTypeRequest = AssetTypeRequest;
         }
     }
 }

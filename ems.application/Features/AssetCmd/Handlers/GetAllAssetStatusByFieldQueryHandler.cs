@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.AssetCmd.Handlers
 {
-    public class GetAllAssetStatusByFieldQueryHandler : IRequestHandler<GetAllAssetStatusByFieldQuery, ApiResponse<List<AllAssetStatusResponseDTO>>>
+    public class GetAllAssetStatusByFieldQueryHandler : IRequestHandler<GetAllAssetStatusByFieldQuery, ApiResponse<List<AssetStatusResponseDTO>>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -27,7 +27,7 @@ namespace ems.application.Features.AssetCmd.Handlers
             _logger = logger;
         }
 
-        public async Task<ApiResponse<List<AllAssetStatusResponseDTO>>> Handle(GetAllAssetStatusByFieldQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<AssetStatusResponseDTO>>> Handle(GetAllAssetStatusByFieldQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace ems.application.Features.AssetCmd.Handlers
 
                 if (assetStatusList.Count == 0) 
                 {
-                    return new ApiResponse<List<AllAssetStatusResponseDTO>>
+                    return new ApiResponse<List<AssetStatusResponseDTO>>
                     {
                         IsSucceeded = false,
                         Message = "Asset statuses not found!.",
@@ -50,7 +50,7 @@ namespace ems.application.Features.AssetCmd.Handlers
                 }
 
                 // Step 3: Map domain list to response DTO list
-                List<AllAssetStatusResponseDTO> allAssetStatusResponseDTOs = _mapper.Map<List<AllAssetStatusResponseDTO>>(assetStatusList);
+                List<AssetStatusResponseDTO> allAssetStatusResponseDTOs = _mapper.Map<List<AssetStatusResponseDTO>>(assetStatusList);
 
 
                 // Step 4: Logging
@@ -58,7 +58,7 @@ namespace ems.application.Features.AssetCmd.Handlers
 
 
                 // Step 5: Return wrapped response
-                return new ApiResponse<List<AllAssetStatusResponseDTO>>
+                return new ApiResponse<List<AssetStatusResponseDTO>>
                 {
                     IsSucceeded = true,
                     Message = "Asset statuses fetched successfully.",
@@ -69,7 +69,7 @@ namespace ems.application.Features.AssetCmd.Handlers
             {
                 _logger.LogError(ex, "Error while fetching asset status records.");
 
-                return new ApiResponse<List<AllAssetStatusResponseDTO>>
+                return new ApiResponse<List<AssetStatusResponseDTO>>
                 {
                     IsSucceeded = false,
                     Message = "An error occurred while fetching asset statuses.",

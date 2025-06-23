@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.AssetCmd.Queries
 {
-    public class GetAllAssetStatusByFieldQuery : IRequest<ApiResponse<List<AllAssetStatusResponseDTO>>>
+    public class GetAllAssetStatusByFieldQuery : IRequest<ApiResponse<List<AssetStatusResponseDTO>>>
     {
-        public AddAssetStatusRequestDTO assetStatusRequestDTO { get; set; }
+        public AssetStatusRequestDTO assetStatusRequestDTO { get; set; }
 
-        public GetAllAssetStatusByFieldQuery(AddAssetStatusRequestDTO assetStatusRequestDTO)
+        public GetAllAssetStatusByFieldQuery(AssetStatusRequestDTO assetStatusRequestDTO)
         {
             this.assetStatusRequestDTO = assetStatusRequestDTO;
         }

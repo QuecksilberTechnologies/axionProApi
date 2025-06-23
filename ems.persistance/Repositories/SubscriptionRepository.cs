@@ -70,6 +70,8 @@ namespace ems.persistance.Repositories
                
 
                 IQueryable<SubscriptionPlan> query = _context.SubscriptionPlans.AsQueryable();
+                var plans = await _context.SubscriptionPlans.Include(p => p.PlanModuleMappings).ThenInclude(pm => pm.Module).ToListAsync();
+
 
                 // ✅ IsActive is always mandatory
                 query = query.Where(p => p.IsActive == true);
@@ -78,7 +80,7 @@ namespace ems.persistance.Repositories
 
                 
                
-                var plans = await query.OrderByDescending(p => p.AddedDateTime).ToListAsync();
+                var plans_ = await query.OrderByDescending(p => p.AddedDateTime).ToListAsync();
 
                 _logger.LogInformation("Fetched {Count} subscription plan(s).", plans.Count);
 

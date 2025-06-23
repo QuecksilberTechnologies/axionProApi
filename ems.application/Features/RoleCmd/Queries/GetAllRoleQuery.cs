@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.RoleCmd.Queries
 {
-    public class GetAllRoleQuery : IRequest<ApiResponse<List<GetAllRoleDTO>>>
+    public class GetAllRoleQuery : IRequest<ApiResponse<List<RoleResponseDTO>>>
     {
         public RoleRequestDTO RoleRequest { get; set; }
 
