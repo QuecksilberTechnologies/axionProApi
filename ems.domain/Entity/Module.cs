@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ems.domain.Entity;
 
@@ -17,8 +18,9 @@ public partial class Module
 
     public bool IsModuleDisplayInUi { get; set; }
 
+    public bool? IsCommonMenu { get; set; }
+
     public bool IsActive { get; set; }
-    public bool IsCommonMenu { get; set; }
 
     public string? ImageIconWeb { get; set; }
 
@@ -33,14 +35,29 @@ public partial class Module
     public long? UpdatedById { get; set; }
 
     public DateTime? UpdatedDateTime { get; set; }
-    public virtual Module? ParentModule { get; set; } // 👈 Parent
 
- 
     public virtual ICollection<Module> InverseParentModule { get; set; } = new List<Module>();
 
-    public virtual ICollection<ModuleOperationMapping> ModuleOperationMappings { get; set; } = new List<ModuleOperationMapping>();
-    public virtual List<Module> ChildModules { get; set; } = new(); // ✅ Correct collection
+    public virtual Module? ParentModule { get; set; }
 
     public virtual ICollection<PlanModuleMapping> PlanModuleMappings { get; set; } = new List<PlanModuleMapping>();
+    public virtual ICollection<ModuleOperationMapping> ModuleOperationMappings { get; set; } = new List<ModuleOperationMapping>();
+  
+
+
+
+    [NotMapped] // ✅ This solves the "Invalid column name 'ModuleId'" error
+    public virtual List<Module> ChildModules { get; set; } = new();
 
 }
+
+
+
+public class ModuleDTO
+{
+    public int Id { get; set; }
+    public string ModuleName { get; set; }
+    public string? SubModuleUrl { get; set; }
+    public List<ModuleDTO> Children { get; set; } = new();
+}
+

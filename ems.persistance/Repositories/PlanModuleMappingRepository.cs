@@ -48,6 +48,8 @@ namespace ems.persistance.Repositories
                     .Include(p => p.Module)
                         .ThenInclude(m => m.ModuleOperationMappings)
                             .ThenInclude(mop => mop.Operation)
+                    .Include(p => p.Module)
+                        .ThenInclude(m => m.ParentModule) // ✅ Include parent module
                     .ToListAsync();
 
                 var response = new PlanModuleMappingResponseDTO
@@ -60,6 +62,9 @@ namespace ems.persistance.Repositories
                             ModuleId = p.Module.Id,
                             ModuleName = p.Module.ModuleName,
                             ParentModuleId = p.Module.ParentModuleId,
+                            MainModuleId = p.Module.ParentModule?.Id ?? 0, // ✅ optional parent
+                            MainModuleName = p.Module.ParentModule?.ModuleName ?? "",
+
                             Operations = p.Module.ModuleOperationMappings
                                 .Where(mop => mop.IsActive == true && mop.Operation != null)
                                 .Select(mop => new OperationResponseDTO

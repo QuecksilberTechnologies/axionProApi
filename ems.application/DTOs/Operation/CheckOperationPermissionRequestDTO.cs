@@ -11,7 +11,7 @@ namespace ems.application.DTOs.Operation
     public class CheckOperationPermissionRequestDTO
     {
         public string? RoleIds { get; set; }
-        public int ProjectChildModuleDetailId { get; set; }
+       
         public int OperationId { get; set; }
         public bool IsActive { get; set; }
         public bool HasAccess { get; set; }

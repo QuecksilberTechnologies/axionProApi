@@ -7,8 +7,7 @@ public partial class RoleModuleAndPermission
 {
     public int Id { get; set; }
 
-    public int? ProjectChildModuleDetailId { get; set; }
-
+   
     public int? RoleId { get; set; }
 
     public int? OperationId { get; set; }
@@ -29,5 +28,5 @@ public partial class RoleModuleAndPermission
 
     public DateTime? UpdatedDateTime { get; set; }
 
-    public virtual ProjectChildModuleDetail? ProjectChildModuleDetail { get; set; }
+    
 }

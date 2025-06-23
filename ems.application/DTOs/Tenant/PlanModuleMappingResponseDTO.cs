@@ -15,6 +15,8 @@ namespace ems.application.DTOs.Tenant
     }
     public class ModuleWithOperationsDTO
     {
+        public int MainModuleId { get; set; }
+        public string? MainModuleName { get; set; }
         public int ModuleId { get; set; }
         public int? ParentModuleId { get; set; }
         public string? ModuleName { get; set; }

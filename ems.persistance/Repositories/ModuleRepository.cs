@@ -40,9 +40,7 @@ namespace ems.persistance.Repositories
             try
             {
                 return await _context.Modules
-                    .FirstOrDefaultAsync(m => m.IsCommonMenu == true &&
-                                              m.IsActive == true &&
-                                              m.IsModuleDisplayInUi == true);
+                    .FirstOrDefaultAsync(m => m.IsCommonMenu == true && m.IsModuleDisplayInUi == true && m.IsActive ==true);
             }
             catch (Exception ex)
             {
@@ -52,33 +50,44 @@ namespace ems.persistance.Repositories
         }
 
 
+
         public async Task<List<Module>> GetCommonMenuTreeAsync(int? parentId)
         {
-            var modules = await _context.Modules
-                .Where(m => m.ParentModuleId == parentId &&
-                            m.IsActive == true &&
-                            m.IsModuleDisplayInUi == true &&
-                            m.IsCommonMenu == true)
-                .OrderBy(m => m.Id)
-                .ToListAsync();
-
-            var result = new List<Module>();
-
-            foreach (var module in modules)
+            try
             {
-                var child = new Module
+                var modules = await _context.Modules
+                    .Where(m => m.ParentModuleId == parentId &&
+                                m.IsActive == true &&
+                                m.IsModuleDisplayInUi == true)
+                    .OrderBy(m => m.Id)
+                    .ToListAsync();
+
+                var result = new List<Module>();
+
+                foreach (var module in modules)
                 {
-                    Id = module.Id,
-                    ModuleName = module.ModuleName,
-                    SubModuleUrl = module.SubModuleUrl,
-                    ChildModules = await GetCommonMenuTreeAsync(module.Id) // ✅ Recursive call
-                };
+                    var child = new Module
+                    {
+                        Id = module.Id,
+                        ModuleName = module.ModuleName,
+                        SubModuleUrl = module.SubModuleUrl,
+                        ChildModules = await GetCommonMenuTreeAsync(module.Id)
+                    };
 
-                result.Add(child);
+                    result.Add(child);
+                    _logger.LogInformation("Adding module: {Name}, ChildCount: {Count}", module.ModuleName, child.ChildModules?.Count);
+
+                }
+
+                return result;
             }
-
-            return result;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetCommonMenuTreeAsync with ParentId={ParentId}", parentId);
+                throw new Exception($"Error while fetching common menu tree for ParentId: {parentId}", ex);
+            }
         }
+
 
 
         public async Task<List<Module>> GetAllModulesAsync()

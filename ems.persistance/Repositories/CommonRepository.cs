@@ -116,43 +116,7 @@ namespace ems.persistance.Repositories
 
       
 
-        public async Task<List<RoleModulePermission>> GetModulePermissionsAsync(long empId, string roleIds, bool hasAccess, bool isActive)
-        {
-            try
-            {
-                string sqlQuery = "EXEC AxionPro.GetRoleModulePermissions @RoleIds,@EmployeeId, @HasAccess, @IsActive";
-
-                // Parameters ko define karein
-                var parameters = new[]
-                {
-                 new SqlParameter("@RoleIds", roleIds) { DbType = System.Data.DbType.String },
-                 new SqlParameter("@EmployeeId", empId) ,                 
-                 new SqlParameter("@HasAccess", hasAccess),
-                 new SqlParameter("@IsActive", isActive)
-                  };
-
-                var result = await _context.RoleModulePermissions
-                    .FromSqlRaw(sqlQuery, parameters)
-                    .ToListAsync();
-
-                // Icons ko Base64 convert karna
-                //foreach (var item in result)
-                //{
-                //    item.ModuleIcon = item.ModuleIcon != null ? Convert.FromBase64String(ConvertToBase64(item.ModuleIcon)) : null;
-                //    item.SubModuleIcon = item.SubModuleIcon != null ? Convert.FromBase64String(ConvertToBase64(item.SubModuleIcon)) : null;
-                //    item.ChildModuleIcon = item.ChildModuleIcon != null ? Convert.FromBase64String(ConvertToBase64(item.ChildModuleIcon)) : null;
-                //}
-
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error fetching module permissions for roles: {roleIds}", roleIds);
-                throw;
-            }
-        }
-
+    
         // Byte Array to Base64 Converter
         public string ConvertToBase64(byte[] iconData)
         {
@@ -256,11 +220,11 @@ namespace ems.persistance.Repositories
                 string sqlQuery = @"EXEC AxionPro.CheckPermission 
                             @RoleId, @ProjectChildModuleDetailId, @OperationId, @HasAccess, @IsActive";
 
-                // Parameters definition
+                // Parameters definitione
                 var parameters = new[]
                 {
             new SqlParameter("@RoleId", checkOperationPermissionRequest.RoleIds),
-            new SqlParameter("@ProjectChildModuleDetailId", checkOperationPermissionRequest.ProjectChildModuleDetailId),
+           
             new SqlParameter("@OperationId", checkOperationPermissionRequest.OperationId),
             new SqlParameter("@HasAccess", checkOperationPermissionRequest.HasAccess),
             new SqlParameter("@IsActive", checkOperationPermissionRequest.IsActive)

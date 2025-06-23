@@ -17,7 +17,7 @@ namespace ems.application.Interfaces.IRepositories
         Task<int> ValidateUserPasswordAsync(string loginId);
         Task<bool> UpdateLoginCredential(LoginRequestDTO loginId);
             
-        Task<List<RoleModulePermission>> GetModulePermissionsAsync(long empId,string roleIds, bool hasAccess, bool isActive);
+      
         Task<bool> GetHasAccessOperation(CheckOperationPermissionRequestDTO checkOperationPermissionRequest);
         Task<bool> HasPermissionAsync(long userId, string permissionCode);
         Task<bool> IsTenantValidAsync(long userId, long tenantId);
