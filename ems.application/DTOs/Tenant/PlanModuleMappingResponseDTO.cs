@@ -30,4 +30,5 @@ namespace ems.application.DTOs.Tenant
         public string PageUrl { get; set; }
         public string IconUrl { get; set; }
     }
+
 }

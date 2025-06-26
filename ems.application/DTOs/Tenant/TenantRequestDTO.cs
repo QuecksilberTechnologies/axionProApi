@@ -10,6 +10,7 @@ namespace ems.application.DTOs.Tenant
         public class TenantRequestDTO
          {
             public long EmployeeId { get; set; }
+            
             public int RoleId { get; set; }
             public int SubscriptionPlanId { get; set; }
             public int DesignationId { get; set; }

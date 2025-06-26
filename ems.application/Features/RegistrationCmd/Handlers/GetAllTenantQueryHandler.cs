@@ -43,6 +43,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
         {
             try
             {
+
                 // ✅ Mapping the DTO to entity
                 var tenantDTO = _mapper.Map<Tenant>(request.tenantRequestDTO);
 

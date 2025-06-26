@@ -16,6 +16,7 @@ using ems.application.Interfaces.ITokenService;
 using ems.application.Constants;
 using Microsoft.AspNetCore.Identity.Data;
 using ems.application.Interfaces.IEmail;
+using ems.application.DTOs.Tenant;
 
 namespace ems.application.Features.RegistrationCmd.Handlers
 {
@@ -69,6 +70,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
 
                 // Step 4: Add Tenant
                 long newTenantId = await _unitOfWork.TenantRepository.AddTenantAsync(tenantEntity);
+
                 if (newTenantId <= 0)
                 {
                     await _unitOfWork.RollbackTransactionAsync();
@@ -79,6 +81,60 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                         Data = null
                     };
                 }
+
+                TenantSubscription savedSub = await _unitOfWork.TenantSubscriptionRepository.AddTenantSubscriptionAsync(new TenantSubscription
+                {
+                    TenantId = newTenantId,
+                    SubscriptionPlanId = request.TenantCreateRequestDTO.SubscriptionPlanId,
+                    SubscriptionStartDate = DateTime.Now,
+                    SubscriptionEndDate = DateTime.Now.AddDays(30), // ✅ Correct 30 days addition
+                    IsActive = true, // ✅ Use single =
+                    IsTrial = true   // ✅ Use single =
+                });
+
+                if (savedSub == null) 
+                {
+
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return new ApiResponse<TenantCreateResponseDTO>
+                    {
+                        IsSucceeded = false,
+                        Message = "Tenant Subscription failed.",
+                        Data = null
+                    };
+                }
+
+                TenantSubscription? tenantSubscriptionPlan = await _unitOfWork.TenantSubscriptionRepository.GetTenantSubscriptionAsync(new TenantSubscription
+                { TenantId = newTenantId, SubscriptionPlanId = request.TenantCreateRequestDTO.SubscriptionPlanId, IsTrial=true ,IsActive=true }
+                    );
+
+                PlanModuleMappingResponseDTO subscriptionPlans = await _unitOfWork.PlanModuleMappingRepository.GetModulesBySubscriptionPlanIdAsync(request.TenantCreateRequestDTO.SubscriptionPlanId);
+                    
+                List<TenantEnabledModule> enabledModules = subscriptionPlans.Modules
+                              .Select(m => new TenantEnabledModule
+                                      {
+                                       TenantId = newTenantId,
+                                        ModuleId = m.ModuleId,
+                                         IsEnabled = true,
+                                           AddedById = newTenantId,
+                                           AddedDateTime = DateTime.Now
+                                       }).ToList();
+                               
+
+                          var tenantEnabledOperations = subscriptionPlans.Modules
+                               .SelectMany(module => module.Operations.Select(op => new TenantEnabledOperation
+                                  {
+                                       TenantId = newTenantId,
+                                       ModuleId = module.ModuleId,
+                                       OperationId = op.OperationId,
+                                       IsEnabled = true,
+                                        AddedById =newTenantId,
+                                         AddedDateTime = DateTime.Now
+                                         }))
+                                          .ToList();
+
+
+                await _unitOfWork.TenantModuleConfigurationRepository.CreateDyDefaultEnabledModulesAsync(newTenantId, enabledModules, tenantEnabledOperations);
 
                 // Step 5: Create Employee for Tenant
                 var employee = new Employee

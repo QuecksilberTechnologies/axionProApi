@@ -11,7 +11,7 @@ namespace ems.application.Interfaces.IRepositories
     public interface IPlanModuleMappingRepository
     {
         // 🔍 Get all modules for a specific plan
-        Task<PlanModuleMappingResponseDTO> GetModulesBySubscriptionPlanIdAsync(int subscriptionPlanId);
+        Task<PlanModuleMappingResponseDTO> GetModulesBySubscriptionPlanIdAsync(int? subscriptionPlanId);
 
         // ➕ Add a new plan-module mapping
         Task AddAsync(PlanModuleMapping planModuleMapping);

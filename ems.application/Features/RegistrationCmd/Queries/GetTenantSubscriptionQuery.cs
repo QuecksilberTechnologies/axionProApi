@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.RegistrationCmd.Queries
 {
-    public class TenantSubscriptionQuery : IRequest<ApiResponse<TenantSubscriptionPlanResponseDTO>>
+    public class GetTenantSubscriptionQuery : IRequest<ApiResponse<TenantSubscriptionPlanResponseDTO>>
     {
         public TenantSubscriptionPlanRequestDTO? tenantSubscriptionPlanRequest { get; set; }
 
-        public TenantSubscriptionQuery(TenantSubscriptionPlanRequestDTO tenantSubscriptionPlanRequest)
+        public GetTenantSubscriptionQuery(TenantSubscriptionPlanRequestDTO tenantSubscriptionPlanRequest)
         {
             this.tenantSubscriptionPlanRequest = tenantSubscriptionPlanRequest;
         }

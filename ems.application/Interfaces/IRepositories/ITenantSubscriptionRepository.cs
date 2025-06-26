@@ -23,10 +23,10 @@ using System.Threading.Tasks;
             /// </summary>
             Task<List<TenantSubscription>> GetAllTenantSubscriptionsAsync(TenantSubscription? filter = null);
 
-            /// <summary>
-            /// Add a new tenant subscription.
-            /// </summary>
-            Task AddTenantSubscriptionAsync(TenantSubscription subscription);
+        /// <summary>
+        /// Add a new tenant subscription.
+        /// </summary>
+        Task<TenantSubscription> AddTenantSubscriptionAsync(TenantSubscription subscription);
 
             /// <summary>
             /// Update an existing tenant subscription.

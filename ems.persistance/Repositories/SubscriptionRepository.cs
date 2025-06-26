@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ems.application.Constants;
 using ems.application.DTOs.SubscriptionModule;
 using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -67,24 +69,47 @@ namespace ems.persistance.Repositories
         {
             try
             {
-               
+                var result = await _context.SubscriptionPlans
+                        .Where(plan => plan.IsActive)
+                          .Select(plan => new {
+                             plan.Id,
+                            plan.PlanName,
 
-                IQueryable<SubscriptionPlan> query = _context.SubscriptionPlans.AsQueryable();
-                var plans = await _context.SubscriptionPlans.Include(p => p.PlanModuleMappings).ThenInclude(pm => pm.Module).ToListAsync();
+                               Modules = plan.PlanModuleMappings
+                                 .Where(pmm => pmm.IsActive==true && pmm.Module.IsActive==true)
+                                      .Select(pmm => new {
+                                          pmm.Module.Id,
+                                          pmm.Module.ModuleName,
+
+                                     Operations = pmm.Module.ModuleOperationMappings
+                    .Where(op => op.IsActive==true)
+                    .Select(op => new {
+                        op.Id,
+                        op.DisplayName,
+                        op.PageUrl
+                    }).ToList()
+            }).ToList()
+
+    }).ToListAsync();
 
 
-                // ✅ IsActive is always mandatory
-                query = query.Where(p => p.IsActive == true);
+            //    var result = await _context.SubscriptionPlans
+             //  .Where(plan => plan.IsActive).Include(plan => plan.PlanModuleMappings.Where(pmm => pmm.IsActive == true))
+              //       .ThenInclude(pmm => pmm.Module).ThenInclude(module => module.ModuleOperationMappings.Where(op => op.IsActive == true)).
+               //      Include(pmm => pmm.PlanModuleMappings.Where(op => op.IsActive == true)).ThenInclude(op => op.Module.ModuleOperationMappings.Where(
+                //         op => op.IsActive == true)).ToListAsync();
 
-                // ✅ Optional filters only if subscriptionPlan is not null
 
-                
-               
-                var plans_ = await query.OrderByDescending(p => p.AddedDateTime).ToListAsync();
+ 
 
-                _logger.LogInformation("Fetched {Count} subscription plan(s).", plans.Count);
 
-                return plans;
+
+ 
+
+                _logger.LogInformation("Fetched {Count} subscription plan(s).", result.Count);
+
+
+                return result;
             }
             catch (Exception ex)
             {

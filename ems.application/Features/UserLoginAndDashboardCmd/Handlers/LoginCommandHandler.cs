@@ -57,6 +57,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                     Longitude = request.RequestLoginDTO.Longitude
                 };
 
+             var data=  await    _unitOfWork.TenantModuleConfigurationRepository.GetEnabledModulesWithOperationsAsync(118);
                 // 🔐 Step 1: Validate if user exists
                  long empId = await _unitOfWork.CommonRepository.ValidateActiveUserLoginOnlyAsync(loginRequest.LoginId);
                 _logger.LogInformation("Validation result for LoginId {LoginId}: EmployeeId = {empId}", loginRequest.LoginId, empId);

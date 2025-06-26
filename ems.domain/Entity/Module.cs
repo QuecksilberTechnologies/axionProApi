@@ -42,9 +42,11 @@ public partial class Module
 
     public virtual ICollection<PlanModuleMapping> PlanModuleMappings { get; set; } = new List<PlanModuleMapping>();
     public virtual ICollection<ModuleOperationMapping> ModuleOperationMappings { get; set; } = new List<ModuleOperationMapping>();
-  
 
 
+    public virtual ICollection<TenantEnabledModule> TenantEnabledModules { get; set; } = new List<TenantEnabledModule>();
+
+    public virtual ICollection<TenantEnabledOperation> TenantEnabledOperations { get; set; } = new List<TenantEnabledOperation>();
 
     [NotMapped] // ✅ This solves the "Invalid column name 'ModuleId'" error
     public virtual List<Module> ChildModules { get; set; } = new();

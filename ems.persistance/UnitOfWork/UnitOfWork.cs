@@ -21,9 +21,10 @@ public class UnitOfWork  : IUnitOfWork
 
 
     private readonly ILoggerFactory _loggerFactory;
-    private IDbContextTransaction? _currentTransaction; 
+    private IDbContextTransaction? _currentTransaction;
+   
 
-
+    private ITenantModuleConfigurationRepository? _tenantModuleConfigurationRepository;
     private IPlanModuleMappingRepository? _planModuleMappingRepository;
     private ILeaveRepository? _leaveRepository;
     private ITenantRepository? _tenantRepository;
@@ -69,7 +70,8 @@ public class UnitOfWork  : IUnitOfWork
     //    }
     //}
 
-
+    
+           
 
     public IUserLoginReopsitory UserLoginReopsitory
     {
@@ -91,6 +93,13 @@ public class UnitOfWork  : IUnitOfWork
         }
     }
     
+          public ITenantModuleConfigurationRepository TenantModuleConfigurationRepository
+           {
+                  get
+                  {
+                    return _tenantModuleConfigurationRepository ??= new TenantModuleConfigurationRepository(_context, _loggerFactory.CreateLogger<TenantModuleConfigurationRepository>());
+                   }
+            } 
           public ITenantRepository TenantRepository
            {
                   get

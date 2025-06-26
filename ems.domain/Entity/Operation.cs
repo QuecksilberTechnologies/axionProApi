@@ -24,5 +24,6 @@ public partial class Operation
     public byte[]? IconImage { get; set; }
 
     public virtual ICollection<ModuleOperationMapping> ModuleOperationMappings { get; set; } = new List<ModuleOperationMapping>();
+    public virtual ICollection<TenantEnabledOperation> TenantEnabledOperations { get; set; } = new List<TenantEnabledOperation>();
 }
  

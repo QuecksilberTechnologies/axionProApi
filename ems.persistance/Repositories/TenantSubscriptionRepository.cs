@@ -21,10 +21,26 @@ namespace ems.persistance.Repositories
             _context = context;
             _logger = logger;
         }
-        public Task AddTenantSubscriptionAsync(TenantSubscription subscription)
+        public async Task<TenantSubscription> AddTenantSubscriptionAsync(TenantSubscription subscription)
         {
-            throw new NotImplementedException();
+            try
+            {
+                 
+
+                await _context.TenantSubscriptions.AddAsync(subscription);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("✅ TenantSubscription inserted successfully for TenantId: {TenantId}", subscription.TenantId);
+
+                return subscription;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ Error while inserting TenantSubscription for TenantId: {TenantId}", subscription.TenantId);
+                throw;
+            }
         }
+
 
         public Task<bool> DeleteTenantSubscriptionAsync(long id)
         {

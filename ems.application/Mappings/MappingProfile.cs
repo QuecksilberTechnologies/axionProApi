@@ -231,10 +231,17 @@ namespace ems.application.Mappings
                 .Select(pmm => new ModuleResponseDTO
                    {
                    ModuleId = pmm.Module.Id,
-             ModuleName = pmm.Module.ModuleName,
-            ParentModuleId = pmm.Module.ParentModuleId
-        }).ToList()));
+                   ModuleName = pmm.Module.ModuleName,
+                       ParentModuleId = pmm.Module.ParentModuleId
+                 }).ToList()));
 
+                     
+
+
+
+            CreateMap<OperationResponseDTO, TenantEnabledOperation>()
+               .ForMember(dest => dest.IsEnabled, opt => opt.MapFrom(src => true))
+              .ForMember(dest => dest.OperationId, opt => opt.MapFrom(src => src.OperationId)).ForAllMembers(opt => opt.Ignore());
 
             CreateMap<TenantSubscriptionPlanRequestDTO, TenantSubscription>().ReverseMap();
             CreateMap<TenantSubscriptionPlanResponseDTO, TenantSubscription>().ReverseMap();

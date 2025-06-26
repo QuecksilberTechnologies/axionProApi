@@ -7,11 +7,15 @@ using ems.persistance.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace ems.persistance
 {
     public static class ServiceExtentions
     {
+
+
         public static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
             // Debugging: Connection String Check Karein
@@ -20,15 +24,19 @@ namespace ems.persistance
             {
                 throw new Exception("Connection String is null or empty!");
             }
-
-            // ✅ DbContext with Scoped Lifetime
+            // ✅ DbContext with EF Core Logging + Serilog
             services.AddDbContext<WorkforceDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(connectionString)
+                       .EnableSensitiveDataLogging() // Logs parameter values
+                       .EnableDetailedErrors()       // Logs detailed exception info
+                     .LogTo(Console.WriteLine, LogLevel.Information) // 👈 EF logs to console
+                     .LogTo(Log.Logger.Information, LogLevel.Information) // 👈 EF logs to Serilog
+            );
 
-            // ✅ Correct Injection for WorkforceDbContext
+            // ✅ Correct Scoped DbContext Injection
             services.AddScoped<IWorkforceDbContext>(provider => provider.GetRequiredService<WorkforceDbContext>());
 
-            // ✅ Unit of Work should be Scoped
+            // ✅ Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             // ✅ Repositories should be Scoped (instead of Transient)
@@ -59,6 +67,7 @@ namespace ems.persistance
             services.AddTransient<ITenantSubscriptionRepository, TenantSubscriptionRepository>();
             services.AddTransient<IPlanModuleMappingRepository, PlanModuleMappingRepository>();
             services.AddTransient<IModuleRepository, ModuleRepository>();
+            services.AddTransient<ITenantModuleConfigurationRepository, TenantModuleConfigurationRepository>();
 
           
 

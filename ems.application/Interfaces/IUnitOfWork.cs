@@ -9,6 +9,10 @@ public interface IUnitOfWork : IDisposable
     // Repositories
     IModuleRepository ModuleRepository { get; }
     IUserLoginReopsitory UserLoginRepository { get; }
+
+    ITenantModuleConfigurationRepository TenantModuleConfigurationRepository { get; }
+    
+   
     ICommonRepository CommonRepository { get; }
     ICountryRepository CountryRepository { get; }
     //

@@ -15,19 +15,19 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.RegistrationCmd.Handlers
 {
-    public class TenantSubscriptionQueryHandler : IRequestHandler<TenantSubscriptionQuery, ApiResponse<TenantSubscriptionPlanResponseDTO>>
+    public class GetTenantSubscriptionQueryHandler : IRequestHandler<GetTenantSubscriptionQuery, ApiResponse<TenantSubscriptionPlanResponseDTO>>
     {
         
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<TenantSubscriptionQueryHandler> _logger;
+        private readonly ILogger<GetTenantSubscriptionQueryHandler> _logger;
         private ITenantSubscriptionRepository? _tenantSubscriptionRepository;
-        public TenantSubscriptionQueryHandler(ITenantSubscriptionRepository? _tenantSubscriptionRepository,
+        public GetTenantSubscriptionQueryHandler(ITenantSubscriptionRepository? _tenantSubscriptionRepository,
 
 
         IMapper mapper,
         IUnitOfWork unitOfWork,
-        ILogger<TenantSubscriptionQueryHandler> logger)
+        ILogger<GetTenantSubscriptionQueryHandler> logger)
         {
            
             _mapper = mapper;
@@ -36,14 +36,14 @@ namespace ems.application.Features.RegistrationCmd.Handlers
             this._tenantSubscriptionRepository = _tenantSubscriptionRepository;
         }
  
-    public async Task<ApiResponse<TenantSubscriptionPlanResponseDTO>> Handle(TenantSubscriptionQuery request, CancellationToken cancellationToken)
+    public async Task<ApiResponse<TenantSubscriptionPlanResponseDTO>> Handle(GetTenantSubscriptionQuery request, CancellationToken cancellationToken)
     {
         try
         {
             // Map DTO to entity
             var tenantSubscriptionEntity = _mapper.Map<TenantSubscription>(request.tenantSubscriptionPlanRequest);
-            // Fetch from repository (you must implement this method)
-            TenantSubscription? tenantSubscriptionPlan = await _unitOfWork.TenantSubscriptionRepository.GetTenantSubscriptionAsync(tenantSubscriptionEntity);
+            // Fetch from repository (you must implement this method)           
+                TenantSubscription? tenantSubscriptionPlan = await _unitOfWork.TenantSubscriptionRepository.GetTenantSubscriptionAsync(tenantSubscriptionEntity);
 
             // Map to response DTO
             var responseDTO = _mapper.Map<TenantSubscriptionPlanResponseDTO>(tenantSubscriptionPlan);

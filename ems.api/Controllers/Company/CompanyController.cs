@@ -73,7 +73,7 @@ public class CompanyController : ControllerBase
     {
         _logger.LogInfo($"Getting email templates for code: {code}");
 
-        var query = new TenantSubscriptionQuery(code);
+        var query = new GetTenantSubscriptionQuery(code);
         var result = await _mediator.Send(query);
 
         if (!result.IsSucceeded)

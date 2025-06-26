@@ -1,9 +1,10 @@
-﻿using System;
+﻿using ems.domain.Common;
+using System;
 using System.Collections.Generic;
 
 namespace ems.domain.Entity;
 
-public partial class Tenant
+public partial class Tenant :BaseEntity
 {
     public long Id { get; set; }
 
@@ -23,17 +24,21 @@ public partial class Tenant
 
     public bool IsVerified { get; set; }
 
-    public bool IsActive { get; set; }
+ 
 
     public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 
-    public virtual ICollection<LoginCredential> LoginCredentials { get; set; } = new List<LoginCredential>();
+ //   public virtual ICollection<RequestType> RequestTypes { get; set; } = new List<RequestType>();
+
+    public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 
     public virtual ICollection<TenantEmailConfig> TenantEmailConfigs { get; set; } = new List<TenantEmailConfig>();
 
+    public virtual ICollection<TenantEnabledModule> TenantEnabledModules { get; set; } = new List<TenantEnabledModule>();
+
+    public virtual ICollection<TenantEnabledOperation> TenantEnabledOperations { get; set; } = new List<TenantEnabledOperation>();
+
     public virtual ICollection<TenantProfile> TenantProfiles { get; set; } = new List<TenantProfile>();
-    public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
+
     public virtual ICollection<TenantSubscription> TenantSubscriptions { get; set; } = new List<TenantSubscription>();
-
-
 }

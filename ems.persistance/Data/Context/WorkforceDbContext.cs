@@ -134,7 +134,8 @@ namespace ems.persistance.Data.Context
         public virtual DbSet<ServiceProvider> ServiceProviders { get; set; }
 
         public virtual DbSet<ServiceProviderContact> ServiceProviderContacts { get; set; }
-
+        public virtual DbSet<TenantEnabledModule> TenantEnabledModules { get; set; }
+        public virtual DbSet<TenantEnabledOperation> TenantEnabledOperations { get; set; }
         public virtual DbSet<Tender> Tenders { get; set; }
 
         public virtual DbSet<TenderProject> TenderProjects { get; set; }
@@ -706,8 +707,7 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
             });
 
-            modelBuilder.Entity<Tenant>(entity =>
-            {
+            modelBuilder.Entity<Tenant>(entity =>            {
                 entity.HasKey(e => e.Id).HasName("PK__Tenant__3214EC0728DD7C6E");
 
                 entity.ToTable("Tenant", "AxionPro");
@@ -722,6 +722,8 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.ContactPersonName).HasMaxLength(100);
                 entity.Property(e => e.TenantCode).HasMaxLength(100);
                 entity.Property(e => e.TenantEmail).HasMaxLength(200);
+                // Common Entities
+                entity.ConfigureBaseEntity();
             });
 
             modelBuilder.Entity<TenantEmailConfig>(entity =>
@@ -768,9 +770,7 @@ namespace ems.persistance.Data.Context
             modelBuilder.Entity<TenantProfile>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__TenantPr__3214EC0796A1B93D");
-
                 entity.ToTable("TenantProfile", "AxionPro");
-
                 entity.Property(e => e.Address).HasMaxLength(300);
                 entity.Property(e => e.BusinessType).HasMaxLength(100);
                 entity.Property(e => e.Industry).HasMaxLength(100);
@@ -817,7 +817,7 @@ namespace ems.persistance.Data.Context
             });
 
             modelBuilder.Entity<PlanModuleMapping>(entity =>
-            {
+            { 
                 entity.HasKey(e => e.Id).HasName("PK__PlanModu__3214EC0729948732");
 
                 entity.ToTable("PlanModuleMapping", "AxionPro");
@@ -1764,6 +1764,56 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.Status)
                     .HasMaxLength(100)
                     .IsUnicode(false);
+            });
+            modelBuilder.Entity<TenantEnabledModule>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__TenantEn__3214EC07AC610092");
+
+                entity.ToTable("TenantEnabledModule", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.IsEnabled).HasDefaultValue(true);
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Module).WithMany(p => p.TenantEnabledModules)
+                    .HasForeignKey(d => d.ModuleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TenantEnabledModules_Module");
+
+                entity.HasOne(d => d.Tenant).WithMany(p => p.TenantEnabledModules)
+                    .HasForeignKey(d => d.TenantId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TenantEnabledModules_Tenant");
+            });
+
+            modelBuilder.Entity<TenantEnabledOperation>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__TenantEn__3214EC07047C5B46");
+
+                entity.ToTable("TenantEnabledOperation", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.IsEnabled).HasDefaultValue(true);
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Module).WithMany(p => p.TenantEnabledOperations)
+                    .HasForeignKey(d => d.ModuleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TenantEnabledOperations_Module");
+
+                entity.HasOne(d => d.Operation).WithMany(p => p.TenantEnabledOperations)
+                    .HasForeignKey(d => d.OperationId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TenantEnabledOperations_Operation");
+
+                entity.HasOne(d => d.Tenant).WithMany(p => p.TenantEnabledOperations)
+                    .HasForeignKey(d => d.TenantId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_TenantEnabledOperations_Tenant");
             });
 
             modelBuilder.Entity<TenderServiceProvider>(entity =>
