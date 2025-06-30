@@ -23,7 +23,7 @@ namespace ems.domain.Entity;
 
     public long? AssignedById { get; set; }
 
-    public DateOnly? RoleStartDate { get; set; }
+    public DateTime? RoleStartDate { get; set; }
 
     public bool? ApprovalRequired { get; set; }
 

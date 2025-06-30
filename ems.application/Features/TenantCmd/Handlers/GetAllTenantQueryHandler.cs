@@ -4,7 +4,7 @@ using ems.application.DTOs.Region;
 using ems.application.DTOs.Registration;
 using ems.application.DTOs.Tenant;
 using ems.application.Features.RegistrationCmd.Commands;
-using ems.application.Features.RegistrationCmd.Queries;
+using ems.application.Features.TenantCmd.Queries;
 using ems.application.Interfaces;
 using ems.application.Interfaces.IRepositories;
 using ems.application.Wrappers;
@@ -17,27 +17,27 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Features.RegistrationCmd.Handlers
+namespace ems.application.Features.TenantCmd.Handlers
 {
- 
-        public class GetAllTenantQueryHandler : IRequestHandler<GetAllTenantQuery, ApiResponse<List<TenantResponseDTO>>>
-         {
-            private readonly ITenantRepository _tenantRepository;
-            private readonly IMapper _mapper;
-           private readonly IUnitOfWork _unitOfWork;
-           private readonly ILogger<GetAllTenantQueryHandler> _logger;
 
-            public GetAllTenantQueryHandler(
-            ITenantRepository tenantRepository,
-            IMapper mapper,
-            IUnitOfWork unitOfWork,
-            ILogger<GetAllTenantQueryHandler> logger)
-            {
-                _tenantRepository = tenantRepository;
-                _mapper = mapper;
-                _unitOfWork = unitOfWork;
-                _logger = logger;
-            }
+    public class GetAllTenantQueryHandler : IRequestHandler<GetAllTenantQuery, ApiResponse<List<TenantResponseDTO>>>
+    {
+        private readonly ITenantRepository _tenantRepository;
+        private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<GetAllTenantQueryHandler> _logger;
+
+        public GetAllTenantQueryHandler(
+        ITenantRepository tenantRepository,
+        IMapper mapper,
+        IUnitOfWork unitOfWork,
+        ILogger<GetAllTenantQueryHandler> logger)
+        {
+            _tenantRepository = tenantRepository;
+            _mapper = mapper;
+            _unitOfWork = unitOfWork;
+            _logger = logger;
+        }
 
         public async Task<ApiResponse<List<TenantResponseDTO>>> Handle(GetAllTenantQuery request, CancellationToken cancellationToken)
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Asset
 {
-    public class CreateAssetRequestDTO
+    public class CreateAssetRequestByTenantAdminDTO
     {
 
         public long TenantId { get; set; }

@@ -7,17 +7,21 @@ public partial class Designation
 {
     public int Id { get; set; }
 
-    public string DesignationName { get; set; } = null!;
+    public long TenantId { get; set; }  
 
+    public string DesignationName { get; set; } = null!;
+    public  bool? IsSoftDeleted { get; set; }
+    public DateTime? SoftDeletedDateTime { get; set; }
     public string? Description { get; set; }
 
-    public bool? IsActive { get; set; }
+    public bool IsActive { get; set; }
 
-    public int? AddedById { get; set; }
+    public long AddedById { get; set; }
 
-    public DateTime? AddedDateTime { get; set; }
+    public DateTime AddedDateTime { get; set; }
 
-    public int? UpdatedById { get; set; }
+    public long? UpdatedById { get; set; }
+    public long? SoftDeletedById { get; set; }
 
     public DateTime? UpdatedDateTime { get; set; }
 

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using ems.application.DTOs.Operation;
- 
-using ems.application.Features.OperationCmd.Queries;
+using ems.application.Features.OperationCmd.Commands;
 using ems.application.Features.TransportCmd.Handlers;
 using ems.application.Features.TransportCmd.Queries;
 using ems.application.Interfaces;
@@ -17,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.OperationCmd.Handlers
 {
-    public class GetAllOperationQueryHandler : IRequestHandler<GetAllOperationQuery, ApiResponse<List<GetAllOperationDTO>>>
+    public class GetAllOperationQueryHandler : IRequestHandler<GetAllOperationCommand, ApiResponse<List<GetAllOperationDTO>>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -29,12 +28,12 @@ namespace ems.application.Features.OperationCmd.Handlers
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
-        public async Task<ApiResponse<List<GetAllOperationDTO>>> Handle(GetAllOperationQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<GetAllOperationDTO>>> Handle(GetAllOperationCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 // ✅ Correcting the method call
-
+                
                 List<Operation> operationDTOs = await _unitOfWork.OperationRepository.GetAllOperationAsync();
 
                 //if (roles == null || !roles.Any())

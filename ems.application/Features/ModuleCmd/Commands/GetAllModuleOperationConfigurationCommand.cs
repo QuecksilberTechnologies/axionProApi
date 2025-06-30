@@ -1,4 +1,5 @@
 ﻿using ems.application.DTOs.Module;
+using ems.application.DTOs.Tenant;
 using ems.application.Wrappers;
 using MediatR;
 using System;

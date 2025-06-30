@@ -24,10 +24,10 @@ namespace ems.api.Controllers.Designation
         }
 
 
-        [HttpGet("get-all-designation-by-tenant")]
+        [HttpGet("get-all-designation-by-tenant-admin")]
         public async Task<IActionResult> GetAllDesignationAsyc([FromQuery] DesignationRequestDTO designationRequestDTO)
         {
-            _logger.LogInfo($"Received request to get designation from userId: {designationRequestDTO.Id}");
+            _logger.LogInfo($"Received request to get designation from userId: {designationRequestDTO.TenantId}");
 
             var command = new GetAllDesignationQuery(designationRequestDTO);
             var result = await _mediator.Send(command);
@@ -38,7 +38,7 @@ namespace ems.api.Controllers.Designation
             }
             return Ok(result);
         }
-        [HttpPost("adddesignation")]
+        [HttpPost("add-designation-by-tenant-admin")]
         public async Task<IActionResult> CreateDesignation([FromBody] CreateDesignationDTO createDesignationDTO)
         {
             if (createDesignationDTO == null)
@@ -60,7 +60,31 @@ namespace ems.api.Controllers.Designation
             return Ok(result);
         }
 
-        [HttpPost("updatedesignation")]
+
+
+        [HttpPost("get-all-active-designation-by-tenant-user")]
+        public async Task<IActionResult> GetAllActiveDesignation([FromBody] GetAllActiveDesignationRequestDTO createDesignationDTO)
+        {
+            if (createDesignationDTO == null)
+            {
+                _logger.LogInfo("Received null request for to show designation-list.");  // ✅ अब सही है
+                return BadRequest(new { success = false, message = "Invalid request" });
+            }
+
+            _logger.LogInfo($"Received request to show all active designation-list: {createDesignationDTO.TenantId}");
+
+            var command = new GetAllActiveDesignationCommand(createDesignationDTO);
+            var result = await _mediator.Send(command);
+
+            if (!result.IsSucceeded)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("update-designation-by-tenant-admin")]
         public async Task<IActionResult> UpdateDesignation([FromBody] UpdateDesignationDTO updateDesignationDTO)
         {
             _logger.LogInfo("Received request for update sedignation" + updateDesignationDTO.ToString());

@@ -10,14 +10,14 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.DesignationCmd.Commands
 {
-    public class UpdateDesignationCommand : IRequest<ApiResponse<List<GetAllDesignationDTO>>>
+    public class UpdateDesignationCommand : IRequest<ApiResponse<bool>>
     {
 
-        public UpdateDesignationDTO updateDesignationDTO { get; set; }
+        public UpdateDesignationDTO dto { get; set; }
 
-        public UpdateDesignationCommand(UpdateDesignationDTO updateDesignationDTO)
+        public UpdateDesignationCommand(UpdateDesignationDTO dto)
         {
-            this.updateDesignationDTO = updateDesignationDTO;
+            this.dto = dto;
         }
 
     }

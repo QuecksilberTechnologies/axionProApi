@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.SubscriptionCmd.Handlers
 {
-    public class GetSubscriptionPlanCommandHandler : IRequestHandler<GetSubscriptionPlanCommand, ApiResponse<List<SubscriptionPlanResponseDTO>>>
+    public class GetSubscriptionPlanCommandHandler : IRequestHandler<GetSubscriptionPlanCommand, ApiResponse<List<SubscriptionActivePlanDTO>>>
     {
         private readonly ISubscriptionRepository _subscriptionRepository;
         private readonly IMapper _mapper;
@@ -30,7 +30,7 @@ namespace ems.application.Features.SubscriptionCmd.Handlers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ApiResponse<List<SubscriptionPlanResponseDTO>>> Handle(GetSubscriptionPlanCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<SubscriptionActivePlanDTO>>> Handle(GetSubscriptionPlanCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -38,7 +38,7 @@ namespace ems.application.Features.SubscriptionCmd.Handlers
                 if (request == null)
                 {
                     _logger.LogWarning("SubscriptionPlanRequestDTO is null.");
-                    return new ApiResponse<List<SubscriptionPlanResponseDTO>>
+                    return new ApiResponse<List<SubscriptionActivePlanDTO>>
                     {
                         IsSucceeded = false,
                         Message = "Request cannot be null.",
@@ -49,7 +49,7 @@ namespace ems.application.Features.SubscriptionCmd.Handlers
                 if (request.subscriptionPlanRequestDTO.TenantId == 0 || request.subscriptionPlanRequestDTO.TenantId <= 0)
                 {
                     _logger.LogWarning("Invalid TenantId: {TenantId}", request.subscriptionPlanRequestDTO.TenantId);
-                    return new ApiResponse<List<SubscriptionPlanResponseDTO>>
+                    return new ApiResponse<List<SubscriptionActivePlanDTO>>
                     {
                         IsSucceeded = false,
                         Message = "TenantId is required and must be greater than 0.",
@@ -60,16 +60,16 @@ namespace ems.application.Features.SubscriptionCmd.Handlers
              //   var subscriptions = _mapper.Map<SubscriptionPlan>(request.subscriptionPlanRequestDTO);
 
                 // ✅ Get all plans
-                List<SubscriptionPlan> subscriptionPlans = await _unitOfWork.SubscriptionRepository.GetAllPlansAsync();
+                List<SubscriptionActivePlanDTO> subscriptionPlans = await _unitOfWork.SubscriptionRepository.GetAllPlansAsync();
 
                // _unitOfWork.PlanModuleMappingRepository.GetModulesBySubscriptionPlanIdAsync
 
 
               // List<SubscriptionPlanResponseDTO> mappedPlans = _mapper.Map < List < SubscriptionPlanResponseDTO >> (subscriptionPlans);
-              var mappedPlans = _mapper.Map<List<SubscriptionPlanResponseDTO>>(subscriptionPlans);
+              var mappedPlans = _mapper.Map<List<SubscriptionActivePlanDTO>>(subscriptionPlans);
 
 
-                return new ApiResponse<List<SubscriptionPlanResponseDTO>>
+                return new ApiResponse<List<SubscriptionActivePlanDTO>>
                 {
                     IsSucceeded = true,
                     Message = "Plans fetched successfully.",
@@ -79,7 +79,7 @@ namespace ems.application.Features.SubscriptionCmd.Handlers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while fetching plans.");
-                return new ApiResponse<List<SubscriptionPlanResponseDTO>>
+                return new ApiResponse<List<SubscriptionActivePlanDTO>>
                 {
                     IsSucceeded = false,
                     Message = "Something went wrong while fetching plans.",

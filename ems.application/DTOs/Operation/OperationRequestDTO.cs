@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Operation
 {
-    public class OperationRequestDTO
+    public class GetAllOperationRequestByProductAdminDTO
     {
-        public long Id { get; set; }
-        public int SelfRoleId { get; set; }
-        public int DesignationId { get; set; }
-        public int OperationId { get; set; }
+        public int ProductOwnerId { get; set; }
+        public int ProductOwnerRoleId { get; set; } 
+        
     }
 }

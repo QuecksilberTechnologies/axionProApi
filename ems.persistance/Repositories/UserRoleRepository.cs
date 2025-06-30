@@ -85,29 +85,28 @@ namespace ems.persistance.Repositories
             await _context.SaveChangesAsync();
             return userRole.RoleId;
         }
-        public async Task<List<UserRole>> GetEmployeeRolesWithDetailsByIdAsync(long employeeId)
+        public async Task<List<UserRole>> GetEmployeeRolesWithDetailsByIdAsync(long employeeId, long tenantId)
         {
             try
             {
                 _logger?.LogInformation("Fetching active roles for EmployeeId: {EmployeeId}", employeeId);
 
                 var userRoles = await _context.UserRoles
-                       .Where(ur =>
+                    .Include(ur => ur.Role)
+                    .Where(ur =>
                         ur.EmployeeId == employeeId &&
                         ur.IsActive == ConstantValues.IsByDefaultTrue &&
                         ur.IsSoftDeleted == ConstantValues.IsByDefaultFalse &&
-                        ur.Role != null && // ✅ null check
+                        ur.Role != null &&
                         ur.Role.IsActive == ConstantValues.IsByDefaultTrue &&
-                        ur.Role.IsSoftDeleted == ConstantValues.IsByDefaultFalse)
-                        .Include(ur => ur.Role)
-                       .ToListAsync();
+                        ur.Role.IsSoftDeleted == ConstantValues.IsByDefaultFalse &&
+                        ur.Role.TenantId == tenantId)
+                    .ToListAsync();
 
-                   
-
-                if (userRoles == null || userRoles.Count == 0)
+                if (userRoles.Count == 0)
                 {
                     _logger?.LogWarning("No active roles found for EmployeeId: {EmployeeId}", employeeId);
-                    return new List<UserRole>();  // ✅ Return empty list instead of null
+                    return new List<UserRole>();
                 }
 
                 _logger?.LogInformation("Fetched {Count} active roles for EmployeeId: {EmployeeId}", userRoles.Count, employeeId);
@@ -116,9 +115,10 @@ namespace ems.persistance.Repositories
             catch (Exception ex)
             {
                 _logger?.LogError(ex, "Error fetching user roles for EmployeeId: {EmployeeId}", employeeId);
-                return new List<UserRole>();  // ✅ Return empty list in case of an exception
+                return new List<UserRole>();
             }
         }
+
 
 
     }

@@ -1,4 +1,7 @@
-﻿using ems.application.DTOs.Module;
+﻿using Azure.Core;
+using ems.application.DTOs.Module;
+using ems.application.DTOs.SubscriptionModule;
+using ems.application.DTOs.Tenant;
 using ems.application.Interfaces;
 using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
@@ -25,7 +28,7 @@ namespace ems.persistance.Repositories
             _logger = logger;
         }
 
-        public async Task CreateDyDefaultEnabledModulesAsync(
+        public async Task CreateByDefaultEnabledModulesAsync(
          long tenantId,
       List<TenantEnabledModule> moduleEntities,
       List<TenantEnabledOperation> operationEntities)
@@ -65,39 +68,62 @@ namespace ems.persistance.Repositories
             }
         
 
-        // Remove old
-        //var oldModules = _context.TenantEnabledModules.Where(x => x.TenantId == tenantId);
-        //var oldOps = _context.TenantEnabledOperations.Where(x => x.TenantId == tenantId);
-        //_context.TenantEnabledModules.RemoveRange(oldModules);
-        //_context.TenantEnabledOperations.RemoveRange(oldOps);
-        //await _context.SaveChangesAsync();
-
-        //// Add new
-        //var newModules = modules.Select(m => new TenantEnabledModules
-        //{
-        //    TenantId = tenantId,
-        //    ModuleId = m.ModuleId,
-        //    IsEnabled = true,
-        //    AddedDateTime = DateTime.Now
-        //}).ToList();
-
-        //var newOps = modules
-        //    .SelectMany(m => m.OperationIds.Select(opId => new TenantEnabledOperations
-        //    {
-        //        TenantId = tenantId,
-        //        ModuleId = m.ModuleId,
-        //        OperationId = opId,
-        //        IsEnabled = true,
-        //        AddedDateTime = DateTime.Now
-        //    }))
-        //    .ToList();
-
-        //await _context.TenantEnabledModules.AddRangeAsync(newModules);
-        //await _context.TenantEnabledOperations.AddRangeAsync(newOps);
-        //await _context.SaveChangesAsync();
+     
     }
 
-        public async Task<List<TenantEnabledModule>> GetEnabledModulesWithOperationsAsync(long tenantId)
+        public async Task<bool> UpdateTenantModuleAndOperationsAsync(TenantModuleOperationsUpdateRequestDTO request)
+        {
+            try
+            {
+                foreach (var module in request.Modules)
+                {
+                    // 🟠 1. Update TenantEnabledModule
+                    await _context.Database.ExecuteSqlRawAsync(
+                        @"UPDATE [AxionPro].[TenantEnabledModule]
+                  SET IsEnabled = {0}, UpdatedDateTime = GETUTCDATE()
+                  WHERE TenantId = {1} AND ModuleId = {2}",
+                        module.IsEnabled, request.TenantId, module.ModuleId
+                    );
+
+                    if (module.IsEnabled == false)
+                    {
+                        //  2. If module is off, then turn off all operations of that module
+                        await _context.Database.ExecuteSqlRawAsync(
+                            @"UPDATE [AxionPro].[TenantEnabledOperation]
+                      SET IsEnabled = 0, UpdatedDateTime = GETUTCDATE()
+                      WHERE TenantId = {0} AND ModuleId = {1}",
+                            request.TenantId, module.ModuleId
+                        );
+                    }
+                    else
+                    {
+                        // ✅ 3. If module is enabled, then update only selected operations
+                        foreach (var operation in module.Operations)
+                        {
+                            await _context.Database.ExecuteSqlRawAsync(
+                                @"UPDATE [AxionPro].[TenantEnabledOperation]
+                          SET IsEnabled = {0}, UpdatedDateTime = GETUTCDATE()
+                          WHERE TenantId = {1} AND ModuleId = {2} AND OperationId = {3}",
+                                operation.IsEnabled, request.TenantId, module.ModuleId, operation.OperationId
+                            );
+                        }
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Bulk update failed while updating module & operations");
+                return false;
+            }
+        }
+
+
+
+
+
+        public async Task<List<TenantEnabledModule>> GetTenantEnabledModulesWithOperationsAsync(long tenantId)
         {
             try
             {
@@ -117,7 +143,51 @@ namespace ems.persistance.Repositories
             }
         }
 
+        public  async Task<TenantEnabledModuleOperationsResponseDTO> GetEnabledModulesWithOperationsAsync(TenantEnabledModuleOperationsRequestDTO tenantEnabledModuleOperationsRequestDTO)
+        {
+            try
+            {
+                var tenantId = tenantEnabledModuleOperationsRequestDTO.TenantId;
 
+                // ✅ Get all enabled modules for the tenant
+                var modules = await _context.TenantEnabledModules
+                    .Where(t => t.TenantId == tenantId && t.IsEnabled)
+                    .Select(t => new EnabledModuleActiveDTO
+                    {
+                        Id = t.Module.Id,
+                        ModuleName = t.Module.ModuleName,
+                        ParentModuleId = t.Module.ParentModuleId,
+                        ParentModuleName = t.Module.ParentModule != null ? t.Module.ParentModule.ModuleName : "",
+                        IsEnabled = t.IsEnabled,
+
+                        Operations = _context.TenantEnabledOperations
+                            .Where(op => op.TenantId == tenantId &&
+                                         op.ModuleId == t.ModuleId &&
+                                         op.IsEnabled )
+                            .Select(op => new EnabledOperationActiveDTO
+                            {
+                                Id = op.OperationId,
+                                OperationName = op.Operation.OperationName
+                            }).ToList()
+
+                    }).ToListAsync();
+
+                return new TenantEnabledModuleOperationsResponseDTO
+                {
+                    TenantId = tenantId,
+                    Modules = modules
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching enabled modules and operations for tenant.");
+                return new TenantEnabledModuleOperationsResponseDTO
+                {
+                    TenantId = tenantEnabledModuleOperationsRequestDTO.TenantId,
+                    Modules = null
+                };
+            }
+        }
     }
 
 }

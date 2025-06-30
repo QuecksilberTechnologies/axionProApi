@@ -24,7 +24,9 @@ public partial class Tenant :BaseEntity
 
     public bool IsVerified { get; set; }
 
- 
+
+    public virtual ICollection<ForgotPasswordOTPDetail> ForgotPasswordRequests { get; set; } = new List<ForgotPasswordOTPDetail>();
+
 
     public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 

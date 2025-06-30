@@ -1,4 +1,5 @@
 ﻿using ems.application.DTOs.Operation;
+using ems.application.DTOs.RoleModulePermission;
 using ems.application.Interfaces.IContext;
 using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
@@ -13,6 +14,7 @@ namespace ems.persistance.Data.Context
     {
 
         public virtual DbSet<AccoumndationAllowancePolicyByDesignation> AccoumndationAllowancePolicyByDesignations { get; set; }
+        public virtual DbSet<ForgotPasswordOTPDetail> ForgotPasswordOTPDetails { get; set; }
 
         public virtual DbSet<Module> Modules { get; set; }
         public virtual DbSet<TenantSubscription> TenantSubscriptions { get; set; }
@@ -22,8 +24,9 @@ namespace ems.persistance.Data.Context
         public virtual DbSet<ModuleOperationMapping> ModuleOperationMappings { get; set; }
 
         public virtual DbSet<Asset> Assets { get; set; }
+        
         public virtual DbSet<CommonItem> CommonItems { get; set; }
-        public virtual DbSet<RoleModulePermission> RoleModulePermissions { get; set; }
+        public virtual DbSet<RoleModuleOperationResponseDTO> RoleModulePermissions { get; set; }
         public virtual DbSet<CheckOperationPermissionRequestDTO> HasAccessOperations { get; set; }
         public virtual DbSet<Country> Countries { get; set; }
       
@@ -706,7 +709,33 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
             });
+            modelBuilder.Entity<ForgotPasswordOTPDetail>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__ForgotPa__3214EC071E853072");
 
+                entity.ToTable("ForgotPasswordOTPDetail", "AxionPro");
+
+                entity.Property(e => e.CreatedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.Otp)
+                    .HasMaxLength(10)
+                    .HasColumnName("OTP");
+                entity.Property(e => e.OtpexpireDateTime)
+                    .HasColumnType("datetime")
+                    .HasColumnName("OTPExpireDateTime");
+                entity.Property(e => e.UsedDateTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Tenant).WithMany(p => p.ForgotPasswordRequests)
+                    .HasForeignKey(d => d.TenantId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ForgotPasswordRequest_Tenant");
+               
+                entity.HasOne(d => d.LoginCredential).WithMany(p => p.ForgotPasswordRequests)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ForgotPasswordOTPDetail_LoginCredential");
+            });
             modelBuilder.Entity<Tenant>(entity =>            {
                 entity.HasKey(e => e.Id).HasName("PK__Tenant__3214EC0728DD7C6E");
 
@@ -1555,14 +1584,16 @@ namespace ems.persistance.Data.Context
                 entity.ToTable("Role", "AxionPro");
 
                 entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.DeletedById).HasDefaultValue(0L);
                 entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.IsSoftDeleted).HasDefaultValue(false);
                 entity.Property(e => e.Remark).HasMaxLength(200);
                 entity.Property(e => e.RoleName).HasMaxLength(100);
+                entity.Property(e => e.UpdatedById).HasDefaultValue(0L);
                 entity.Property(e => e.UpdatedDateTime)
                     .HasDefaultValueSql("((0))")
                     .HasColumnType("datetime");
-                // Common Entities
-                entity.ConfigureBaseEntity();
+
                 entity.HasOne(d => d.Tenant).WithMany(p => p.Roles)
                     .HasForeignKey(d => d.TenantId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
@@ -1571,19 +1602,33 @@ namespace ems.persistance.Data.Context
 
             modelBuilder.Entity<RoleModuleAndPermission>(entity =>
             {
+                entity.Property(e => e.IsSoftDeleted).HasDefaultValue(false);
                 entity.HasKey(e => e.Id).HasName("PK_RoleModuleAndPermission_Id");
 
                 entity.ToTable("RoleModuleAndPermission", "AxionPro");
 
+                entity.HasIndex(e => e.OperationId, "IDX_RolesPermission_OperationId");
+
+                entity.HasIndex(e => e.RoleId, "IDX_RolesPermission_RoleId");
+
                 entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
-                entity.Property(e => e.ImageIcon)
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.ImageIcon).HasMaxLength(200);
                 entity.Property(e => e.Remark)
                     .HasMaxLength(255)
                     .IsUnicode(false);
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
- 
+
+                entity.HasOne(d => d.Module).WithMany(p => p.RoleModuleAndPermissions)
+                    .HasForeignKey(d => d.ModuleId)
+                    .HasConstraintName("FK_RoleModulePermission_Module");
+
+                entity.HasOne(d => d.Operation).WithMany(p => p.RoleModuleAndPermissions)
+                    .HasForeignKey(d => d.OperationId)
+                    .HasConstraintName("FK_RoleModulePermission_Operation");
+
+                entity.HasOne(d => d.Role).WithMany(p => p.RoleModuleAndPermissions)
+                    .HasForeignKey(d => d.RoleId)
+                    .HasConstraintName("FK_RoleModulePermission_Role");
             });
 
             modelBuilder.Entity<ServiceProvider>(entity =>

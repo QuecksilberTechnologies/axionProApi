@@ -14,11 +14,11 @@ namespace ems.application.Features.DesignationCmd.Commands
     public class CreateDesignationCommand : IRequest<ApiResponse<List<GetAllDesignationDTO>>>
     {
 
-        public CreateDesignationDTO createDesignationDTO { get; set; }
+        public CreateDesignationDTO dto { get; set; }
 
-        public CreateDesignationCommand(CreateDesignationDTO createDesignationDTO)
+        public CreateDesignationCommand(CreateDesignationDTO dto)
         {
-            this.createDesignationDTO = createDesignationDTO;
+            this.dto = dto;
         }
 
     }

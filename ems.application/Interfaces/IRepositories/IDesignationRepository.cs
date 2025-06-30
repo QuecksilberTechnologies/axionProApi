@@ -15,13 +15,16 @@ namespace ems.application.Interfaces.IRepositories
         // Get a designation by its Id
         Task<Designation> GetDesignationByIdAsync(int Id);
 
-        // Get all designation
-        Task<List<Designation>> GetAllDesignationAsync();
+        Task<bool> CheckDuplicateValueAsync(long tenantId, string value);
 
+        // Get all designation
+        Task<List<Designation>> GetAllDesignationAsync(long? tenantId,bool isActive);
+        Task<List<Designation>> GetAllActiveDesignationAsync(long? tenantId);
+        Task<bool> AutoCreateDesignationAsync(Designation designation);
         // Update an existing designation
-        Task<List<Designation>> UpdateDesignationAsync(Designation designation);
+        Task<bool> UpdateDesignationAsync(Designation designation);
 
         // Delete a designation by its Id
-        Task<bool> DeleteDesignationAsync(int Id);
+        Task<bool> DeleteDesignationAsync(Designation designation);
     }
 }

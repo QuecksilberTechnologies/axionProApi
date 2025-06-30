@@ -18,6 +18,8 @@ public partial class Role :BaseEntity
 
     public virtual Tenant Tenant { get; set; } = null!;
 
+    public virtual ICollection<RoleModuleAndPermission> RoleModuleAndPermissions { get; set; } = new List<RoleModuleAndPermission>();
+
     public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 
 }

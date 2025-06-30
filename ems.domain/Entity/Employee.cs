@@ -10,15 +10,15 @@ public partial class Employee :BaseEntity
 
     public long TenantId { get; set; }
 
-    public int EmployeeDocumentId { get; set; }
+    public int? EmployeeDocumentId { get; set; }
 
-    public string EmployementCode { get; set; } = null!;
+    public string? EmployementCode { get; set; } 
 
-    public string LastName { get; set; } = null!;
+    public string? LastName { get; set; } = null!;
 
     public string? MiddleName { get; set; }
 
-    public string FirstName { get; set; } = null!;
+    public string? FirstName { get; set; } = null!;
 
     public DateOnly? DateOfBirth { get; set; }
 
@@ -34,9 +34,9 @@ public partial class Employee :BaseEntity
 
     public int? DepartmentId { get; set; }
 
-    public string? OfficialEmail { get; set; }
+    public string? OfficialEmail { get; set; } 
 
-    public bool HasPermanent { get; set; }
+    public bool? HasPermanent { get; set; }
 
   
     public int? FunctionalId { get; set; }

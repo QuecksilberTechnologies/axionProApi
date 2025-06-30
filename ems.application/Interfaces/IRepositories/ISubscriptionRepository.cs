@@ -17,7 +17,7 @@ namespace ems.application.Interfaces.IRepositories
         Task<bool> UpdateSubscriptionPlanAsync(int id, SubscriptionPlanRequestDTO dto);
 
         // 📋 Get all active subscription plans
-        Task<List<SubscriptionPlan>> GetAllPlansAsync();
+        Task<List<SubscriptionActivePlanDTO>> GetAllPlansAsync();
 
         // 🔍 Get plan by ID
         Task<SubscriptionPlanResponseDTO> GetPlanByIdAsync(int id);

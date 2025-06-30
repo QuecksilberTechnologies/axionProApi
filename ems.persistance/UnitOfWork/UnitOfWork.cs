@@ -12,6 +12,7 @@ using ems.domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using FluentValidation;
+using ems.application.Interfaces.Repositories;
 public class UnitOfWork  : IUnitOfWork
 {
 
@@ -22,7 +23,8 @@ public class UnitOfWork  : IUnitOfWork
 
     private readonly ILoggerFactory _loggerFactory;
     private IDbContextTransaction? _currentTransaction;
-   
+    private IForgotPasswordOtpRepository _forgotPasswordOtpRepository;
+
 
     private ITenantModuleConfigurationRepository? _tenantModuleConfigurationRepository;
     private IPlanModuleMappingRepository? _planModuleMappingRepository;
@@ -107,8 +109,17 @@ public class UnitOfWork  : IUnitOfWork
                     return _tenantRepository ??= new TenantRepository(_context, _loggerFactory.CreateLogger<TenantRepository>());
                    }
             }
+
     
-        public IModuleRepository ModuleRepository
+
+           public IForgotPasswordOtpRepository ForgotPasswordOtpRepository
+            {
+                  get
+                {
+            return _forgotPasswordOtpRepository ??= new ForgotPasswordOtpRepository(_context, _loggerFactory.CreateLogger<ForgotPasswordOtpRepository>());
+               }
+            }
+    public IModuleRepository ModuleRepository
     {
         get
         {

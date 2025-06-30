@@ -79,6 +79,9 @@ namespace ems.persistance.Repositories
         {
             try
             {
+                tenant.AddedById = tenant.Id;
+                tenant.IsActive = true;
+                tenant.AddedDateTime = DateTime.Now;
                 if (_context == null)
                 {
                     _logger?.LogError("DbContext is null in AddAsync.");

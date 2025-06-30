@@ -1,4 +1,5 @@
-﻿using ems.application.Interfaces;
+﻿using ems.application.Constants;
+using ems.application.Interfaces;
 using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Serilog.Core;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
@@ -24,6 +26,72 @@ namespace ems.persistance.Repositories
             _logger = logger;
         }
 
+        public async Task<int> AutoCreateUserRoleAndAutomatedRolePermissionMappingAsync(long tenantId, long employeeId, Role role)
+        {
+            try
+            {
+                //// 1. Role Create
+                //role.TenantId = tenantId;
+                //role.IsActive = true;
+                //role.Remark = "System Generated Role";
+                //role.AddedById = tenantId;
+                //role.AddedDateTime = DateTime.Now;
+
+                //await _context.Roles.AddAsync(role);
+                //await _context.SaveChangesAsync(); // Ensure role.Id is generated
+
+                // 2. UserRole Create
+                //var userRole = new UserRole
+                //{
+                //    EmployeeId = employeeId,
+                //    RoleId = role.Id,
+                //    IsActive = true,
+                //    IsPrimaryRole = true,
+                //    Remark = "System Generated user-role",
+                //    AssignedById = tenantId,
+                //    AssignedDateTime = DateTime.Now,
+                //    AddedById = tenantId,
+                //    AddedDateTime = DateTime.Now,
+                //    ApprovalRequired = false,
+                //    ApprovalStatus = null,
+                //    RoleStartDate = DateTime.Now,
+                //    IsSoftDeleted = false
+                //};
+
+                //await _context.UserRoles.AddAsync(userRole);
+
+                // 3. Fetch TenantEnabledOperation list for that tenant
+                var enabledOperations = await _context.TenantEnabledOperations
+                    .Where(x => x.TenantId == tenantId)
+                    .ToListAsync();
+
+                // 4. Convert to RoleModuleAndPermission
+                var rolePermissions = enabledOperations.Select(op => new RoleModuleAndPermission
+                {
+                    RoleId = role.Id,
+                    ModuleId = op.ModuleId,
+                    OperationId = op.OperationId,
+                    HasAccess = true,
+                    IsActive = op.IsEnabled,
+                    Remark = "System Genrate Prmission for user",
+                    IsOperational = true,
+                    AddedById = tenantId,
+                    AddedDateTime = DateTime.Now,
+                    IsSoftDeleted = false,
+
+                }).ToList();
+
+                await _context.RoleModuleAndPermissions.AddRangeAsync(rolePermissions);
+
+                // Final Save
+                return await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in AutoCreateRoleUserRoleAndAutomatedRolePermissionMappingAsync");
+                throw;
+            }
+        }
 
         public async Task<List<Role>> GetAllRolesAsync(Role role)
         {

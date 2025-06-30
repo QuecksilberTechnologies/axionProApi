@@ -27,12 +27,12 @@ namespace ems.api.Controllers.Operation
         }
 
 
-        [HttpGet("get-all-operation")]
-        public async Task<IActionResult> GetAllOperationAsyc([FromQuery] OperationRequestDTO operationRequestDTO)
+        [HttpGet("get-all-operation-by-product-owner")]
+        public async Task<IActionResult> GetAllOperationAsyc([FromQuery] GetAllOperationRequestByProductAdminDTO operationRequestDTO)
         {
-            _logger.LogInfo($"Received request to get operationRequestDTO from userId: {operationRequestDTO.Id}");
+            _logger.LogInfo($"Received request to get operationRequestDTO from userId: {operationRequestDTO.ProductOwnerId}");
 
-            var command = new GetAllOperationQuery(operationRequestDTO);
+            var command = new GetAllOperationCommand(operationRequestDTO);
             var result = await _mediator.Send(command);
 
             if (!result.IsSucceeded)
@@ -41,7 +41,7 @@ namespace ems.api.Controllers.Operation
             }
             return Ok(result);
         }
-        [HttpPost("add-operation")]
+        [HttpPost("add-operation-by-product-owner")]
         public async Task<IActionResult> CreateTravelModeType([FromBody] CreateOperationDTO createOperationDTO)
         {
             if (createOperationDTO == null)
@@ -63,7 +63,7 @@ namespace ems.api.Controllers.Operation
             return Ok(result);
         }
 
-        [HttpPost("update-operation")]
+        [HttpPost("update-operation-by-product-owner")]
         public async Task<IActionResult> UpdateOperation([FromBody] UpdateOperationDTO updateOperationDTO)
         {
             _logger.LogInfo("Received request for update a leave" + updateOperationDTO.ToString());

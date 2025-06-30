@@ -28,12 +28,52 @@ namespace ems.application.Features.DesignationCmd.Handlers
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
+
         public async Task<ApiResponse<List<GetAllDesignationDTO>>> Handle(CreateDesignationCommand request, CancellationToken cancellationToken)
         {
             try
             {
+                if (request.dto.TenantId <= 0)
+                {
+                    return new ApiResponse<List<GetAllDesignationDTO>>
+                    {
+                        IsSucceeded = false,
+                        Message = "TenantId is not valid.",
+                        Data = null
+                    };
+                }
 
-                Designation designation = _mapper.Map<Designation>(request.createDesignationDTO);
+                // 🧼 Trim DesignationName & validate
+                string? designationName = request.dto.DesignationName?.Trim();
+
+                if (string.IsNullOrWhiteSpace(designationName))
+                {
+                    return new ApiResponse<List<GetAllDesignationDTO>>
+                    {
+                        IsSucceeded = false,
+                        Message = "Designation name should not be empty or whitespace.",
+                        Data = null
+                    };
+                }
+
+                // 🔄 Use trimmed name for processing
+                request.dto.DesignationName = designationName;
+
+                bool isDuplicate = await designationRepository
+                    .CheckDuplicateValueAsync(request.dto.TenantId, designationName);
+
+                if (isDuplicate)
+                {
+                    return new ApiResponse<List<GetAllDesignationDTO>>
+                    {
+                        IsSucceeded = false,
+                        Message = "This designation name already exists.",
+                        Data = null
+                    };
+                }
+
+                Designation designation = _mapper.Map<Designation>(request.dto);
+
                 List<Designation> designations = await designationRepository.CreateDesignationAsync(designation);
 
                 if (designations == null || !designations.Any())
@@ -41,8 +81,8 @@ namespace ems.application.Features.DesignationCmd.Handlers
                     return new ApiResponse<List<GetAllDesignationDTO>>
                     {
                         IsSucceeded = false,
-                        Message = "No Travel were created.",
-                        Data = new List<GetAllDesignationDTO>()
+                        Message = "No designation was created.",
+                        Data = null
                     };
                 }
 
@@ -51,15 +91,13 @@ namespace ems.application.Features.DesignationCmd.Handlers
                 return new ApiResponse<List<GetAllDesignationDTO>>
                 {
                     IsSucceeded = true,
-                    Message = "designation created successfully",
+                    Message = "Designation created successfully.",
                     Data = getAllDesignationDTOs
                 };
             }
             catch (Exception ex)
             {
-                //  _logger.LogError(ex, "Error occurred while creating role.");
                 return new ApiResponse<List<GetAllDesignationDTO>>
-
                 {
                     IsSucceeded = false,
                     Message = $"An error occurred: {ex.Message}",

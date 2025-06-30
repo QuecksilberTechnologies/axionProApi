@@ -11,9 +11,9 @@ namespace ems.application.Features.AssetCmd.Commands
 {
     public class GetAllAssetByTenantCommand : IRequest<ApiResponse<List<AssetResponseDTO>>>
     {
-        public AssetRequestDTO getAssetTypeRequest { get; set; }
+        public GetAssetRequestByTenantAdminDTO getAssetTypeRequest { get; set; }
 
-        public GetAllAssetByTenantCommand(AssetRequestDTO getAssetTypeRequest)
+        public GetAllAssetByTenantCommand(GetAssetRequestByTenantAdminDTO getAssetTypeRequest)
         {
             this.getAssetTypeRequest = getAssetTypeRequest;
         }

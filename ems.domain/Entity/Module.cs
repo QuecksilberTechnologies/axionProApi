@@ -50,6 +50,7 @@ public partial class Module
 
     [NotMapped] // ✅ This solves the "Invalid column name 'ModuleId'" error
     public virtual List<Module> ChildModules { get; set; } = new();
+    public virtual ICollection<RoleModuleAndPermission> RoleModuleAndPermissions { get; set; } = new List<RoleModuleAndPermission>();
 
 }
 

@@ -2,6 +2,7 @@
 using ems.application.DTOs.Module;
 using ems.application.DTOs.Operation;
 using ems.application.DTOs.ProjectModule;
+using ems.application.DTOs.RoleModulePermission;
 using ems.application.DTOs.UserLogin;
 using ems.application.DTOs.UserRole;
 using ems.application.Interfaces.IRepositories;
@@ -40,6 +41,33 @@ namespace ems.persistance.Repositories
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
+
+        public async Task<List<RoleModuleOperationResponseDTO>> GetActiveRoleModuleOperationsAsync(GetActiveRoleModuleOperationsRequestDTO request)
+        {
+            try
+            {
+                string sqlQuery = "EXEC AxionPro.GetActiveRoleModuleOperations @TenantId, @RoleIds";
+
+                var parameters = new[]
+                {
+            new SqlParameter("@TenantId", request.TenantId),
+            new SqlParameter("@RoleIds", request.RoleIds)
+        };
+
+                var result = await _context.RoleModulePermissions
+                    .FromSqlRaw(sqlQuery, parameters)
+                    .ToListAsync();
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching module permissions for roles: {RoleIds}", request.RoleIds);
+                throw;
+            }
+        }
+
+
         //public async Task<List<ProjectSubModuleDetailDTO>> GetDasboardMenuAsync(string Roles)
         //{
         //    try
@@ -114,9 +142,9 @@ namespace ems.persistance.Repositories
         //} 
 
 
-      
 
-    
+
+
         // Byte Array to Base64 Converter
         public string ConvertToBase64(byte[] iconData)
         {
@@ -206,12 +234,42 @@ namespace ems.persistance.Repositories
                 return -1;  // Error Case
             }
         }
-        
-        
-        
-        
-        
-        
+
+
+        public async Task<long> ValidateActiveUserCrendentialOnlyAsync(string loginId)
+        {
+            try
+            {
+                _logger.LogInformation("Validating user login for LoginId: {LoginId}", loginId);
+
+                var loginParam = new SqlParameter("@LoginId", loginId ?? (object)DBNull.Value);
+                var resultParam = new SqlParameter("@Result", SqlDbType.Int)
+                {
+                    Direction = ParameterDirection.Output
+                };
+
+                string sqlQuery = "EXEC AxionPro.ValidateActiveUserCrendentialOnly @LoginId, @Result OUTPUT";
+
+                await _context.Database.ExecuteSqlRawAsync(sqlQuery, loginParam, resultParam);
+
+                return (int)resultParam.Value;  // Output Parameter से Result Return करें
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "SQL Exception occurred while validating user login for LoginId: {LoginId}", loginId);
+                return -1;  // Error Case
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while validating user login for LoginId: {LoginId}");
+                return -1;  // Error Case
+            }
+        }
+
+
+
+
+
         public async Task<bool> GetHasAccessOperation(CheckOperationPermissionRequestDTO checkOperationPermissionRequest)
         {
             try

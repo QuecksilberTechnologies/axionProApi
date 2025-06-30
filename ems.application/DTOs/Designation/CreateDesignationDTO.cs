@@ -9,9 +9,10 @@ namespace ems.application.DTOs.Designation
     public class CreateDesignationDTO
     {
 
+        public long TenantId { get; set; }
         public string DesignationName { get; set; }
         public string? Description { get; set; }
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
         public long AddedById { get; set; }
         public DateTime AddedDateTime { get; set; }
 

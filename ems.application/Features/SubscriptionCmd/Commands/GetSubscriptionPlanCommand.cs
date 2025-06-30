@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.SubscriptionCmd.Commands
 {
-    public class GetSubscriptionPlanCommand : IRequest<ApiResponse<List<SubscriptionPlanResponseDTO>>>
+    public class GetSubscriptionPlanCommand : IRequest<ApiResponse<List<SubscriptionActivePlanDTO>>>
     {
 
         public SubscriptionPlanRequestDTO subscriptionPlanRequestDTO { get; set; }

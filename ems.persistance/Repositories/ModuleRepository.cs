@@ -49,9 +49,9 @@ namespace ems.persistance.Repositories
             }
         }
 
+ 
 
-
-        public async Task<List<Module>> GetCommonMenuTreeAsync(int? parentId)
+        public async Task<List<ModuleDTO>> GetCommonMenuTreeAsync(int? parentId)
         {
             try
             {
@@ -62,20 +62,20 @@ namespace ems.persistance.Repositories
                     .OrderBy(m => m.Id)
                     .ToListAsync();
 
-                var result = new List<Module>();
+                var result = new List<ModuleDTO>();
 
                 foreach (var module in modules)
                 {
-                    var child = new Module
+                    var child = new ModuleDTO
                     {
                         Id = module.Id,
                         ModuleName = module.ModuleName,
                         SubModuleUrl = module.SubModuleUrl,
-                        ChildModules = await GetCommonMenuTreeAsync(module.Id)
+                        Children = await GetCommonMenuTreeAsync(module.Id)
                     };
 
                     result.Add(child);
-                    _logger.LogInformation("Adding module: {Name}, ChildCount: {Count}", module.ModuleName, child.ChildModules?.Count);
+                    _logger.LogInformation("Adding module: {Name}, ChildCount: {Count}", module.ModuleName, child.Children?.Count);
 
                 }
 

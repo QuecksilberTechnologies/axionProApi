@@ -19,20 +19,20 @@ using System.Xml.Linq;
 
 namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 {
-    public class SetLoginPasswordCommandHandler : IRequestHandler<SetLoginPasswordCommand, ApiResponse<SetLoginPasswordResponseDTO>>
+    public class UpdateLoginPasswordCommandHandler : IRequestHandler<UpdateLoginPasswordCommand, ApiResponse<UpdateLoginPasswordResponseDTO>>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly INewTokenRepository _tokenService;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
-    private readonly ILogger<SetLoginPasswordCommandHandler> _logger;
+    private readonly ILogger<UpdateLoginPasswordCommandHandler> _logger;
 
-    public SetLoginPasswordCommandHandler(
+    public UpdateLoginPasswordCommandHandler(
         IMapper mapper,
         IUnitOfWork unitOfWork,
         INewTokenRepository tokenService,
         IRefreshTokenRepository refreshTokenRepository,
-        ILogger<SetLoginPasswordCommandHandler> logger)
+        ILogger<UpdateLoginPasswordCommandHandler> logger)
     {
         _logger = logger;
         _mapper = mapper;
@@ -41,7 +41,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
         _refreshTokenRepository = refreshTokenRepository;
     }
 
-    public async Task<ApiResponse<SetLoginPasswordResponseDTO>> Handle(SetLoginPasswordCommand request, CancellationToken cancellationToken)
+    public async Task<ApiResponse<UpdateLoginPasswordResponseDTO>> Handle(UpdateLoginPasswordCommand request, CancellationToken cancellationToken)
     {
         try
         {
@@ -56,7 +56,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 _logger.LogWarning("User not found or not authorized.");
                 await _unitOfWork.RollbackTransactionAsync();
 
-                return new ApiResponse<SetLoginPasswordResponseDTO>
+                return new ApiResponse<UpdateLoginPasswordResponseDTO>
                 {
                     IsSucceeded = false,
                     Message = "User is not authenticated or authorized to perform this action.",
@@ -79,7 +79,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 _logger.LogWarning("Password update failed for LoginId: {LoginId}", loginId);
                 await _unitOfWork.RollbackTransactionAsync();
 
-                return new ApiResponse<SetLoginPasswordResponseDTO>
+                return new ApiResponse<UpdateLoginPasswordResponseDTO>
                 {
                     IsSucceeded = false,
                     Message = "Password could not be updated. Please check if this is your first login.",
@@ -87,13 +87,13 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 };
             }
 
-            var response = new SetLoginPasswordResponseDTO
+            var response = new UpdateLoginPasswordResponseDTO
             {
                 Success = true,
                
             };
 
-            return new ApiResponse<SetLoginPasswordResponseDTO>
+            return new ApiResponse<UpdateLoginPasswordResponseDTO>
             {
                 IsSucceeded = true,
                 Message = "Password has been set successfully.",
@@ -106,7 +106,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 
             await _unitOfWork.RollbackTransactionAsync();
 
-            return new ApiResponse<SetLoginPasswordResponseDTO>
+            return new ApiResponse<UpdateLoginPasswordResponseDTO>
             {
                 IsSucceeded = false,
                 Message = "An error occurred while setting the password. Please try again later.",

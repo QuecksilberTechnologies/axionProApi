@@ -20,10 +20,10 @@ namespace ems.api.Controllers.Asset
             _mediator = mediator;
             _logger = logger;
         }
-        #region Asset
+        #region CRUD-GET-ASSET-BY-TENANT-USER
 
-        [HttpPost("get-all-asset")]
-        public async Task<IActionResult> GetAllAssets([FromBody] AssetRequestDTO? AssetRequestDTO)
+        [HttpPost("get-all-asset-by-tenant-user")]
+        public async Task<IActionResult> GetAllAssetsByTenantUser([FromBody] GetAssetRequestByTenantAdminDTO? AssetRequestDTO)
         {
             if (AssetRequestDTO == null)
             {
@@ -44,7 +44,8 @@ namespace ems.api.Controllers.Asset
             return Ok(result);
         }
 
-        [HttpPost("update-asset-by-admin")]
+
+        [HttpPost("update-asset-by-tenant-user")]
         // [Authorize]
         public async Task<IActionResult> UpdateAsset([FromBody] UpdateAssetRequestDTO updateAssetDTO)
         {
@@ -58,7 +59,7 @@ namespace ems.api.Controllers.Asset
             return Ok(result);
         }
 
-        [HttpPost("delete-asset-by-admin")]
+        [HttpPost("delete-asset-by-tenant-user")]
         public async Task<IActionResult> DeleteAssetByTenant([FromBody] DeleteAssetRequestDTO deleteAssetDTO)
         {
             _logger.LogInfo("Received request for deleted  Asset" + deleteAssetDTO.ToString());
@@ -71,11 +72,9 @@ namespace ems.api.Controllers.Asset
             return Ok(result);
         }
 
-
-
-        [HttpPost("add-asset-by-admin")]
+        [HttpPost("add-asset-by-tenant-user")]
         //[authorize]
-        public async Task<IActionResult> createasset([FromBody] CreateAssetRequestDTO createassetdto)
+        public async Task<IActionResult> createasset([FromBody] CreateAssetRequestByTenantAdminDTO createassetdto)
         {
             _logger.LogInfo("received request for create a new asset" + createassetdto);
             var command = new CreateAssetCommand(createassetdto);
@@ -87,37 +86,9 @@ namespace ems.api.Controllers.Asset
             }
             return Ok(result);
         }
-        #endregion
-        #region AssetStatus
-        
-        [HttpPost("add-asset-status-by-admin")]
-        // [Authorize]
-        public async Task<IActionResult> CreateAssetStatus([FromBody] AssetStatusRequestDTO addAssetStatusRequestDTO)
-        {
-            _logger.LogInfo("Received request for create a new Asset" + addAssetStatusRequestDTO.ToString());
-            var command = new AddStatusByTenantCommand(addAssetStatusRequestDTO);
-            var result = await _mediator.Send(command);
-            if (!result.IsSucceeded)
-            {
-                return Ok(result);
-            }
-            return Ok(result);
-        }
-        [HttpPost("update-asset-status-by-admin")]
-        // [Authorize]
-        public async Task<IActionResult> UpdateAssetStatusByTenant([FromBody] UpdateAssetStatusRequestDTO updateAssetStatusRequestDTO)
-        {
-            _logger.LogInfo("Received request for update a new Asset" + updateAssetStatusRequestDTO.ToString());
-            var command = new UpdateStatusByTenantCommand(updateAssetStatusRequestDTO);
-            var result = await _mediator.Send(command);
-            if (!result.IsSucceeded)
-            {
-                return Ok(result);
-            }
-            return Ok(result);
-        }
-        [HttpPost("get-all-asset-status")]
-        public async Task<IActionResult> GetAllAssets([FromBody] AssetStatusRequestDTO? assetStatusRequestDTO)
+
+        [HttpPost("get-all-asset-status-by-tenant-user")]
+        public async Task<IActionResult> GetAllAssetStatus([FromBody] AssetStatusRequestDTO? assetStatusRequestDTO)
         {
             if (assetStatusRequestDTO == null)
             {
@@ -138,7 +109,78 @@ namespace ems.api.Controllers.Asset
             return Ok(result);
         }
 
-        [HttpPost("delete-asset-status-by-admin")]
+        [HttpPost("gell-all-asset-type-by-tenant-user")]
+        // [Authorize]
+        public async Task<IActionResult> GetAllAssetTypeByTenantUser([FromBody] AssetTypeRequestDTO getAllAssetTypeDTO)
+        {
+            _logger.LogInfo("Received request for create a new Asset Type" + getAllAssetTypeDTO.ToString());
+            var command = new GetAllAssetTypeByTenantCommand(getAllAssetTypeDTO);
+            var result = await _mediator.Send(command);
+            if (!result.IsSucceeded)
+            {
+                return Ok(result);
+            }
+            return Ok(result);
+        }
+
+
+        #endregion
+
+
+
+        #region CRUD-GET-ASSET-BY-TENANT-ADMIN
+
+        [HttpPost("get-all-asset-status-by-tenant-admin")]
+        public async Task<IActionResult> GetAllAssetStatusByAdmin([FromBody] AssetStatusRequestDTO? assetStatusRequestDTO)
+        {
+            if (assetStatusRequestDTO == null)
+            {
+                // _logger.LogWarning("Received null request for getting Assets.");
+                // return BadRequest(new ApiResponse<List<GetAllAssetDTO>>(false, "Invalid request", null));
+            }
+
+            // _logger.LogInformation("Received request to get Assets for userId: {LoginId}", AssetRequestDTO.Id);
+
+            var query = new GetAllAssetStatusByFieldQuery(assetStatusRequestDTO);  //  Fix: No parameter needed in GetAllAssetQuery
+            var result = await _mediator.Send(query);
+
+            if (!result.IsSucceeded)
+            {
+                return Unauthorized(result);
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost("add-asset-status-by-tenant-admin")]
+        // [Authorize]
+          public async Task<IActionResult> CreateAssetStatusByAdmin([FromBody] AssetStatusRequestDTO addAssetStatusRequestDTO)
+          {
+            _logger.LogInfo("Received request for create a new Asset" + addAssetStatusRequestDTO.ToString());
+            var command = new AddStatusByTenantCommand(addAssetStatusRequestDTO);
+            var result = await _mediator.Send(command);
+            if (!result.IsSucceeded)
+            {
+                return Ok(result);
+            }
+            return Ok(result);
+        }
+        [HttpPost("update-asset-status-by-tenant-admin")]
+        // [Authorize]
+        public async Task<IActionResult> UpdateAssetStatusByTenant([FromBody] UpdateAssetStatusRequestDTO updateAssetStatusRequestDTO)
+        {
+            _logger.LogInfo("Received request for update a new Asset" + updateAssetStatusRequestDTO.ToString());
+            var command = new UpdateStatusByTenantCommand(updateAssetStatusRequestDTO);
+            var result = await _mediator.Send(command);
+            if (!result.IsSucceeded)
+            {
+                return Ok(result);
+            }
+            return Ok(result);
+        }
+                
+
+        [HttpPost("delete-asset-status-by-tenant-admin")]
         public async Task<IActionResult> DeleteAssetStatusByTenant([FromBody] DeleteAssetStatusRequestDTO deleteAssetStatusRequestDTO)
         {
             _logger.LogInfo("Received request for deleted  Asset" + deleteAssetStatusRequestDTO.ToString());
@@ -153,8 +195,8 @@ namespace ems.api.Controllers.Asset
 
         #endregion
 
-        #region AssetTypeComplete
-        [HttpPost("add-asset-type-by-admin")]
+        #region CRUD-GET-ASSET-TYPE-TENANT-ADMIN
+        [HttpPost("add-asset-type-by-tenant-admin")]
         // [Authorize]
         public async Task<IActionResult> CreateAssetType([FromBody] AssetTypeRequestDTO assetTypeRequestDTO)
         {
@@ -168,7 +210,7 @@ namespace ems.api.Controllers.Asset
             return Ok(result);
         }
 
-        [HttpPost("gell-all-asset-type")]
+        [HttpPost("gell-all-asset-type-by-tenant-Admin")]
         // [Authorize]
         public async Task<IActionResult> GetAllAssetTypeByTenant([FromBody] AssetTypeRequestDTO getAllAssetTypeDTO)
         {
@@ -181,8 +223,8 @@ namespace ems.api.Controllers.Asset
             }
             return Ok(result);
         }
-
-        [HttpPost("update-asset-type-by-admin")]
+      
+        [HttpPost("update-asset-type-by-tenant-admin")]
         // [Authorize]
         public async Task<IActionResult> UpdateAssetTypeByTenant([FromBody] UpdateAssetTypeRequestDTO updateAssetTypeRequestDTO)
         {
@@ -196,7 +238,7 @@ namespace ems.api.Controllers.Asset
             return Ok(result);
         }
 
-        [HttpPost("delete-asset-type-by-admin")]
+        [HttpPost("delete-asset-type-by-tenant-admin")]
         public async Task<IActionResult> DeleteAssetTypeByTenant([FromBody] DeleteAssetTypeRequestDTO deleteAssetTypeRequestDTO)
         {
             _logger.LogInfo("Received request for deleted  Asset" + deleteAssetTypeRequestDTO.ToString());

@@ -1,5 +1,6 @@
 ﻿using ems.application.Interfaces.IRepositories;
 using ems.application.Interfaces.ITokenService;
+using ems.application.Interfaces.Repositories;
 using ems.domain.Entity;
 
 namespace ems.application.Interfaces;
@@ -9,7 +10,7 @@ public interface IUnitOfWork : IDisposable
     // Repositories
     IModuleRepository ModuleRepository { get; }
     IUserLoginReopsitory UserLoginRepository { get; }
-
+    IForgotPasswordOtpRepository ForgotPasswordOtpRepository {  get; }
     ITenantModuleConfigurationRepository TenantModuleConfigurationRepository { get; }
     
    

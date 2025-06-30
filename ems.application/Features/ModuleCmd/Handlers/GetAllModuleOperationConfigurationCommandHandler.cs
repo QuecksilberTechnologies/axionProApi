@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ems.application.DTOs.Module;
+using ems.application.DTOs.Tenant;
 using ems.application.Features.ModuleCmd.Commands;
 using ems.application.Features.OperationCmd.Queries;
 using ems.application.Interfaces;
@@ -38,7 +38,7 @@ namespace ems.application.Features.ModuleCmd.Handlers
                // var tenantId = request.moduleOperationConfigurationRequestDTO.TenantId;
                 var tenantId = 118;
 
-                var moduleEntities = await _unitOfWork.TenantModuleConfigurationRepository.GetEnabledModulesWithOperationsAsync(tenantId);
+                var moduleEntities = await _unitOfWork.TenantModuleConfigurationRepository.GetTenantEnabledModulesWithOperationsAsync(118);
 
                 var moduleDTOs = _mapper.Map<List<TenantEnableModuleDTO>>(moduleEntities);
 

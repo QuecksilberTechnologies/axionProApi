@@ -48,6 +48,7 @@ namespace ems.persistance.Repositories
             throw new NotImplementedException();
         }
 
+
         public async Task<List<Operation>> GetAllOperationAsync()
         {
             try

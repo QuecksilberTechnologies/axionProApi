@@ -1,0 +1,20 @@
+﻿using System.Threading.Tasks;
+ 
+using ems.domain.Entity; // ← jahan ForgotPasswordOtp entity rakhi hai
+
+namespace ems.application.Interfaces.Repositories
+{
+    public interface IForgotPasswordOtpRepository
+    {
+        Task<ForgotPasswordOTPDetail?> GetValidOtpByEmployeeIdAsync(long employeeId,long tenantId);
+        Task<ForgotPasswordOTPDetail?> GetOtpValidateTrueAndUsedFalseByEmployeeIdAsync(long employeeId,long tenantId);
+
+        
+        Task<long> AddAsync(ForgotPasswordOTPDetail otp);
+        Task DeleteAsync(ForgotPasswordOTPDetail otp);
+
+        Task<ForgotPasswordOTPDetail?> GetByOtpAndEmployeeIdAsync(string otp, long employeeId);
+
+        Task<bool> UpdateOTPAsync(ForgotPasswordOTPDetail otp); // ✅ New method
+    }
+}

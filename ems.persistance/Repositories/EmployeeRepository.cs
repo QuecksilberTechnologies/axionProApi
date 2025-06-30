@@ -80,7 +80,7 @@ namespace ems.persistance.Repositories
                 _logger?.LogInformation("Fetching employee details for ID: {EmployeeId}", employeeId);
 
                 Employee? employee = await context.Employees
-                    .Where(e => e.Id == employeeId && e.IsActive == true)
+                    .Where(e => e.Id == employeeId && e.IsActive == true && e.IsSoftDeleted==false)
                     .FirstOrDefaultAsync();
 
                 return employee; // पूरी entity return करें

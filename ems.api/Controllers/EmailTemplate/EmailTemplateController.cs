@@ -30,7 +30,7 @@ namespace ems.api.Controllers.EmailTemplate
         /// </summary>
         /// <param name="code">Template code</param>
         /// <returns>List of matching email templates</returns>
-        [HttpGet("gettemplatebycode")]
+        [HttpGet("get-template-by-code")]
         public async Task<IActionResult> GetTemplateByCodeAsync([FromQuery] string code)
         {
             _logger.LogInfo($"Getting email templates for code: {code}");

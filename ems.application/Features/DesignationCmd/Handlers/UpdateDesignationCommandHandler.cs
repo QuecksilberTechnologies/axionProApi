@@ -15,7 +15,7 @@ using ems.application.DTOs.Designation;
 
 namespace ems.application.Features.DesignationCmd.Handlers
 {
-    public class UpdateDesignationCommandHandler : IRequestHandler<UpdateDesignationCommand, ApiResponse<List<GetAllDesignationDTO>>>
+    public class UpdateDesignationCommandHandler : IRequestHandler<UpdateDesignationCommand, ApiResponse<bool>>
     {
         private readonly IDesignationRepository designationRepository;
         private readonly IMapper _mapper;
@@ -28,43 +28,82 @@ namespace ems.application.Features.DesignationCmd.Handlers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ApiResponse<List<GetAllDesignationDTO>>> Handle(UpdateDesignationCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<bool>> Handle(UpdateDesignationCommand request, CancellationToken cancellationToken)
         {
-
             try
             {
-
-                Designation designation = _mapper.Map<Designation>(request.updateDesignationDTO);
-                List<Designation> designations = await designationRepository.UpdateDesignationAsync(designation);
-
-                if (designations == null || !designations.Any())
+                // ✅ Step 1: TenantId Validation
+                if (request.dto.TenantId <= 0)
                 {
-                    return new ApiResponse<List<GetAllDesignationDTO>>
+                    return new ApiResponse<bool>
                     {
                         IsSucceeded = false,
-                        Message = "No operation were updated.",
-                        Data = new List<GetAllDesignationDTO>()
+                        Message = "Valid TenantId is required.",
+                        Data = false
                     };
                 }
 
-                List<GetAllDesignationDTO> getAllDesignationDTOs = _mapper.Map<List<GetAllDesignationDTO>>(designations);
+                // ✅ Step 2: Trim and Validate DesignationName
+                string designationName = request.dto.DesignationName?.Trim();
 
-                return new ApiResponse<List<GetAllDesignationDTO>>
+                if (string.IsNullOrWhiteSpace(designationName))
+                {
+                    return new ApiResponse<bool>
+                    {
+                        IsSucceeded = false,
+                        Message = "Designation name should not be empty or whitespace.",
+                        Data = false
+                    };
+                }
+
+                // Set trimmed value back
+                request.dto.DesignationName = designationName;
+                // ✅ Step 3: Check for duplicate name (excluding same ID)
+                bool isDuplicate = await designationRepository.CheckDuplicateValueAsync(
+                    request.dto.TenantId,
+                    designationName
+                     
+                );
+
+                if (isDuplicate)
+                {
+                    return new ApiResponse<bool>
+                    {
+                        IsSucceeded = false,
+                        Message = "This designation name already exists.",
+                        Data = false
+                    };
+                }
+
+                // ✅ Step 4: Map and Update
+                Designation designation = _mapper.Map<Designation>(request.dto);
+                bool isUpdated = await designationRepository.UpdateDesignationAsync(designation);
+
+                if (!isUpdated)
+                {
+                    return new ApiResponse<bool>
+                    {
+                        IsSucceeded = false,
+                        Message = "No designation was updated.",
+                        Data = false
+                    };
+                }
+
+                return new ApiResponse<bool>
                 {
                     IsSucceeded = true,
-                    Message = "Travel created successfully",
-                    Data = getAllDesignationDTOs
+                    Message = "Designation updated successfully.",
+                    Data = true
                 };
             }
             catch (Exception ex)
             {
-                //  _logger.LogError(ex, "Error occurred while Updatiing Operation.");
-                return new ApiResponse<List<GetAllDesignationDTO>>
-
+                //_logger.LogError(ex, "Error occurred while updating designation.");
+                return new ApiResponse<bool>
                 {
                     IsSucceeded = false,
                     Message = $"An error occurred: {ex.Message}",
-                    Data = null
+                    Data = false
                 };
             }
         }

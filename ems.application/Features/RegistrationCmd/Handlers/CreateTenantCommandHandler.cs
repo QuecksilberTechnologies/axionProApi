@@ -17,6 +17,8 @@ using ems.application.Constants;
 using Microsoft.AspNetCore.Identity.Data;
 using ems.application.Interfaces.IEmail;
 using ems.application.DTOs.Tenant;
+using System.Data;
+using ems.application.DTOs.Designation;
 
 namespace ems.application.Features.RegistrationCmd.Handlers
 {
@@ -63,7 +65,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                 }
 
                 // Step 2: Map DTO to Entity
-                var tenantEntity = _mapper.Map<Tenant>(request.TenantCreateRequestDTO);
+                 var tenantEntity = _mapper.Map<Tenant>(request.TenantCreateRequestDTO);
 
                 // Step 3: Begin Transaction
                 await _unitOfWork.BeginTransactionAsync();
@@ -108,6 +110,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                 { TenantId = newTenantId, SubscriptionPlanId = request.TenantCreateRequestDTO.SubscriptionPlanId, IsTrial=true ,IsActive=true }
                     );
 
+
                 PlanModuleMappingResponseDTO subscriptionPlans = await _unitOfWork.PlanModuleMappingRepository.GetModulesBySubscriptionPlanIdAsync(request.TenantCreateRequestDTO.SubscriptionPlanId);
                     
                 List<TenantEnabledModule> enabledModules = subscriptionPlans.Modules
@@ -134,7 +137,37 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                                           .ToList();
 
 
-                await _unitOfWork.TenantModuleConfigurationRepository.CreateDyDefaultEnabledModulesAsync(newTenantId, enabledModules, tenantEnabledOperations);
+                await _unitOfWork.TenantModuleConfigurationRepository.CreateByDefaultEnabledModulesAsync(newTenantId, enabledModules, tenantEnabledOperations);
+
+                Designation designation = new Designation
+                {
+                    Id = 0 ,
+                    TenantId = newTenantId,
+                    IsActive = DesignationColumnConstants.IsActive,
+                    DesignationName = DesignationColumnConstants.DesignationName,
+                    Description = DesignationColumnConstants.Description,
+                     
+                    UpdatedById = null,
+                    SoftDeletedDateTime = null,
+                    AddedById = newTenantId,
+                    AddedDateTime = DateTime.Now
+
+                    
+
+                };
+                   var IsDesignationCreated = await _unitOfWork.DesignationRepository.AutoCreateDesignationAsync( designation);
+                 
+                if (!IsDesignationCreated)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return new ApiResponse<TenantCreateResponseDTO>
+                    {
+                        IsSucceeded = IsDesignationCreated,
+                        Message = $"An error occurred while adding designation:",
+                        Data = null
+                    };
+
+                }
 
                 // Step 5: Create Employee for Tenant
                 var employee = new Employee
@@ -154,6 +187,8 @@ namespace ems.application.Features.RegistrationCmd.Handlers
 
                 var createdEmployee = await _unitOfWork.Employees.AddAsync(employee);
                 long employeeId = createdEmployee?.Id ?? 0;
+
+
 
                 if (employeeId == 0)
                 {
@@ -177,7 +212,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                 var role = new Role
                 {
                     TenantId = newTenantId,
-                    RoleName = ConstantValues.AdminRoleName,
+                    RoleName = ConstantValues.SuperAdminRoleName,
                     IsActive = ConstantValues.IsByDefaultTrue,
                     IsSoftDeleted = ConstantValues.IsByDefaultFalse,
                     Remark = ConstantValues.AdminRoleRemark,
@@ -188,8 +223,8 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                     DeletedById = ConstantValues.SystemUserIdByDefaultZero,
                     DeletedDateTime = null
                 };
-                var createdRole = await _unitOfWork.RoleRepository.AutoCreatedForTenantRoleAsync(role);
-
+                  var createdRole = await _unitOfWork.RoleRepository.AutoCreatedForTenantRoleAsync(role);
+               // var roleId = await _unitOfWork.RoleRepository.AutoCreateRoleUserRoleAndAutomatedRolePermissionMappingAsync( newTenantId,  employeeId,  role);
                 // Step 8: Create LoginCredential
                 var loginCredential = new LoginCredential
                 {
@@ -209,28 +244,33 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                     DeletedDateTime = null 
 
                 };
-                long newLoginId = await _unitOfWork.UserLoginRepository.CreateUser(loginCredential);
+                 long newLoginId = await _unitOfWork.UserLoginRepository.CreateUser(loginCredential);
 
                 // Step 9: Assign Role to Employee
-                UserRole userRole = new UserRole
-                {
-                    EmployeeId = employeeId,
-                    RoleId = createdRole.Id,
-                    IsPrimaryRole = ConstantValues.IsByDefaultTrue,
-                    IsActive = ConstantValues.IsByDefaultTrue,
-                    AddedById = employeeId,
-                    AddedDateTime = DateTime.Now,
-                    AssignedDateTime = DateTime.Now,
-                    Remark = ConstantValues.AdminRoleRemark,
-                    AssignedById = employeeId,
-                    RoleStartDate = ConstantValues.SystemOnlyTodaysDate,
-                    ApprovalRequired = ConstantValues.IsByDefaultFalse,
-                    UpdatedById = ConstantValues.SystemUserIdByDefaultZero,
-                    UpdatedDateTime = null,
-                    DeletedById = ConstantValues.SystemUserIdByDefaultZero,
-                    DeletedDateTime = null
-                };
+                 UserRole userRole = new UserRole
+                 {
+                     EmployeeId = employeeId,
+                     RoleId = createdRole.Id,
+                     IsPrimaryRole = ConstantValues.IsByDefaultTrue,
+                     IsActive = ConstantValues.IsByDefaultTrue,
+                     AddedById = employeeId,
+                     AddedDateTime = DateTime.Now,
+                     AssignedDateTime = DateTime.Now,
+                     Remark = ConstantValues.AdminRoleRemark,
+                     AssignedById = employeeId,
+                     RoleStartDate = DateTime.Now,
+                     ApprovalRequired = ConstantValues.IsByDefaultFalse,
+                     UpdatedById = ConstantValues.SystemUserIdByDefaultZero,
+                     UpdatedDateTime = null,
+                     DeletedById = ConstantValues.SystemUserIdByDefaultZero,
+                     DeletedDateTime = null,
+                     IsSoftDeleted = ConstantValues.IsByDefaultFalse,
+
+                 };
                 int roleId = (int)await _unitOfWork.UserRoleRepository.AddUserRoleAsync(userRole);
+
+
+               var UserRoleAndPermissionId = await _unitOfWork.RoleRepository.AutoCreateUserRoleAndAutomatedRolePermissionMappingAsync( newTenantId,  employeeId,  role);
 
                 // Step 10: Generate Token for Email
                 string token = await _tokenService.GenerateToken(tenantEntity.TenantEmail);
@@ -249,6 +289,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                                              { "UserName", $"{firstName}" },
                                               { "LoginId", loginId }
                                             };
+
 
                 // Call the templated email service
                 //var sent =   await _emailService.SendTemplatedEmailAsync(

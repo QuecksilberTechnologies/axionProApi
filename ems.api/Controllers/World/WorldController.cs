@@ -21,7 +21,7 @@ namespace ems.api.Controllers.World
             _logger = logger;  // Logger service ko inject karna
         }
 
-        [HttpGet("getallcountry")]
+        [HttpGet("get-all-country")]
         public async Task<IActionResult> GetCountryAsync([FromQuery] CountryRequestDTO code)
         {
             _logger.LogInfo($"Getting email templates for code: {code}");

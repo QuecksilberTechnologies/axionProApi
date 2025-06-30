@@ -12,11 +12,11 @@ namespace ems.application.Features.AssetCmd.Commands
 {
     public class CreateAssetCommand : IRequest<ApiResponse<List<AssetResponseDTO>>>
     {
-        public CreateAssetRequestDTO createAssetDTO { get; set; }
+        public CreateAssetRequestByTenantAdminDTO dto { get; set; }
 
-        public CreateAssetCommand(CreateAssetRequestDTO createAssetDTO)
+        public CreateAssetCommand(CreateAssetRequestByTenantAdminDTO dto)
         {
-            this.createAssetDTO = createAssetDTO;
+            this.dto = dto;
         }
 
     }

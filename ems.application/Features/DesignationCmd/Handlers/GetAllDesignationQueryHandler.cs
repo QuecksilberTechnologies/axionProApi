@@ -5,7 +5,9 @@ using ems.application.Features.DesignationCmd.Queries;
 using ems.application.Interfaces;
 using ems.application.Wrappers;
 using ems.domain.Entity;
+using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -32,39 +34,67 @@ namespace ems.application.Features.DesignationCmd.Handlers
         {
             try
             {
-                // ✅ Correcting the method call
+                // 🔍 Validate TenantId
+                if (request.designationRequestDTO.TenantId == null || request.designationRequestDTO.TenantId <= 0)
+                {
+                    return new ApiResponse<List<GetAllDesignationDTO>>
+                    {
+                        IsSucceeded = false,
+                        Message = "Tenant Id should be provided.",
+                        Data = null
+                    };
+                }
 
-                List<Designation> designations = await _unitOfWork.DesignationRepository.GetAllDesignationAsync();
+                // ✅ Set default IsActive = false if null
+                // Option 1: using null-coalescing operator (ternary style)
+                bool isActive = request.designationRequestDTO.IsActive ? request.designationRequestDTO.IsActive : false;
 
-                //if (designations == null || !designations.Any())
-                //{
-                //    _logger.LogWarning("No designations found.");
-                //    return new ApiResponse<List<GetAllRoleDTO>>(false, "No Designation found", new List<GetAllRoleDTO>());
-                //}
+                // 🔍 Fetch data from repository (you should pass IsActive filter also if required)
+                List<Designation> designations = await _unitOfWork.DesignationRepository
+                    .GetAllDesignationAsync(request.designationRequestDTO.TenantId, request.designationRequestDTO.IsActive);
 
-                /// Map designations entities to DTOs
-                List<GetAllDesignationDTO>  getAllOperationDTOs = _mapper.Map<List<GetAllDesignationDTO>>(designations);
+                // 🔍 Filter on IsActive and IsSoftDeleted if needed
+                designations = designations
+                    .Where(d => d.IsActive == request.designationRequestDTO.IsActive && d.IsSoftDeleted == false)
+                    .ToList();
 
-                _logger.LogInformation("Successfully retrieved {Count} Designation.", getAllOperationDTOs.Count);
+                if (designations == null || !designations.Any())
+                {
+                    _logger.LogWarning("No designations found for TenantId {TenantId}.", request.designationRequestDTO.TenantId);
+
+                    return new ApiResponse<List<GetAllDesignationDTO>>
+                    {
+                        IsSucceeded = false,
+                        Message = "No designations found.",
+                        Data = null
+                    };
+                }
+
+                // 🔁 Map to DTOs
+                List<GetAllDesignationDTO> getAllDesignationDTOs = _mapper.Map<List<GetAllDesignationDTO>>(designations);
+
+                _logger.LogInformation("Successfully retrieved {Count} designations.", getAllDesignationDTOs.Count);
+
                 return new ApiResponse<List<GetAllDesignationDTO>>
                 {
                     IsSucceeded = true,
-                    Message = "Operations fetched successfully.",
-                    Data = getAllOperationDTOs
+                    Message = "Designations fetched successfully.",
+                    Data = getAllDesignationDTOs
                 };
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while fetching Designation.");
+                _logger.LogError(ex, "Error while fetching designations.");
+
                 return new ApiResponse<List<GetAllDesignationDTO>>
                 {
                     IsSucceeded = false,
-                    Message = "Designation fetched successfully.",
+                    Message = "An error occurred while fetching designations.",
                     Data = null
                 };
             }
         }
 
-       
+
     }
 }

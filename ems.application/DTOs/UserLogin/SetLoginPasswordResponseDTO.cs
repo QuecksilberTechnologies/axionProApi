@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.UserLogin
 {
-    public class SetLoginPasswordResponseDTO
+    public class UpdateLoginPasswordResponseDTO
     {
         public bool Success { get; set; }
         //public string? Token { get; set; }

@@ -128,7 +128,7 @@ namespace ems.api.Controllers.Login
             {
                 if (string.IsNullOrWhiteSpace(request.LoginId) || string.IsNullOrWhiteSpace(request.Password))
                 {
-                    return BadRequest(new ApiResponse<SetLoginPasswordResponseDTO>
+                    return BadRequest(new ApiResponse<UpdateLoginPasswordResponseDTO>
                     {
                         IsSucceeded = false,
                         Message = "LoginId and Password are required.",
@@ -136,7 +136,7 @@ namespace ems.api.Controllers.Login
                     });
                 }
 
-                var command = new SetLoginPasswordCommand(request);
+                var command = new UpdateLoginPasswordCommand(request);
                 
 
                 var result = await _mediator.Send(command);
@@ -150,7 +150,7 @@ namespace ems.api.Controllers.Login
             {
                 _logger.LogError( "Exception occurred while setting login password.");
 
-                return StatusCode(500, new ApiResponse<SetLoginPasswordResponseDTO>
+                return StatusCode(500, new ApiResponse<UpdateLoginPasswordResponseDTO>
                 {
                     IsSucceeded = false,
                     Message = "Internal server error occurred.",
@@ -163,6 +163,116 @@ namespace ems.api.Controllers.Login
 
         }
 
+
+
+        [HttpPost("forgot-password-by-login-id")]
+        public async Task<IActionResult> EnterLoginId([FromBody] ForgotPasswordUserIdRequestDTO request)
+        {
+            try
+            {
+                //if (string.IsNullOrWhiteSpace(request.LoginId) || string.IsNullOrWhiteSpace(request.p))
+                //{
+                //    return BadRequest(new ApiResponse<ForgotPasswordResponseDTO>
+                //    {
+                //        IsSucceeded = false,
+                //        Message = "LoginId and not found required.",
+                //        Data = null
+                //    });
+                //}
+
+                var command = new ForgotPasswordCommand(request);
+
+
+                var result = await _mediator.Send(command);
+
+                if (!result.IsSucceeded)
+                    return BadRequest(result);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception occurred while setting login password.");
+
+                return StatusCode(500, new ApiResponse<UpdateLoginPasswordResponseDTO>
+                {
+                    IsSucceeded = false,
+                    Message = "Internal server error occurred.",
+                    Data = null
+                });
+            }
+
+
+
+
+        }
+
+        [HttpPost("set-login-new-password")]
+        public async Task<IActionResult> ValidateForgotPasswordOtp([FromBody] NewLoginPasswordRequestDTO request)
+        {
+            try
+            {
+
+                var command = new SetNewLoginPasswordCommand(request);
+
+
+                var result = await _mediator.Send(command);
+
+                if (!result.IsSucceeded)
+                    return BadRequest(result);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception occurred while setting login password.");
+
+                return StatusCode(500, new ApiResponse<UpdateLoginPasswordResponseDTO>
+                {
+                    IsSucceeded = false,
+                    Message = "Internal server error occurred.",
+                    Data = null
+                });
+            }
+
+
+
+
+        }
+
+
+        [HttpPost("validate-forgot-password-otp")]
+        public async Task<IActionResult> ValidateForgotPasswordOtp([FromBody] ValidateOtpRequestDTO request)
+        {
+            try
+            {
+              
+                var command = new ValidateOtpCommand(request);
+
+
+                var result = await _mediator.Send(command);
+
+                if (!result.IsSucceeded)
+                    return BadRequest(result);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Exception occurred while setting login password.");
+
+                return StatusCode(500, new ApiResponse<UpdateLoginPasswordResponseDTO>
+                {
+                    IsSucceeded = false,
+                    Message = "Internal server error occurred.",
+                    Data = null
+                });
+            }
+
+
+
+
+        }
 
         //...
 

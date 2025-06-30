@@ -20,8 +20,7 @@ public partial class LoginCredential :BaseEntity
 
     public string? MacAddress { get; set; }
 
-    public bool IsActive { get; set; }
-
+   
     public string? Remark { get; set; }
 
     public double? Latitude { get; set; }
@@ -33,8 +32,9 @@ public partial class LoginCredential :BaseEntity
     public string? IpAddressLocal { get; set; }
 
     public string? IpAddressPublic { get; set; }
- 
- 
+
+
+    public virtual ICollection<ForgotPasswordOTPDetail> ForgotPasswordRequests { get; set; } = new List<ForgotPasswordOTPDetail>();
 
     public virtual ICollection<RefreshToken1> RefreshToken1s { get; set; } = new List<RefreshToken1>();
 

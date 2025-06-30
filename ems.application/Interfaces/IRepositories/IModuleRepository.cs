@@ -15,7 +15,7 @@ namespace ems.application.Interfaces.IRepositories
         /// 
 
         Task<Module?> GetCommonMenuParentAsync();
-        Task<List<Module>> GetCommonMenuTreeAsync(int? parentModuleId);
+        Task<List<ModuleDTO>> GetCommonMenuTreeAsync(int? parentModuleId);
 
         Task<Module?> GetModuleByIdAsync(long moduleId);
 

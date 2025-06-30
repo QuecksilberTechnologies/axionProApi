@@ -30,6 +30,7 @@ namespace ems.infrastructure.MailService
         {
             try
             {
+                tenantId = 157;
                 subject = "Verification Email";
                 var config = await _configRepo.GetActiveEmailConfigAsync(tenantId);
 
@@ -69,6 +70,50 @@ namespace ems.infrastructure.MailService
         }
 
 
+
+        public async Task<bool> SendOtpEmailAsync(string toEmail, string subject, string body, long tenantId, string otp)
+        {
+            try
+            {
+
+                tenantId = 17;
+                subject = "Verification Email";
+                var config = await _configRepo.GetActiveEmailConfigAsync(tenantId);
+
+                if (config == null)
+                {
+                    _logger.LogWarning("No active SMTP config found for TenantId: {TenantId}", tenantId);
+                  //  return false;
+                }
+
+                var email = new MimeMessage();
+                email.From.Add(new MailboxAddress("Axion-Pro Verification", config.FromEmail ?? "hr@quecksilber.in"));
+                email.To.Add(MailboxAddress.Parse(toEmail));
+                email.Subject = subject;
+
+                // 🔁 Replace placeholders inside the HTML body
+                string finalBody = body
+                    .Replace("{{UserName}}", toEmail.Split('@')[0])  // OR pass name as extra parameter
+                    .Replace("{{OTP}}", otp);
+                email.Body = new TextPart("html")
+                {
+                    Text = finalBody
+                };
+
+                using var smtp = new SmtpClient();
+                await smtp.ConnectAsync(config.SmtpHost ?? "smtpout.secureserver.net", config.SmtpPort ?? 587, SecureSocketOptions.StartTls);
+                await smtp.AuthenticateAsync(config.SmtpUsername ?? "hr@quecksilber.in", config.SmtpPasswordEncrypted ?? "Abhi@123#$%");
+                await smtp.SendAsync(email);
+                await smtp.DisconnectAsync(true);
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while sending email to {ToEmail} for TenantId: {TenantId}", toEmail, tenantId);
+                return false;
+            }
+        }
 
 
         public async Task<bool> SendTemplatedEmailAsync(string templateCode, string toEmail, long tenantId, Dictionary<string, string> placeholders)

@@ -50,7 +50,7 @@ namespace ems.application.Mappings
         public MappingProfile()
         {
 
-            CreateMap<CreateAssetRequestDTO, Asset>();
+            CreateMap<CreateAssetRequestByTenantAdminDTO, Asset>();
          //   CreateMap<Asset, GetAllAssetWithDependentEntityDTO>();
 
 
@@ -62,7 +62,7 @@ namespace ems.application.Mappings
                 //                                       ? DateOnly.FromDateTime(src.WarrantyExpiryDate.Value)
                 //                                       : default));
            
-            CreateMap<Asset, AssetRequestDTO>().ReverseMap();
+            CreateMap<Asset, GetAssetRequestByTenantAdminDTO>().ReverseMap();
 
  
             CreateMap<SubscriptionPlanResponseDTO,SubscriptionPlan >().ReverseMap();

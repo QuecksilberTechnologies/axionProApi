@@ -5,6 +5,7 @@ using ems.application.Features.AssetCmd.Commands;
 using ems.application.Features.UserLoginAndDashboardCmd.Commands;
 using ems.application.Features.UserLoginAndDashboardCmd.Handlers;
 using ems.application.Interfaces;
+using ems.application.Interfaces.IRepositories;
 using ems.application.Wrappers;
 using ems.domain.Entity;
 using MediatR;
@@ -34,7 +35,7 @@ namespace ems.application.Features.AssetCmd.Handlers
         {
             try
             {
-                if (request == null || request.createAssetDTO == null)
+                if (request == null || request.dto == null)
                 {
                     return new ApiResponse<List<AssetResponseDTO>>
                     {
@@ -42,11 +43,12 @@ namespace ems.application.Features.AssetCmd.Handlers
                         Message = "Invalid request or missing asset creation.",
                         Data = null
                     };
-                }
+                }                
+
 
                 // Map CreateAssetDTO to Asset entity
-                Asset asset = _mapper.Map<Asset>(request.createAssetDTO);
-                asset.AddedById = request.createAssetDTO.EmployeeId;
+                Asset asset = _mapper.Map<Asset>(request.dto);
+                asset.AddedById = request.dto.EmployeeId;
                 // Duplicate check
                 bool isAssetDuplicate = await _unitOfWork.AssetRepository.IsAssetDuplicate(asset);
                 if (isAssetDuplicate)

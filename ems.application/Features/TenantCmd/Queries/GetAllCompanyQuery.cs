@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Features.Company.Queries
+namespace ems.application.Features.TenantCmd.Queries
 {
-    public class GetAllCompanyQuery : IRequest<string> 
+    public class GetAllCompanyQuery : IRequest<string>
     {
     }
     public class GetAllCompanyQueryHandler : IRequestHandler<GetAllCompanyQuery, string>

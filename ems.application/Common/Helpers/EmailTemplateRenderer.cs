@@ -8,14 +8,19 @@ namespace ems.application.Common.Helpers
 {
     public static class EmailTemplateRenderer
     {
-        public static string RenderBody(string template, Dictionary<string, string> values)
-        {
-            foreach (var item in values)
+         
+            public static string RenderBody(string template, Dictionary<string, string> placeholders)
             {
-                template = template.Replace($"{{{{{item.Key}}}}}", item.Value);
+                foreach (var kvp in placeholders)
+                {
+                    // Support both {{Key}} and {Key} formats
+                    template = template.Replace("{{" + kvp.Key + "}}", kvp.Value);
+                    template = template.Replace("{" + kvp.Key + "}", kvp.Value);
+                }
+                return template;
             }
-            return template;
-        }
+       
+
     }
 
 }

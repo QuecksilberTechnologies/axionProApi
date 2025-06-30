@@ -1,5 +1,5 @@
 ﻿using ems.application.DTOs.Leave;
- 
+
 using ems.application.Features.LeaveCmd.Commands;
 using ems.application.Features.LeaveCmd.Queries;
 using ems.application.Features.RoleCmd.Commands;
@@ -7,7 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace ems.api.Controllers
+namespace ems.api.Leave
 {
     [Route("api/[controller]")]
     [ApiController]

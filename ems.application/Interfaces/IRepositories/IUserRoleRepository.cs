@@ -11,7 +11,7 @@ namespace ems.application.Interfaces.IRepositories
     {
         // Get role name by user ID (for your login process)
         Task<List<UserRole>> GetUsersRoleByIdAsync(long userId);
-        Task<List<UserRole>> GetEmployeeRolesWithDetailsByIdAsync(long employeeId);       
+        Task<List<UserRole>> GetEmployeeRolesWithDetailsByIdAsync(long employeeId, long tenantId);       
          
 
         // CRUD Operations
