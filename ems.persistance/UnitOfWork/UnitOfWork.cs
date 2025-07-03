@@ -51,7 +51,8 @@ public class UnitOfWork  : IUnitOfWork
     private ISubscriptionRepository? _subscriptionRepository;
     private ITenantSubscriptionRepository? _tenantSubscriptionRepository;
     private IModuleRepository? _moduleRepository;
-    
+    private IModuleOperationMappingRepository _moduleOperationMappingRepository; 
+   
     // private IClientRepository? _clientRepository;
 
 
@@ -94,8 +95,15 @@ public class UnitOfWork  : IUnitOfWork
             return _employeeRepository ??= new EmployeeRepository(_context);
         }
     }
-    
-          public ITenantModuleConfigurationRepository TenantModuleConfigurationRepository
+   
+    public IModuleOperationMappingRepository ModuleOperationMappingRepository
+    {
+        get
+        {
+            return _moduleOperationMappingRepository ??= new ModuleOperationMappingRepository(_context, _loggerFactory.CreateLogger<ModuleOperationMappingRepository>());
+        }
+    }
+    public ITenantModuleConfigurationRepository TenantModuleConfigurationRepository
            {
                   get
                   {

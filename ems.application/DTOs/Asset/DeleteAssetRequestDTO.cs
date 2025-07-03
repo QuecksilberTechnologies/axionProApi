@@ -9,7 +9,7 @@ namespace ems.application.DTOs.Asset
     public class DeleteAssetRequestDTO
     {
         public int Id { get; set; }
-        public long TenantId { get; set; }
+        public long? TenantId { get; set; }
         public long DeletedById { get; set; }
     }
 }

@@ -8,7 +8,7 @@ public partial class Asset : BaseEntity
 {
     public int Id { get; set; }
 
-    public long TenantId { get; set; } 
+    public long? TenantId { get; set; } 
 
     public string AssetName { get; set; }
 

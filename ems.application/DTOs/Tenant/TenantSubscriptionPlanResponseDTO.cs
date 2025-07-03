@@ -10,7 +10,7 @@ namespace ems.application.DTOs.Tenant
     {
 
         public long Id { get; set; }
-        public long TenantId { get; set; }       
+        public long? TenantId { get; set; }       
         public long SubscriptionPlanId { get; set; }       
         public DateTime SubscriptionStartDate { get; set; }
         public DateTime? SubscriptionEndDate { get; set; }

@@ -22,7 +22,7 @@ namespace ems.persistance.Repositories
             _logger = logger;
         }
 
-        public async Task<TenantEmailConfig?> GetActiveEmailConfigAsync(long tenantId)
+        public async Task<TenantEmailConfig?> GetActiveEmailConfigAsync(long? tenantId)
         {
             try
             {
@@ -35,7 +35,7 @@ namespace ems.persistance.Repositories
             }
         }
 
-        public Task<TenantEmailConfig?> UpdateEmailConfigAsync(long tenantId)
+        public Task<TenantEmailConfig?> UpdateEmailConfigAsync(long? tenantId)
         {
             throw new NotImplementedException();
         }

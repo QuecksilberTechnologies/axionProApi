@@ -1,4 +1,5 @@
-﻿using ems.application.Interfaces.IRepositories;
+﻿using ems.application.DTOs.SubscriptionModule;
+using ems.application.Interfaces.IRepositories;
  
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
@@ -52,7 +53,25 @@ namespace ems.persistance.Repositories
             throw new NotImplementedException();
         }
 
-        public   async Task<TenantSubscription?> GetTenantSubscriptionAsync(TenantSubscription filter)
+        public async Task<GetTenantSubscriptionDetailResponsDTO> GetTenantActiveSubscriptionPlanDetail(GetActiveTenantSubscriptionDetailResquestDTO dto)
+        {
+            var subscription = await _context.TenantSubscriptions
+                .Where(x => x.TenantId == dto.TenantId && x.IsActive)
+                .Select(x => new GetTenantSubscriptionDetailResponsDTO
+                {
+                    TenantId = x.TenantId,
+                    PlanName = x.SubscriptionPlan.PlanName,         // assuming navigation property exists
+                    StartDate = x.SubscriptionStartDate,
+                    EndDate = x.SubscriptionEndDate,
+                    IsActive = x.IsActive
+                })
+                .FirstOrDefaultAsync();
+
+            return subscription;
+        }
+
+
+        public async Task<TenantSubscription?> GetTenantSubscriptionPlanInfoAsync(TenantSubscription filter)
         {
             try
             {

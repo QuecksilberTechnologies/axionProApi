@@ -22,7 +22,7 @@ namespace ems.persistance.Repositories
             this._logger = logger;
         }
         
-             public async Task<ForgotPasswordOTPDetail?> GetOtpValidateTrueAndUsedFalseByEmployeeIdAsync(long userId, long tenantId)
+             public async Task<ForgotPasswordOTPDetail?> GetOtpValidateTrueAndUsedFalseByEmployeeIdAsync(long userId, long? tenantId)
             {
             try
             {
@@ -53,7 +53,7 @@ namespace ems.persistance.Repositories
             }
         }
 
-        public async Task<ForgotPasswordOTPDetail?> GetValidOtpByEmployeeIdAsync(long userId, long tenantId)
+        public async Task<ForgotPasswordOTPDetail?> GetValidOtpByEmployeeIdAsync(long userId, long? tenantId)
         {
             try
             {
@@ -131,5 +131,7 @@ namespace ems.persistance.Repositories
             return await _context.ForgotPasswordOTPDetails
                 .FirstOrDefaultAsync(x => x.Otp == otp && x.EmployeeId == employeeId && !x.IsUsed);
         }
+
+      
     }
 }

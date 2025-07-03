@@ -224,7 +224,7 @@ namespace ems.persistance.Repositories
             }
         }
 
-        public async Task<bool> CheckDuplicateValueAsync(long tenantId, string value)
+        public async Task<bool> CheckDuplicateValueAsync(long? tenantId, string value)
         {
             try
             {

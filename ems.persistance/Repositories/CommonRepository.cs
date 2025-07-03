@@ -314,7 +314,7 @@ namespace ems.persistance.Repositories
             throw new NotImplementedException();
         }
 
-        public Task<bool> IsTenantValidAsync(long userId, long tenantId)
+        public Task<bool> IsTenantValidAsync(long userId, long? tenantId)
         {
             throw new NotImplementedException();
         }
@@ -323,8 +323,47 @@ namespace ems.persistance.Repositories
         {
             throw new NotImplementedException();
         }
+        public async Task<UpdateTenantEnabledOperationFromModuleOperationResponseDTO> UpdateTenantEnabledOperationFromModuleOperationRequestDTO(UpdateTenantEnabledOperationFromModuleOperationRequestDTO request)
+        {
+            try
+            {
+                _logger.LogInformation("Get new Module Operations from ModuleOperation: {TenantId}", request.TenantId);
 
-      
+                var tenantIdParam = new SqlParameter("@TenantId", request.TenantId);
+
+                // SQL query (no need for output param, as your procedure returns scalar)
+                string sqlQuery = "DECLARE @Result INT; EXEC @Result = AxionPro.UpdateTenantEnabledOperationFromModuleOperation @TenantId; SELECT @Result";
+
+                var result = await _context.Database.ExecuteSqlRawAsync(sqlQuery, tenantIdParam);
+
+                return new UpdateTenantEnabledOperationFromModuleOperationResponseDTO
+                {
+                    Result = result
+                };
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "SQL Exception occurred while updating tenant operation for TenantId: {TenantId}", request.TenantId);
+
+                return new UpdateTenantEnabledOperationFromModuleOperationResponseDTO
+                {
+                    Result = -1
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating tenant operation for TenantId: {TenantId}", request.TenantId);
+
+                return new UpdateTenantEnabledOperationFromModuleOperationResponseDTO
+                {
+                    Result = -1
+                };
+            }
+        }
+
+
+
+        
 
 
 

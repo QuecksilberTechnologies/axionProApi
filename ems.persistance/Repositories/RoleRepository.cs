@@ -3,14 +3,18 @@ using ems.application.Interfaces;
 using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Serilog.Core;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlTypes;
 using System.Linq;
+using System.Reflection;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,7 +30,7 @@ namespace ems.persistance.Repositories
             _logger = logger;
         }
 
-        public async Task<int> AutoCreateUserRoleAndAutomatedRolePermissionMappingAsync(long tenantId, long employeeId, Role role)
+        public async Task<int> AutoCreateUserRoleAndAutomatedRolePermissionMappingAsync(long? tenantId, long employeeId, Role role)
         {
             try
             {
@@ -133,24 +137,81 @@ namespace ems.persistance.Repositories
             throw new NotImplementedException();
         }
 
-   
-        public async Task<Role> GetRoleByIdAsync(int roleId)
+        public async Task<int> GetRoleIdByRoleInfoAsync(Role role)
         {
             try
-            {
-                // Role ko Id ke basis par find karenge
-                var role = await _context.Roles.Where(r => r.Id == roleId && ( r.IsSoftDeleted ==false && r.IsActive ==true)).FirstOrDefaultAsync(); // Agar record milta hai toh return karega, nahi toh null
 
-                if (role == null)
+            {
+                var roleInfo = await _context.Roles.
+                    Where(r =>
+                        (role.TenantId == 0 ? r.TenantId == null : r.TenantId == role.TenantId) &&
+                        r.IsSoftDeleted == false &&
+                        r.IsActive == true &&
+                        r.IsSystemDefault == true &&
+                        r.RoleType == role.RoleType &&
+                        r.RoleCode == role.RoleCode)
+                    .FirstOrDefaultAsync();
+
+                if (roleInfo == null)
                 {
-                    _logger.LogWarning("Role with ID {RoleId} not found.", roleId);
+                    _logger.LogWarning("Role not found with RoleCode: {RoleCode}, RoleType: {RoleType}", role.RoleCode, role.RoleType);
+                    return 0;
                 }
 
-                return role;   
+                return roleInfo.Id;
             }
             catch (Exception ex)
             {
-                // Exception ko log karenge
+                _logger.LogError(ex, "Error occurred while fetching role with RoleCode: {RoleCode}", role.RoleCode);
+                return 0;
+            }
+        }
+
+        public async Task<int> GetRoleIdByRoleCodeAsync(string roleCode, string roleType)
+        {
+            try
+            {
+                var roleInfo = await _context.Roles
+                    .Where(r =>
+                        r.TenantId == null &&
+                        r.IsSoftDeleted == false &&
+                        r.IsActive == true &&
+                        r.IsSystemDefault == true &&
+                        r.RoleType == roleType &&
+                        r.RoleCode == roleCode)
+                    .FirstOrDefaultAsync();
+
+                if (roleInfo == null)
+                {
+                    _logger.LogWarning("Role not found with RoleCode: {RoleCode}, RoleType: {RoleType}", roleCode, roleType);
+                    return 0;
+                }
+
+                return roleInfo.Id;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching role with RoleCode: {RoleCode}", roleCode);
+                return 0;
+            }
+        }
+
+        public async Task<Role> GetRoleByIdAsync(int roleId)
+    {
+        try
+        {
+            // Role ko Id ke basis par find karenge
+                var role = await _context.Roles.Where(r => r.Id == roleId && ( r.IsSoftDeleted ==false && r.IsActive ==true)).FirstOrDefaultAsync(); // Agar record milta hai toh return karega, nahi toh null
+
+                if (role == null)
+            {
+                _logger.LogWarning("Role with ID {RoleId} not found.", roleId);
+            }
+            return role;
+        }
+        catch (Exception ex)
+        {
+            // Exception ko log karenge
                 _logger.LogError(ex, "Error occurred while fetching role with ID {RoleId}.", roleId);
                 throw;  // Rethrow the exception for further handling
             }
@@ -241,6 +302,6 @@ namespace ems.persistance.Repositories
             }
         }
 
-
+       
     }
 }

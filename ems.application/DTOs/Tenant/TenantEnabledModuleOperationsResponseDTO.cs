@@ -10,7 +10,7 @@ namespace ems.application.DTOs.Tenant
     {
        
             long? Id ;
-            public long TenantId { get; set; }                  
+            public long? TenantId { get; set; }                  
             public List<EnabledModuleActiveDTO>? Modules { get; set; }
     }
 
@@ -29,8 +29,9 @@ namespace ems.application.DTOs.Tenant
 
             public int Id { get; set; }
             public string? OperationName { get; set; }
-           
-        }
+             public bool IsEnabled { get; set; }
+
+    }
 
 
 

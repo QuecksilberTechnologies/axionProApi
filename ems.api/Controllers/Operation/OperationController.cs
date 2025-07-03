@@ -42,7 +42,7 @@ namespace ems.api.Controllers.Operation
             return Ok(result);
         }
         [HttpPost("add-operation-by-product-owner")]
-        public async Task<IActionResult> CreateTravelModeType([FromBody] CreateOperationDTO createOperationDTO)
+        public async Task<IActionResult> CreateTravelModeType([FromBody] CreateOperationByProductOwnerRequestDTO createOperationDTO)
         {
             if (createOperationDTO == null)
             {
@@ -64,7 +64,7 @@ namespace ems.api.Controllers.Operation
         }
 
         [HttpPost("update-operation-by-product-owner")]
-        public async Task<IActionResult> UpdateOperation([FromBody] UpdateOperationDTO updateOperationDTO)
+        public async Task<IActionResult> UpdateOperation([FromBody] UpdateOperationByProductOwnerRequestDTO updateOperationDTO)
         {
             _logger.LogInfo("Received request for update a leave" + updateOperationDTO.ToString());
             var command = new UpdateOperationCommand(updateOperationDTO);

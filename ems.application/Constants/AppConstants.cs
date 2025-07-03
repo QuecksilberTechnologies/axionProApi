@@ -1,4 +1,7 @@
-﻿namespace ems.application.Constants
+﻿using ems.application.Interfaces;
+using ems.domain.Entity;
+
+namespace ems.application.Constants
 {
     public static class AppConstants
     {
@@ -30,15 +33,22 @@
         public static readonly DateTime ExpireTokenDate = DateTime.UtcNow.AddDays(5);
         public static readonly string IP ="100.100.100.100";
         public static readonly string SuperAdminRoleName = "Super-Admin";
-        public static readonly string AdminRoleName = "Admin";
-        public static readonly string AdminRoleRemark = "This is an auto-generated Admin account by AI for the initial setup of the tenant.";
+        public static readonly string SuperAdminRoleType = "System";
+        public static readonly string TenantAdminRoleType = "Tenant";
+        public static readonly string SuperAdminRoleCode = "Auth-0";
+        public static readonly string TenantAdminRoleCode = "Tenant-Admin";
+        public static readonly string TenantAdminName = "Tenant-Admin"; 
+        public static readonly string TenantAdminRoleRemark = "This is an auto-generated Admin account by AI for the initial setup of the tenant.";
         public static readonly bool IsByDefaultTrue = true;
         public static readonly bool IsByDefaultFalse = false;         
         public static readonly long SystemUserIdByDefaultZero = 0; // For system-generated entries
         public static readonly string DefaultPassword = "123"; // For system-generated entries
-     //   public static readonly DateOnly SystemOnlyTodaysDate= DateOnly.MaxValue;
+                                                               //   public static readonly DateOnly SystemOnlyTodaysDate= DateOnly.MaxValue;
 
-
+        //int adminRoleId = await _unitOfWork.RoleRepository.GetRoleIdByRoleInfoAsync(role);
+        //public static readonly string RoleCode = "Super-Admin";
+        //public static readonly string AdminRoleName = "Admin";
+        //public static readonly string AdminRoleRemark = "This is an auto-generated Admin account by AI for the initial setup of the tenant.";
 
     }
     

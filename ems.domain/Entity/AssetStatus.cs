@@ -8,7 +8,7 @@ public partial class AssetStatus :BaseEntity
 {
     public int Id { get; set; }
 
-    public long TenantId { get; set; }
+    public long? TenantId { get; set; }
 
     public string StatusName { get; set; } = null!;
 

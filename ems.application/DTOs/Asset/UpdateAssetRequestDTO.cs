@@ -12,7 +12,7 @@ namespace ems.application.DTOs.Asset
         {
             public int Id { get; set; }
             public int RoleId { get; set; }
-            public long TenantId { get; set; }
+            public long? TenantId { get; set; }
             public long UpdatedById { get; set; }
             public string? AssetName { get; set; }   // ✅ Nullable string
             public int? AssetTypeId { get; set; }

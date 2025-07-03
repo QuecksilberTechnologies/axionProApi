@@ -8,7 +8,7 @@ namespace ems.application.DTOs.BaseDTO
 {
     public class PermissionRequestDTO
     {        
-            public long TenantId { get; set; }
+            public long? TenantId { get; set; }
             public long EmployeeId { get; set; }
             public int RoleId { get; set; }            
             public int ProjectChildModuleDetailId { get; set; }

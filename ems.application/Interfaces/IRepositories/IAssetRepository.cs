@@ -16,7 +16,7 @@ namespace ems.application.Interfaces.IRepositories
         Task<List<Asset>> AddAssetAsync(Asset asset);
          
         Task<List<Asset>> GetAllAssetAsync(Asset? asset);
-       // Task<List<Asset>> GetAllAssetAsync(long TenantId, bool Isactive);
+       // Task<List<Asset>> GetAllAssetAsync(long? TenantId, bool Isactive);
         
         Task<bool> IsAssetDuplicate(Asset asset);
         // Get a asset by its Id

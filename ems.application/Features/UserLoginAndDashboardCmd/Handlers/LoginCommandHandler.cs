@@ -23,6 +23,8 @@ using Microsoft.VisualBasic;
 using ems.application.DTOs.Module;
 using System.Reflection;
 using ems.application.DTOs.RoleModulePermission;
+using ems.application.DTOs.Operation;
+using ems.application.DTOs.SubscriptionModule;
 
 namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 {
@@ -32,15 +34,18 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
         private readonly IUnitOfWork _unitOfWork;
         private readonly INewTokenRepository _tokenService;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
+        private readonly ICommonRepository _iCommonRepository;
         private readonly ILogger<LoginCommandHandler> _logger;
 
-        public LoginCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, INewTokenRepository tokenService, IRefreshTokenRepository refreshTokenRepository, ILogger<LoginCommandHandler> logger)
+        public LoginCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, INewTokenRepository tokenService, IRefreshTokenRepository refreshTokenRepository, ILogger<LoginCommandHandler> logger, ICommonRepository iCommonRepository)
         {
             _logger = logger;
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _tokenService = tokenService;
             _refreshTokenRepository = refreshTokenRepository;
+            _iCommonRepository = iCommonRepository;
+
         }
         public async Task<ApiResponse<LoginResponseDTO>> Handle(LoginCommand request, CancellationToken cancellationToken)
         {
@@ -97,17 +102,64 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                     _logger.LogWarning("Failed to update LoginCredential for LoginId: {LoginId}", loginRequest.LoginId);
 
                 // 👨‍💼 Step 5: Fetch Employee Info
-                var employee = await _unitOfWork.Employees.GetEmployeeInfoForLoginByIdAsync(empId);
-                if (employee==null)
-                {
-                    _logger.LogWarning("Employee may not active or deleted please  contact admin  {LoginId}", loginRequest.LoginId);
-
-                }
-                // Get Active true and Isdeleted false employee
+                // var employee = await _unitOfWork.Employees.GetEmployeeInfoForLoginByIdAsync(empId);
                 var empInfo = await _unitOfWork.Employees.GetEmployeeByIdAsync(empId);
-              
+                GetActiveTenantSubscriptionDetailResquestDTO getActiveTenantSubscriptionDetailResquestDTO = new GetActiveTenantSubscriptionDetailResquestDTO();
+
+                // Null check with fallback to 0
+                getActiveTenantSubscriptionDetailResquestDTO.TenantId = empInfo.TenantId ?? 0;
+
+                var subscriptionInfo = await _unitOfWork.TenantSubscriptionRepository
+                     .GetTenantActiveSubscriptionPlanDetail(getActiveTenantSubscriptionDetailResquestDTO);
+
+                if (empInfo == null)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    _logger.LogWarning("Employee may not active or deleted, please contact admin. LoginId: {LoginId}", loginRequest.LoginId);
+
+                    return new ApiResponse<LoginResponseDTO>
+                    {
+                        IsSucceeded = false,
+                        Message = "Employee not active. Please contact admin."
+                    };
+                }
+
+                // ✅ Check if subscription info exists and EndDate > today
+                if (subscriptionInfo == null ||
+                             !subscriptionInfo.EndDate.HasValue ||
+                             subscriptionInfo.EndDate.Value.Date < DateTime.Today)
+                             {
+                               await _unitOfWork.RollbackTransactionAsync();
+
+                                  _logger.LogWarning("Subscription expired or missing for tenant {TenantId}", getActiveTenantSubscriptionDetailResquestDTO.TenantId);
+
+                            return new ApiResponse<LoginResponseDTO>
+                              {
+                                 IsSucceeded = false,
+                                  Message = "Your subscription has expired. Please contact admin to renew the plan."
+                         };
+                }
+
+                // Get Active true and Isdeleted false employee
+
                 // 👥 Step 6: Fetch all roles
                 var userRoles = await _unitOfWork.UserRoleRepository.GetEmployeeRolesWithDetailsByIdAsync(empId, empInfo.TenantId);
+
+                bool isAdmin = userRoles.Any(ur => ur.Role.RoleType == ConstantValues.TenantAdminRoleType &&   ur.Role.IsSystemDefault == ConstantValues.IsByDefaultFalse &&
+                 ur.Role.RoleCode.Equals(ConstantValues.TenantAdminRoleCode, StringComparison.OrdinalIgnoreCase) &&
+                 ur.Role.IsActive == true &&
+                 ur.Role.IsSoftDeleted == false);
+                
+
+                if (isAdmin)
+                  {
+                      UpdateTenantEnabledOperationFromModuleOperationRequestDTO updateTenantEnabledOperationFromModuleOperationRequestDTO = new UpdateTenantEnabledOperationFromModuleOperationRequestDTO();
+                      updateTenantEnabledOperationFromModuleOperationRequestDTO.TenantId = empInfo.TenantId;
+                      var updatedDone = _unitOfWork.CommonRepository.UpdateTenantEnabledOperationFromModuleOperationRequestDTO(updateTenantEnabledOperationFromModuleOperationRequestDTO);
+                  }
+
+
+
                 string? allRoleIdsCsv = userRoles?
                     .Where(r => r.RoleId != null)
                     .Select(r => r.RoleId.ToString())
@@ -123,10 +175,11 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 List<UserRoleDTO> userRoleDTOs = _mapper.Map<List<UserRoleDTO>>(userRoles);
 
                 // Getting Tenant Enabled module list
-                var TenantEnabledModulesWithOperationData = await _unitOfWork.TenantModuleConfigurationRepository.GetTenantEnabledModulesWithOperationsAsync(empInfo.TenantId);
+                var TenantEnabledModulesWithOperationData = await _unitOfWork.TenantModuleConfigurationRepository.GetAllTenantEnabledModulesWithOperationsAsync(empInfo.TenantId);
 
                 // ✅ Find & separate primary role
                 var primaryRole = userRoleDTOs.FirstOrDefault(ur => ur.IsPrimaryRole && ur.IsActive);
+
                 if (primaryRole != null)
                     userRoleDTOs.Remove(primaryRole); // Remove primary from list
 
@@ -141,7 +194,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                     : "NULL";
 
                 // 🧾 Step 8: Map Employee Info
-                var employeeInfo = _mapper.Map<EmployeeLoginInfoDTO>(employee);
+                var employeeInfo = _mapper.Map<EmployeeLoginInfoDTO>(empInfo);
                 employeeInfo.UserPrimaryRole = primaryRole;
                 employeeInfo.UserSecondryRoles = userRoleDTOs;
 

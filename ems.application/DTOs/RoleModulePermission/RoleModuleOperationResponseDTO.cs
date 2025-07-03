@@ -11,7 +11,7 @@ namespace ems.application.DTOs.RoleModulePermission
     public class RoleModuleOperationResponseDTO
     {
         public int RoleId { get; set; }
-        public long TenantId { get; set; }
+        public long? TenantId { get; set; }
 
         public int ModuleId { get; set; }
         public string? SubModuleName { get; set; }

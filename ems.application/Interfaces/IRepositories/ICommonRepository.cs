@@ -21,12 +21,16 @@ namespace ems.application.Interfaces.IRepositories
         Task<bool> UpdateLoginCredential(LoginRequestDTO loginId);
        
 
-        Task<List<RoleModuleOperationResponseDTO>> GetActiveRoleModuleOperationsAsync( GetActiveRoleModuleOperationsRequestDTO request);
+        Task<UpdateTenantEnabledOperationFromModuleOperationResponseDTO> UpdateTenantEnabledOperationFromModuleOperationRequestDTO(
+            UpdateTenantEnabledOperationFromModuleOperationRequestDTO request);
 
+        Task<List<RoleModuleOperationResponseDTO>> GetActiveRoleModuleOperationsAsync( GetActiveRoleModuleOperationsRequestDTO request);
+        
 
           Task<bool> GetHasAccessOperation(CheckOperationPermissionRequestDTO checkOperationPermissionRequest);
         Task<bool> HasPermissionAsync(long userId, string permissionCode);
-        Task<bool> IsTenantValidAsync(long userId, long tenantId);
+        Task<bool> IsTenantValidAsync(long userId, long? TenantId);
+
 
         //   Task  <IUserRoleRepository> UpdateLoginCredential(LoginRequestDTO loginId);
         //  Task List<string> UpdateLoginCredential(LoginRequestDTO loginId);

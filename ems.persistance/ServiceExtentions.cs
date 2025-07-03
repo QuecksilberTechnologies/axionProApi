@@ -68,6 +68,7 @@ namespace ems.persistance
             services.AddTransient<IPlanModuleMappingRepository, PlanModuleMappingRepository>();
             services.AddTransient<IModuleRepository, ModuleRepository>();
             services.AddTransient<ITenantModuleConfigurationRepository, TenantModuleConfigurationRepository>();
+            services.AddTransient<IModuleOperationMappingRepository, ModuleOperationMappingRepository>();
 
           
 

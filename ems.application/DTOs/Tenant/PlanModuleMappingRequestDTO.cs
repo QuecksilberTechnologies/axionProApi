@@ -9,7 +9,7 @@ namespace ems.application.DTOs.Tenant
     public class PlanModuleMappingRequestDTO
      {
         
-            public long TenantId { get; set; }
+            public long? TenantId { get; set; }
             public long EmployeeId { get; set; }
             public int SubscriptionPlanId { get; set; }            
             public bool? IsActive { get; set; }

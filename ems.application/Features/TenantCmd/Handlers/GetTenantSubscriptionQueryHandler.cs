@@ -11,9 +11,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ems.application.Features.TenantCmd.Queries;
+using ems.application.Features.RoleCmd.Queries;
 
-namespace ems.application.Features.TenantCmd.Handlers
+namespace ems.application.Features.RoleCmd.Handlers
 {
     public class GetTenantSubscriptionQueryHandler : IRequestHandler<GetTenantSubscriptionQuery, ApiResponse<TenantSubscriptionPlanResponseDTO>>
     {
@@ -43,7 +43,7 @@ namespace ems.application.Features.TenantCmd.Handlers
                 // Map DTO to entity
                 var tenantSubscriptionEntity = _mapper.Map<TenantSubscription>(request.tenantSubscriptionPlanRequest);
                 // Fetch from repository (you must implement this method)           
-                TenantSubscription? tenantSubscriptionPlan = await _unitOfWork.TenantSubscriptionRepository.GetTenantSubscriptionAsync(tenantSubscriptionEntity);
+                TenantSubscription? tenantSubscriptionPlan = await _unitOfWork.TenantSubscriptionRepository.GetTenantSubscriptionPlanInfoAsync(tenantSubscriptionEntity);
 
                 // Map to response DTO
                 var responseDTO = _mapper.Map<TenantSubscriptionPlanResponseDTO>(tenantSubscriptionPlan);

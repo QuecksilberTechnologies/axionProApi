@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using ems.application.Features.SubscriptionCmd.Commands;
-using ems.application.Features.SubscriptionCmd.Handlers;
+using ems.application.DTOs.Tenant;
+using ems.application.Features.RoleCmd.Commands;
 using ems.application.Interfaces.IRepositories;
 using ems.application.Interfaces;
 using ems.application.Wrappers;
@@ -11,24 +11,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ems.application.Features.TenantCmd.Commands;
-using ems.application.DTOs.Tenant;
 
-namespace ems.application.Features.TenantCmd.Handlers
+namespace ems.application.Features.RoleCmd.Handlers
 {
-
-    public class GetTenantEnabledModuleOperationCommandHandler : IRequestHandler<GetTenantEnabledModuleOperationCommand, ApiResponse<TenantEnabledModuleOperationsResponseDTO>>
+    public class GetAllTenantEnabledModuleOperationByTenantIdCommandHandler : IRequestHandler<GetAllTenantEnabledModuleOperationByTenantIdCommand, ApiResponse<TenantEnabledModuleOperationsResponseDTO>>
     {
         private readonly ITenantModuleConfigurationRepository _tenantModuleConfigurationRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<GetTenantEnabledModuleOperationCommandHandler> _logger;
+        private readonly ILogger<GetAllTenantTrueEnabledModuleOperationByTenantIdCommandHandler> _logger;
 
-        public GetTenantEnabledModuleOperationCommandHandler(
+        public GetAllTenantEnabledModuleOperationByTenantIdCommandHandler(
             ITenantModuleConfigurationRepository tenantModuleConfigurationRepository,
             IMapper mapper,
             IUnitOfWork unitOfWork,
-            ILogger<GetTenantEnabledModuleOperationCommandHandler> logger)
+            ILogger<GetAllTenantTrueEnabledModuleOperationByTenantIdCommandHandler> logger)
         {
             _tenantModuleConfigurationRepository = tenantModuleConfigurationRepository;
             _mapper = mapper;
@@ -37,7 +34,7 @@ namespace ems.application.Features.TenantCmd.Handlers
         }
 
         public async Task<ApiResponse<TenantEnabledModuleOperationsResponseDTO>> Handle(
-            GetTenantEnabledModuleOperationCommand request,
+            GetAllTenantEnabledModuleOperationByTenantIdCommand request,
             CancellationToken cancellationToken)
         {
             try
@@ -55,10 +52,10 @@ namespace ems.application.Features.TenantCmd.Handlers
                 }
 
                 // ✅ TenantId validation
-                var tenantId = request.TenantEnabledModuleOperationsRequestDTO.TenantId;
-                if (tenantId <= 0)
+                var TenantId = request.dto.TenantId;
+                if (TenantId <= 0)
                 {
-                    _logger.LogWarning("Invalid TenantId: {TenantId}", tenantId);
+                    _logger.LogWarning("Invalid TenantId: {TenantId}", TenantId);
                     return new ApiResponse<TenantEnabledModuleOperationsResponseDTO>
                     {
                         IsSucceeded = false,
@@ -68,8 +65,8 @@ namespace ems.application.Features.TenantCmd.Handlers
                 }
 
                 // ✅ Get data from repository
-                var responseDTO = await _unitOfWork.TenantModuleConfigurationRepository.GetEnabledModulesWithOperationsAsync(request.TenantEnabledModuleOperationsRequestDTO);
-                   
+                  var responseDTO = await _unitOfWork.TenantModuleConfigurationRepository.GetAllEnabledModulesWithOperationsByTenantIdAsync(request.dto);
+                     
 
                 return new ApiResponse<TenantEnabledModuleOperationsResponseDTO>
                 {

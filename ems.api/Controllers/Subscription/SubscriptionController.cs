@@ -46,6 +46,27 @@ namespace ems.api.Controllers.Subscription
         }
 
         #endregion
+        [HttpPost("get-tenant-subscription-plan-info")]
+        public async Task<IActionResult> GetTenantSubscriptionPlanInfo([FromBody] GetActiveTenantSubscriptionDetailResquestDTO subscriptionPlanRequestDTO)
+        {
+            if (subscriptionPlanRequestDTO == null)
+            {
+                // _logger.LogWarning("Received null request for getting Assets.");
+                // return BadRequest(new ApiResponse<List<GetAllAssetDTO>>(false, "Invalid request", null));
+            }
+
+            // _logger.LogInformation("Received request to get Assets for userId: {LoginId}", AssetRequestDTO.Id);
+
+            var query = new GetActiveTenantSubscriptionPlanIdByTenantIdCommand(subscriptionPlanRequestDTO);  //  Fix: No parameter needed in GetAllAssetQuery
+            var result = await _mediator.Send(query);
+
+            if (!result.IsSucceeded)
+            {
+                return Unauthorized(result);
+            }
+
+            return Ok(result);
+        }
 
         [HttpPost("get-all-tenant-accessible-modules")]
         public async Task<IActionResult> GetAllPlanModulePapping([FromBody] PlanModuleMappingRequestDTO? planModuleMappingRequest)

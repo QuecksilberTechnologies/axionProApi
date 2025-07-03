@@ -8,7 +8,7 @@ namespace ems.application.DTOs.Tenant
 {
     public class TenantModuleOperationsUpdateRequestDTO
     {
-        public long TenantId { get; set; }
+        public long? TenantId { get; set; }
         public List<ModuleToggleDTO> Modules { get; set; } = new();
     }
 

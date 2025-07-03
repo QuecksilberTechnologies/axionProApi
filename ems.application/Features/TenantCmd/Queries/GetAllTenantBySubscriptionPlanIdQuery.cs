@@ -8,13 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Features.TenantCmd.Queries
+namespace ems.application.Features.RoleCmd.Queries
 {
-    public class GetAllTenantQuery : IRequest<ApiResponse<List<TenantResponseDTO>>>
+    public class GetAllTenantBySubscriptionPlanIdQuery : IRequest<ApiResponse<List<TenantResponseDTO>>>
     {
         public TenantRequestDTO? tenantRequestDTO { get; set; }
 
-        public GetAllTenantQuery(TenantRequestDTO tenantRequestDTO)
+        public GetAllTenantBySubscriptionPlanIdQuery(TenantRequestDTO tenantRequestDTO)
         {
             this.tenantRequestDTO = tenantRequestDTO;
         }

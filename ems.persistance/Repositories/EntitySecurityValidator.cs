@@ -25,13 +25,13 @@ namespace ems.persistance.Repositories
             return false;
         }
 
-        public async Task<bool> IsTenantValidAsync(long userId, long tenantId)
+        public async Task<bool> IsTenantValidAsync(long userId, long? tenantId)
         {
             // return await _unitOfWork.TenantRepository.IsValidTenant(userId, tenantId);
             return false;
         }
 
-        public async Task<bool> IsDuplicateAssetTypeAsync(long tenantId, string typeName)
+        public async Task<bool> IsDuplicateAssetTypeAsync(long? tenantId, string typeName)
         {
           //  return await _unitOfWork.AssetRepository.CheckDuplicateAssetType(tenantId, typeName);
             return false;

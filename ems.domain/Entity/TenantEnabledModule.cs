@@ -7,7 +7,7 @@ public partial class TenantEnabledModule
 {
     public long Id { get; set; }
 
-    public long TenantId { get; set; }
+    public long? TenantId { get; set; }
 
     public int ModuleId { get; set; }
 

@@ -50,7 +50,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 }
 
                 long userId = await _unitOfWork.CommonRepository.ValidateActiveUserCrendentialOnlyAsync(request.dTO.LoginId);
-                var empInfo = await _unitOfWork.Employees.GetEmployeeByIdAsync(empId);
+                Employee? empInfo = await _unitOfWork.Employees.GetEmployeeByIdAsync(empId);
 
                 // 🔍 Step 2: Check Existing OTP
                 var existingOtpEntry = await _unitOfWork.ForgotPasswordOtpRepository.GetValidOtpByEmployeeIdAsync(userId, empInfo.TenantId);

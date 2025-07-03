@@ -45,6 +45,7 @@ public interface IUnitOfWork : IDisposable
     IEmployeeTypeBasicMenuRepository EmployeeTypeBasicMenuRepository { get; }
  
     IUserRolesPermissionOnModuleRepository UserRolesPermissionOnModuleRepository { get; }
+    IModuleOperationMappingRepository ModuleOperationMappingRepository { get; }  
 
 
     // Begin a transaction

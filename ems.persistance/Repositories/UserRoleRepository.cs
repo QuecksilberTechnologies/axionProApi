@@ -85,7 +85,7 @@ namespace ems.persistance.Repositories
             await _context.SaveChangesAsync();
             return userRole.RoleId;
         }
-        public async Task<List<UserRole>> GetEmployeeRolesWithDetailsByIdAsync(long employeeId, long tenantId)
+        public async Task<List<UserRole>> GetEmployeeRolesWithDetailsByIdAsync(long employeeId, long? tenantId)
         {
             try
             {

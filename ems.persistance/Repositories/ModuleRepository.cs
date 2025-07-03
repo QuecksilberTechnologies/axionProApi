@@ -49,44 +49,46 @@ namespace ems.persistance.Repositories
             }
         }
 
- 
+
 
         public async Task<List<ModuleDTO>> GetCommonMenuTreeAsync(int? parentId)
         {
             try
             {
-                var modules = await _context.Modules
-                    .Where(m => m.ParentModuleId == parentId &&
-                                m.IsActive == true &&
-                                m.IsModuleDisplayInUi == true)
+                // ✅ Step 1: Get all active, UI-displayable modules once
+                var allModules = await _context.Modules
+                    .Where(m => m.IsActive && m.IsModuleDisplayInUi)
                     .OrderBy(m => m.Id)
                     .ToListAsync();
 
-                var result = new List<ModuleDTO>();
-
-                foreach (var module in modules)
-                {
-                    var child = new ModuleDTO
-                    {
-                        Id = module.Id,
-                        ModuleName = module.ModuleName,
-                        SubModuleUrl = module.SubModuleUrl,
-                        Children = await GetCommonMenuTreeAsync(module.Id)
-                    };
-
-                    result.Add(child);
-                    _logger.LogInformation("Adding module: {Name}, ChildCount: {Count}", module.ModuleName, child.Children?.Count);
-
-                }
+                // ✅ Step 2: Recursive in-memory build
+                var result = BuildMenuTree(allModules, parentId);
 
                 return result;
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in GetCommonMenuTreeAsync with ParentId={ParentId}", parentId);
-                throw new Exception($"Error while fetching common menu tree for ParentId: {parentId}", ex);
+                throw;
             }
         }
+
+        private List<ModuleDTO> BuildMenuTree(List<Module> allModules, int? parentId)
+        {
+            var children = allModules
+                .Where(m => m.ParentModuleId == parentId)
+                .Select(m => new ModuleDTO
+                {
+                    Id = m.Id,
+                    ModuleName = m.ModuleName,
+                    SubModuleUrl = m.SubModuleUrl,
+                    Children = BuildMenuTree(allModules, m.Id)
+                })
+                .ToList();
+
+            return children;
+        }
+
 
 
 

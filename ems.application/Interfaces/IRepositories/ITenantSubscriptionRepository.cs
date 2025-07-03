@@ -8,6 +8,7 @@ using System.Threading.Tasks;
     using global::ems.domain.Entity;
     using System.Collections.Generic;
     using System.Threading.Tasks;
+using ems.application.DTOs.SubscriptionModule;
 
     namespace ems.application.Interfaces.IRepositories
     {
@@ -16,12 +17,15 @@ using System.Threading.Tasks;
             /// <summary>
             /// Get subscription detail for a tenant based on filter.
             /// </summary>
-            Task<TenantSubscription?> GetTenantSubscriptionAsync(TenantSubscription filter);
+            Task<TenantSubscription?> GetTenantSubscriptionPlanInfoAsync(TenantSubscription filter);
 
             /// <summary>
             /// Get all tenant subscriptions (optional filter).
             /// </summary>
             Task<List<TenantSubscription>> GetAllTenantSubscriptionsAsync(TenantSubscription? filter = null);
+   
+            Task<GetTenantSubscriptionDetailResponsDTO> GetTenantActiveSubscriptionPlanDetail(GetActiveTenantSubscriptionDetailResquestDTO dto);
+
 
         /// <summary>
         /// Add a new tenant subscription.

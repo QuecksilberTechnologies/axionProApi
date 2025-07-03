@@ -9,7 +9,7 @@ namespace ems.application.DTOs.Asset
     public class AssetStatusRequestDTO
     {
         
-        public long TenantId { get; set; }
+        public long? TenantId { get; set; }
         public long EmployeeId { get; set; }  
         public int  RoleId { get; set; }       
         public string? StatusName { get; set; }  

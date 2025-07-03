@@ -8,7 +8,7 @@ public partial class Employee :BaseEntity
 {
     public long Id { get; set; }
 
-    public long TenantId { get; set; }
+    public long? TenantId { get; set; }
 
     public int? EmployeeDocumentId { get; set; }
 

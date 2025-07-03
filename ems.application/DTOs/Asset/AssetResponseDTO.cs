@@ -9,7 +9,7 @@ namespace ems.application.DTOs.Asset
     public class AssetResponseDTO
     {
         public int Id { get; set; }
-        public long TenantId { get; set; }  
+        public long? TenantId { get; set; }  
         public string AssetName { get; set; }
         public int AssetTypeId { get; set; }
         public string Company { get; set; }

@@ -4,7 +4,7 @@ using ems.application.DTOs.Region;
 using ems.application.DTOs.Registration;
 using ems.application.DTOs.Tenant;
 using ems.application.Features.RegistrationCmd.Commands;
-using ems.application.Features.TenantCmd.Queries;
+using ems.application.Features.RoleCmd.Queries;
 using ems.application.Interfaces;
 using ems.application.Interfaces.IRepositories;
 using ems.application.Wrappers;
@@ -17,21 +17,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Features.TenantCmd.Handlers
+namespace ems.application.Features.RoleCmd.Handlers
 {
 
-    public class GetAllTenantQueryHandler : IRequestHandler<GetAllTenantQuery, ApiResponse<List<TenantResponseDTO>>>
+    public class GetAllTenantBySubscriptionPlanIdQueryHandler : IRequestHandler<GetAllTenantBySubscriptionPlanIdQuery, ApiResponse<List<TenantResponseDTO>>>
     {
         private readonly ITenantRepository _tenantRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<GetAllTenantQueryHandler> _logger;
+        private readonly ILogger<GetAllTenantBySubscriptionPlanIdQueryHandler> _logger;
 
-        public GetAllTenantQueryHandler(
+        public GetAllTenantBySubscriptionPlanIdQueryHandler(
         ITenantRepository tenantRepository,
         IMapper mapper,
         IUnitOfWork unitOfWork,
-        ILogger<GetAllTenantQueryHandler> logger)
+        ILogger<GetAllTenantBySubscriptionPlanIdQueryHandler> logger)
         {
             _tenantRepository = tenantRepository;
             _mapper = mapper;
@@ -39,7 +39,7 @@ namespace ems.application.Features.TenantCmd.Handlers
             _logger = logger;
         }
 
-        public async Task<ApiResponse<List<TenantResponseDTO>>> Handle(GetAllTenantQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<TenantResponseDTO>>> Handle(GetAllTenantBySubscriptionPlanIdQuery request, CancellationToken cancellationToken)
         {
             try
             {
@@ -48,7 +48,7 @@ namespace ems.application.Features.TenantCmd.Handlers
                 var tenantDTO = _mapper.Map<Tenant>(request.tenantRequestDTO);
 
                 // ✅ Fetching from DB
-                List<Tenant> tenants = await _unitOfWork.TenantRepository.GetAllTenantAsync(tenantDTO);
+                List<Tenant> tenants = await _unitOfWork.TenantRepository.GetAllTenantBySubscriptionIdAsync(tenantDTO);
 
                 // ✅ Mapping to response DTO
                 var getAllTenantsDTOs = _mapper.Map<List<TenantResponseDTO>>(tenants);

@@ -8,7 +8,7 @@ namespace ems.application.DTOs.Module
 {
     public class ModuleOperationConfigurationRequestDTO
     {
-     public   long TenantId { get; set; }
+     public   long? TenantId { get; set; }
 
      public   int RoleId { get; set; }    
 

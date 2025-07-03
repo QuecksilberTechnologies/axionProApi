@@ -9,7 +9,7 @@ namespace ems.application.Interfaces.IRepositories
 {
     public interface ITenantEmailConfigRepository
     {
-        Task<TenantEmailConfig?> GetActiveEmailConfigAsync(long tenantId);
-        Task<TenantEmailConfig?> UpdateEmailConfigAsync(long tenantId);
+        Task<TenantEmailConfig?> GetActiveEmailConfigAsync(long? TenantId);
+        Task<TenantEmailConfig?> UpdateEmailConfigAsync(long? TenantId);
     }
 }

@@ -9,7 +9,7 @@ namespace ems.application.DTOs.Role
     public class CreateRoleDTO
     {
 
-        public long TenantId { get; set; }
+        public long? TenantId { get; set; }
         public long EmployeeId { get; set; }
         public int RoleId { get; set; }
         public string RoleName { get; set; } = string.Empty; // Default value

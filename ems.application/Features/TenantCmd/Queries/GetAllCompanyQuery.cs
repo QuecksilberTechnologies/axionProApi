@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Features.TenantCmd.Queries
+namespace ems.application.Features.RoleCmd.Queries
 {
     public class GetAllCompanyQuery : IRequest<string>
     {

@@ -7,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Features.TenantCmd.Commands
+namespace ems.application.Features.RoleCmd.Commands
 {
 
-    public class TenantModuleOperationsUpdateCommand : IRequest<ApiResponse<bool>>
+    public class TenantEnabledModuleOperationsUpdateCommand : IRequest<ApiResponse<bool>>
     {
         public TenantModuleOperationsUpdateRequestDTO RequestDTO { get; set; }
 
-        public TenantModuleOperationsUpdateCommand(TenantModuleOperationsUpdateRequestDTO dto)
+        public TenantEnabledModuleOperationsUpdateCommand(TenantModuleOperationsUpdateRequestDTO dto)
         {
             RequestDTO = dto;
         }

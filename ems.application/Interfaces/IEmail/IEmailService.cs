@@ -9,9 +9,9 @@ namespace ems.application.Interfaces.IEmail
 {
     public interface IEmailService
     {
-        Task<bool> SendEmailAsync(string toEmail, string subject, string body, string token, long tenantId);
-        Task<bool> SendOtpEmailAsync(string toEmail, string subject, string body, long tenantId, string otp);
-        Task<bool> SendTemplatedEmailAsync(string templateCode, string toEmail, long tenantId, Dictionary<string, string> placeholders);
+        Task<bool> SendEmailAsync(string toEmail, string subject, string body, string token, long? TenantId);
+        Task<bool> SendOtpEmailAsync(string toEmail, string subject, string body, long? TenantId, string otp);
+        Task<bool> SendTemplatedEmailAsync(string templateCode, string toEmail, long? TenantId, Dictionary<string, string> placeholders);
         
     }
 }

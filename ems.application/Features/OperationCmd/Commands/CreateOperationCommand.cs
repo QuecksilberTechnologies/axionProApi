@@ -13,9 +13,9 @@ namespace ems.application.Features.OperationCmd.Commands
     public class CreateOperationCommand : IRequest<ApiResponse<List<GetAllOperationDTO>>>
     {
 
-        public CreateOperationDTO createOperationDTO { get; set; }
+        public CreateOperationByProductOwnerRequestDTO createOperationDTO { get; set; }
 
-        public CreateOperationCommand(CreateOperationDTO createOperationDTO)
+        public CreateOperationCommand(CreateOperationByProductOwnerRequestDTO createOperationDTO)
         {
             this.createOperationDTO = createOperationDTO;
         }

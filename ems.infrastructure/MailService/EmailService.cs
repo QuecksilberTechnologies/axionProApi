@@ -26,7 +26,7 @@ namespace ems.infrastructure.MailService
             _logger = logger;
         }
 
-        public async Task<bool> SendEmailAsync(string toEmail, string subject, string body, string token, long tenantId)
+        public async Task<bool> SendEmailAsync(string toEmail, string subject, string body, string token, long? tenantId)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace ems.infrastructure.MailService
 
 
 
-        public async Task<bool> SendOtpEmailAsync(string toEmail, string subject, string body, long tenantId, string otp)
+        public async Task<bool> SendOtpEmailAsync(string toEmail, string subject, string body, long? tenantId, string otp)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace ems.infrastructure.MailService
         }
 
 
-        public async Task<bool> SendTemplatedEmailAsync(string templateCode, string toEmail, long tenantId, Dictionary<string, string> placeholders)
+        public async Task<bool> SendTemplatedEmailAsync(string templateCode, string toEmail, long? tenantId, Dictionary<string, string> placeholders)
         {
             try
             {

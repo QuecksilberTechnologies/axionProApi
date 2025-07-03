@@ -145,7 +145,7 @@ namespace ems.persistance.Repositories
            
         }
 
-        public async Task<List<Asset>> GetAllAssetAsync(long tenantId, bool? isActive)
+        public async Task<List<Asset>> GetAllAssetAsync(long? tenantId, bool? isActive)
         {
             List<Asset> assets = new List<Asset>();
 

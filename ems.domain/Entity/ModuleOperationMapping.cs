@@ -7,6 +7,7 @@ public partial class ModuleOperationMapping
 {
     public int Id { get; set; }
     public int? ModuleId { get; set; }
+
     public int OperationId { get; set; }
 
     public string? DisplayName { get; set; }
@@ -25,11 +26,11 @@ public partial class ModuleOperationMapping
 
     public bool? IsActive { get; set; }
 
-    public int? AddedById { get; set; }
+    public long? AddedById { get; set; }
 
     public DateTime? AddedDateTime { get; set; }
 
-    public int? UpdatedById { get; set; }
+    public long? UpdatedById { get; set; }
 
     public DateTime? UpdatedDateTime { get; set; }
  

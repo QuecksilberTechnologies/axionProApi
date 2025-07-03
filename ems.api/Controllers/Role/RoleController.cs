@@ -74,7 +74,29 @@ namespace ems.api.Controllers.Role
             return Ok(result);
         }
 
+        [HttpPost("get-role-by-role-code")]
+        public async Task<IActionResult> GetGlobalRole([FromBody] GetRoleIdByRoleCodeRequestDTO? getRoleIdByRoleCodeRequestDTO)
+        {
+            if (getRoleIdByRoleCodeRequestDTO == null)
+            {
+                // _logger.LogWarning("Received null request for getting roles.");
+                // return BadRequest(new ApiResponse<List<GetAllRoleDTO>>(false, "Invalid request", null));
+            }
+
+            // _logger.LogInformation("Received request to get roles for userId: {LoginId}", roleRequestDTO.Id);
+
+            var command = new GetRoleIdByRoleInfoCommand(getRoleIdByRoleCodeRequestDTO);
+            var result = await _mediator.Send(command);
+            if (!result.IsSucceeded)
+            {
+                return Ok(result);
+            }
+            return Ok(result);
+
        
-    }
+        }
+
 
     }
+
+}

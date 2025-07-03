@@ -12,9 +12,9 @@ namespace ems.application.Features.OperationCmd.Commands
     public class UpdateOperationCommand : IRequest<ApiResponse<List<GetAllOperationDTO>>>
     {
 
-        public UpdateOperationDTO updateOperationDTO { get; set; }
+        public UpdateOperationByProductOwnerRequestDTO updateOperationDTO { get; set; }
 
-        public UpdateOperationCommand(UpdateOperationDTO updateOperationDTO)
+        public UpdateOperationCommand(UpdateOperationByProductOwnerRequestDTO updateOperationDTO)
         {
             this.updateOperationDTO = updateOperationDTO;
         }

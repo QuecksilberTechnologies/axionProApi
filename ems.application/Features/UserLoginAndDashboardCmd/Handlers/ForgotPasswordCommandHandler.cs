@@ -106,7 +106,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 
                 // 🧍‍♂️ Full Name build
                 string UserName = $"{empInfo.FirstName} {(empInfo.MiddleName ?? "")} {empInfo.LastName}".Trim();
-                long tenantId = empInfo.TenantId;
+                long? TenantId = empInfo.TenantId;
 
                 // 📩 Get Template from DB
                 var emailTemplate = await _unitOfWork.EmailTemplateRepository.GetTemplateByCodeAsync("FORGOT_PASSWORD");
@@ -133,7 +133,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                     subject: subject,
                     body: body,
                     otp: Otp, // If your service needs it, else remove
-                    tenantId: tenantId
+                    TenantId: TenantId
                 );
 
                 if (!isSent)
@@ -150,7 +150,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                     EmployeeId = empId,
                     Otp = Otp,
                     OtpexpireDateTime = DateTime.Now.AddMinutes(5),
-                    TenantId = tenantId,
+                    TenantId = TenantId,
                     CreatedDateTime = DateTime.Now,
                     IsUsed = false,
                     UserId = userId,

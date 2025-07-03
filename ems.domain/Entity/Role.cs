@@ -8,11 +8,16 @@ public partial class Role :BaseEntity
 {
     public int Id { get; set; }
 
-    public long TenantId { get; set; }
+    public long? TenantId { get; set; }
 
     public string? RoleName { get; set; }
 
+    public string? RoleType { get; set; }
+
+    public bool? IsSystemDefault { get; set; }
     public string? Remark { get; set; }
+    public string? RoleCode { get; set; }
+
 
     public bool? IsActive { get; set; }  
 

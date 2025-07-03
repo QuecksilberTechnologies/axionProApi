@@ -51,59 +51,59 @@ namespace ems.application.Mappings
         {
 
             CreateMap<CreateAssetRequestByTenantAdminDTO, Asset>();
-         //   CreateMap<Asset, GetAllAssetWithDependentEntityDTO>();
+            //   CreateMap<Asset, GetAllAssetWithDependentEntityDTO>();
 
 
             CreateMap<AssetType, GetAllAssetTypeDTO>();
 
             CreateMap<Asset, AssetResponseDTO>();
-                //.ForMember(dest => dest.WarrantyExpiryDate,
-                //           opt => opt.MapFrom(src => src.WarrantyExpiryDate.HasValue
-                //                                       ? DateOnly.FromDateTime(src.WarrantyExpiryDate.Value)
-                //                                       : default));
-           
+            //.ForMember(dest => dest.WarrantyExpiryDate,
+            //           opt => opt.MapFrom(src => src.WarrantyExpiryDate.HasValue
+            //                                       ? DateOnly.FromDateTime(src.WarrantyExpiryDate.Value)
+            //                                       : default));
+
             CreateMap<Asset, GetAssetRequestByTenantAdminDTO>().ReverseMap();
 
- 
-            CreateMap<SubscriptionPlanResponseDTO,SubscriptionPlan >().ReverseMap();
+
+            CreateMap<SubscriptionPlanResponseDTO, SubscriptionPlan>().ReverseMap();
 
 
 
             CreateMap<AssetResponseDTO, Asset>().ReverseMap();
-           
-            
+
+
             CreateMap<UpdateAssetRequestDTO, Asset>().ReverseMap();
 
             CreateMap<DeleteAssetRequestDTO, Asset>().ReverseMap();
 
             CreateMap<AssetStatus, AssetStatusRequestDTO>().ReverseMap();
-           
+
             CreateMap<AssetStatusResponseDTO, AssetStatus>().ReverseMap();
 
 
             CreateMap<AssetType, AssetTypeRequestDTO>().ReverseMap();
             CreateMap<AssetType, AssetTypeResponseDTO>().ReverseMap(); // 🔥 Yeh zaroori hai
 
-           
+
             //   CreateMap<AssetType, AssetTypeResponseDTO>().ReverseMap(); // 🔥 Yeh zaroori hai
 
             CreateMap<AssetType, UpdateAssetTypeRequestDTO>().ReverseMap();
-                   
+
 
             CreateMap<AssetType, DeleteAssetTypeRequestDTO>().ReverseMap();
-            
+
 
             CreateMap<AssetStatus, UpdateAssetStatusRequestDTO>().ReverseMap();
             CreateMap<UpdateAssetStatusRequestDTO, AssetStatus>().ReverseMap();
 
 
             CreateMap<AssetStatus, DeleteAssetStatusRequestDTO>().ReverseMap();
-           
-            
-            
+
+
+
             CreateMap<domain.Entity.Module, CommonItemDTO>().ReverseMap();
 
-            
+
 
 
             CreateMap<CreateDesignationDTO, Designation>();
@@ -115,22 +115,23 @@ namespace ems.application.Mappings
             CreateMap<UpdateDepartmentDTO, Department>();
 
 
-            
+
             CreateMap<CreateSubModuleRequestDTO, domain.Entity.Module>();
             CreateMap<CreateModuleRequestDTO, domain.Entity.Module>().ReverseMap();
             CreateMap<ModuleResponseDTO, domain.Entity.Module>();
 
 
-        
 
 
 
-            CreateMap<CreateOperationDTO, Operation>();
-            CreateMap<Operation, GetAllOperationDTO>();
-            CreateMap<UpdateOperationDTO, Operation>();
 
+            //CreateMap<CreateOperationByProductOwnerRequestDTO, Operation>();
+            //CreateMap<Operation, GetAllOperationDTO>();
+            //CreateMap<UpdateOperationByProductOwnerRequestDTO, Operation>();
 
-            CreateMap<CreateClientTypeDTO, ClientType>();
+          
+
+        CreateMap<CreateClientTypeDTO, ClientType>();
             CreateMap<ClientType, GetAllClientTypeDTO>();
             CreateMap<UpdateClientTypeDTO, ClientType>();  // ✅ Yeh likhna hoga!
 
@@ -146,8 +147,10 @@ namespace ems.application.Mappings
 
             // Map Employee to EmployeeDTO
               CreateMap<Employee, EmployeeDTO>();
-             
-                CreateMap<CreateRoleDTO, Role>();  // ✅ Yeh likhna hoga!
+
+            CreateMap<GetRoleIdByRoleCodeRequestDTO,Role>().ReverseMap();  //  
+
+            CreateMap<CreateRoleDTO, Role>();  // ✅ Yeh likhna hoga!
                 CreateMap<UpdateRoleDTO, Role>();  // ✅ Yeh likhna hoga!
                                                 // Role Entity to GetAllRoleDTO Mapping
                 // Direct entity to DTO mapping
@@ -245,7 +248,39 @@ namespace ems.application.Mappings
 
             CreateMap<TenantSubscriptionPlanRequestDTO, TenantSubscription>().ReverseMap();
             CreateMap<TenantSubscriptionPlanResponseDTO, TenantSubscription>().ReverseMap();
-            
+
+
+            CreateMap<UpdateModuleOperationMappingByProductOwnerRequestDTO, ModuleOperationMapping>()
+         .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.ModuleOperationMappingId))
+         .ForMember(dest => dest.PageUrl, opt => opt.MapFrom(src => src.PageURL))
+         .ForMember(dest => dest.IconUrl, opt => opt.MapFrom(src => src.IconURL))
+         .ForMember(dest => dest.IsCommonItem, opt => opt.MapFrom(src => src.IsCommonItem))
+         .ForMember(dest => dest.IsOperational, opt => opt.MapFrom(src => src.IsOperational))
+         .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority))
+         .ForMember(dest => dest.Remark, opt => opt.MapFrom(src => src.Remark))
+         .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+         .ForMember(dest => dest.UpdatedById, opt => opt.MapFrom(src => src.ProductOwnerId));
+
+            CreateMap<ModuleOperationMapping, ModuleOperationMappingByProductOwnerResponseDTO>()
+    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
+    .ForMember(dest => dest.ModuleId, opt => opt.MapFrom(src => src.ModuleId))
+    .ForMember(dest => dest.OperationIds, opt => opt.MapFrom(src => new List<int> { src.OperationId }))
+    .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.DisplayName))
+    .ForMember(dest => dest.PageURL, opt => opt.MapFrom(src => src.PageUrl))
+    .ForMember(dest => dest.IconURL, opt => opt.MapFrom(src => src.IconUrl))
+    .ForMember(dest => dest.IsCommonItem, opt => opt.MapFrom(src => src.IsCommonItem ?? false))
+    .ForMember(dest => dest.IsOperational, opt => opt.MapFrom(src => src.IsOperational ?? false))
+    .ForMember(dest => dest.Priority, opt => opt.MapFrom(src => src.Priority ?? 0))
+    .ForMember(dest => dest.Remark, opt => opt.MapFrom(src => src.Remark))
+    .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
+    .ForMember(dest => dest.AddedById, opt => opt.MapFrom(src => src.AddedById ?? 0))
+    .ForMember(dest => dest.AddedDateTime, opt => opt.MapFrom(src => src.AddedDateTime ?? DateTime.MinValue))
+    .ForMember(dest => dest.UpdatedById, opt => opt.MapFrom(src => src.UpdatedById))
+    .ForMember(dest => dest.UpdatedDateTime, opt => opt.MapFrom(src => src.UpdatedDateTime));
+ 
+ 
+
+
 
             CreateMap<CandidateRequestDTO, Candidate>()
          .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))

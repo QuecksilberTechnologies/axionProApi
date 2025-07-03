@@ -1,4 +1,4 @@
-﻿using ems.application.Features.TenantCmd.Commands;
+﻿using ems.application.Features.RoleCmd.Commands;
 using ems.application.Interfaces.IRepositories;
 using ems.application.Wrappers;
 using MediatR;
@@ -9,22 +9,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Features.TenantCmd.Handlers
+namespace ems.application.Features.RoleCmd.Handlers
 {
-    public class TenantModuleOperationsUpdateCommandHandler : IRequestHandler<TenantModuleOperationsUpdateCommand, ApiResponse<bool>>
+    public class TenantEnabledModuleOperationsUpdateCommandHandler : IRequestHandler<TenantEnabledModuleOperationsUpdateCommand, ApiResponse<bool>>
     {
         private readonly ITenantModuleConfigurationRepository _repository;
-        private readonly ILogger<TenantModuleOperationsUpdateCommandHandler> _logger;
+        private readonly ILogger<TenantEnabledModuleOperationsUpdateCommandHandler> _logger;
 
-        public TenantModuleOperationsUpdateCommandHandler(
+        public TenantEnabledModuleOperationsUpdateCommandHandler(
             ITenantModuleConfigurationRepository repository,
-            ILogger<TenantModuleOperationsUpdateCommandHandler> logger)
+            ILogger<TenantEnabledModuleOperationsUpdateCommandHandler> logger)
         {
             _repository = repository;
             _logger = logger;
         }
 
-        public async Task<ApiResponse<bool>> Handle(TenantModuleOperationsUpdateCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<bool>> Handle(TenantEnabledModuleOperationsUpdateCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace ems.application.Features.TenantCmd.Handlers
                 }
 
                 // 🛠 Update Module + Operations via Repository
-                var isUpdated = await _repository.UpdateTenantModuleAndOperationsAsync(request.RequestDTO);
+                var isUpdated = await _repository.UpdateTenantModuleAndItsOperationsAsync(request.RequestDTO);
 
                 return new ApiResponse<bool>
                 {

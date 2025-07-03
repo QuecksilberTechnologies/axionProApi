@@ -13,6 +13,7 @@ public partial class Module
     public string ModuleName { get; set; } = null!;
 
     public string? SubModuleUrl { get; set; }
+    public string? Path { get; set; }
 
     public int? ParentModuleId { get; set; }
 
@@ -61,6 +62,7 @@ public class ModuleDTO
     public int Id { get; set; }
     public string ModuleName { get; set; }
     public string? SubModuleUrl { get; set; }
+    public string? Path { get; set; }
     public List<ModuleDTO> Children { get; set; } = new();
 }
 

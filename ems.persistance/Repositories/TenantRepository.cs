@@ -21,7 +21,7 @@ namespace ems.persistance.Repositories
             _logger = logger;
         }
 
-        public async Task<List<Tenant>> GetAllTenantAsync(Tenant tenant)
+        public async Task<List<Tenant>> GetAllTenantBySubscriptionIdAsync(Tenant tenant)
         {
             try
             {

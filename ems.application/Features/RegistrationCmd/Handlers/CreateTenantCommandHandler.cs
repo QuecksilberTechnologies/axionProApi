@@ -106,7 +106,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                     };
                 }
 
-                TenantSubscription? tenantSubscriptionPlan = await _unitOfWork.TenantSubscriptionRepository.GetTenantSubscriptionAsync(new TenantSubscription
+                TenantSubscription? tenantSubscriptionPlan = await _unitOfWork.TenantSubscriptionRepository.GetTenantSubscriptionPlanInfoAsync(new TenantSubscription
                 { TenantId = newTenantId, SubscriptionPlanId = request.TenantCreateRequestDTO.SubscriptionPlanId, IsTrial=true ,IsActive=true }
                     );
 
@@ -212,10 +212,13 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                 var role = new Role
                 {
                     TenantId = newTenantId,
-                    RoleName = ConstantValues.SuperAdminRoleName,
+                    RoleName = ConstantValues.TenantAdminName,
+                    RoleCode = ConstantValues.TenantAdminRoleCode,
+                    RoleType= ConstantValues.TenantAdminRoleType,
+                    IsSystemDefault = false,
                     IsActive = ConstantValues.IsByDefaultTrue,
                     IsSoftDeleted = ConstantValues.IsByDefaultFalse,
-                    Remark = ConstantValues.AdminRoleRemark,
+                    Remark = ConstantValues.TenantAdminRoleRemark,
                     AddedById = newTenantId,
                     AddedDateTime = DateTime.Now,
                     UpdatedById = ConstantValues.SystemUserIdByDefaultZero,
@@ -235,7 +238,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                     Password = ConstantValues.DefaultPassword,
                     HasFirstLogin = ConstantValues.IsByDefaultTrue,
                     IsSoftDeleted = ConstantValues.IsByDefaultFalse,
-                    Remark = ConstantValues.AdminRoleRemark,
+                    Remark = ConstantValues.TenantAdminRoleRemark,
                     AddedById = newTenantId,
                     AddedDateTime = DateTime.Now,
                     UpdatedById = ConstantValues.SystemUserIdByDefaultZero,
@@ -256,7 +259,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                      AddedById = employeeId,
                      AddedDateTime = DateTime.Now,
                      AssignedDateTime = DateTime.Now,
-                     Remark = ConstantValues.AdminRoleRemark,
+                     Remark = ConstantValues.TenantAdminRoleRemark,
                      AssignedById = employeeId,
                      RoleStartDate = DateTime.Now,
                      ApprovalRequired = ConstantValues.IsByDefaultFalse,
@@ -295,7 +298,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                 //var sent =   await _emailService.SendTemplatedEmailAsync(
                 //     templateCode: "WELCOME_EMAIL",
                 //     toEmail: email,
-                //     tenantId: tenantEntity.Id,
+                //     TenantId: tenantEntity.Id,
                 //     placeholders: placeholderData
                 //  );
 
@@ -303,7 +306,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                 string subject = "Verification Email";
                 string userName = "Deepesh Gupta";
 
-                long tenantId_ = 17;
+                long? TenantId_ = 17;
 
 
                 string emailBodyTemplate = @"
@@ -332,7 +335,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                     subject: "Verification Email",
                     body: emailBodyTemplate,
                     token: token,
-                    tenantId: 17
+                    TenantId: 17
                 );
                 // Step 12: Commit Transaction
                 await _unitOfWork.CommitTransactionAsync();

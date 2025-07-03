@@ -7,7 +7,7 @@ public partial class TenantEmailConfig
 {
     public int Id { get; set; }
 
-    public long TenantId { get; set; }
+    public long? TenantId { get; set; }
 
     public string? SmtpHost { get; set; }
 

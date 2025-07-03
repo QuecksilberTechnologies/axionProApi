@@ -12,16 +12,19 @@ namespace ems.application.Interfaces.IRepositories
 {
    public interface  ITenantModuleConfigurationRepository
     {
-        Task  CreateByDefaultEnabledModulesAsync(long tenantId, List<TenantEnabledModule> moduleEntities, List<TenantEnabledOperation> operationEntities);
-        Task<List<TenantEnabledModule>> GetTenantEnabledModulesWithOperationsAsync(long tenantId);
-        Task <TenantEnabledModuleOperationsResponseDTO> GetEnabledModulesWithOperationsAsync(TenantEnabledModuleOperationsRequestDTO tenantEnabledModuleOperationsRequestDTO);
+        Task  CreateByDefaultEnabledModulesAsync(long? TenantId, List<TenantEnabledModule> moduleEntities, List<TenantEnabledOperation> operationEntities);
+      //yeh function sirf enabled module or operation laata hai , login mei bhi used
+        Task<List<TenantEnabledModule>> GetAllTenantEnabledModulesWithOperationsAsync(long? TenantId);
+        //Task<List<TenantEnabledModule>> GetAllEnabledTrueModulesWithOperationsByTenantIdAsync(long? TenantId);
+        Task <TenantEnabledModuleOperationsResponseDTO> GetAllEnabledModulesWithOperationsByTenantIdAsync(TenantEnabledModuleOperationsRequestDTO tenantEnabledModuleOperationsRequestDTO);
+        Task <TenantEnabledModuleOperationsResponseDTO> GetAllEnabledTrueModulesWithOperationsByTenantIdAsync(TenantEnabledModuleOperationsRequestDTO tenantEnabledModuleOperationsRequestDTO);
         /// <summary>
         /// Updates the module and operation enable/disable state for a given tenant.
         /// </summary>
         /// <param name="request">The request DTO containing module and operation status.</param>
         /// <returns>True if update successful, otherwise false.</returns>
-        Task<bool> UpdateTenantModuleAndOperationsAsync(TenantModuleOperationsUpdateRequestDTO request);
+        Task<bool> UpdateTenantModuleAndItsOperationsAsync(TenantModuleOperationsUpdateRequestDTO request);
 
-
+       
     }
 }

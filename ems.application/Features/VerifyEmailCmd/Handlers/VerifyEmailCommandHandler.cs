@@ -79,7 +79,7 @@ namespace ems.application.Features.VerifyEmailCmd.Handlers
                     };
                 }
 
-                var userInfo = JsonConvert.DeserializeObject<VerifyEmailResponseDTO>(tokenPayload);
+                VerifyEmailResponseDTO userInfo = JsonConvert.DeserializeObject<VerifyEmailResponseDTO>(tokenPayload);
 
                 if (userInfo == null || string.IsNullOrEmpty(userInfo.UserId))
                 {
@@ -92,7 +92,7 @@ namespace ems.application.Features.VerifyEmailCmd.Handlers
                 }
 
                 // ✅ Directly try to get EmployeeId. If not found, email doesn't exist.
-                var employeeRecord = await _unitOfWork.UserLoginRepository.GetEmployeeIdByUserLogin(userInfo.UserId);
+                LoginCredential employeeRecord = await _unitOfWork.UserLoginRepository.GetEmployeeIdByUserLogin(userInfo.UserId);
 
                 if (employeeRecord.EmployeeId == 0)
                 {
@@ -108,7 +108,8 @@ namespace ems.application.Features.VerifyEmailCmd.Handlers
                
 
                 Tenant tenant = new Tenant();
-                tenant.Id   = employeeRecord.TenantId;
+                 
+                tenant.Id   = employeeRecord.TenantId??0    ;
                                 
 
                 var tenantResult = await _unitOfWork.TenantRepository.UpdateTenantAsync(tenant);

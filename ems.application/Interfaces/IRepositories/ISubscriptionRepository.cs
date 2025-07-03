@@ -23,6 +23,7 @@ namespace ems.application.Interfaces.IRepositories
         Task<SubscriptionPlanResponseDTO> GetPlanByIdAsync(int id);
 
       
+
     }
 
 }

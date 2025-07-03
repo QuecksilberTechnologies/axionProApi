@@ -9,7 +9,7 @@ namespace ems.application.DTOs.Asset
     public class UpdateAssetTypeRequestDTO
     {
         public long Id { get; set; }
-        public long TenantId { get; set; }
+        public long? TenantId { get; set; }
         public string TypeName { get; set; }
         public string? Description { get; set; }
         public bool IsActive { get; set; }

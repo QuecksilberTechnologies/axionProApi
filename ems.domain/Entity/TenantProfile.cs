@@ -7,7 +7,7 @@ public partial class TenantProfile
 {
     public long Id { get; set; } = 0;
 
-    public long TenantId { get; set; }
+    public long? TenantId { get; set; }
 
     public string? Address { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using Azure.Core;
+﻿using Azure;
+using Azure.Core;
 using ems.application.DTOs.Module;
 using ems.application.DTOs.SubscriptionModule;
 using ems.application.DTOs.Tenant;
@@ -28,10 +29,8 @@ namespace ems.persistance.Repositories
             _logger = logger;
         }
 
-        public async Task CreateByDefaultEnabledModulesAsync(
-         long tenantId,
-      List<TenantEnabledModule> moduleEntities,
-      List<TenantEnabledOperation> operationEntities)
+        public async Task CreateByDefaultEnabledModulesAsync(  long? tenantId,
+            List<TenantEnabledModule> moduleEntities, List<TenantEnabledOperation> operationEntities)
         {
             try
             {
@@ -71,7 +70,7 @@ namespace ems.persistance.Repositories
      
     }
 
-        public async Task<bool> UpdateTenantModuleAndOperationsAsync(TenantModuleOperationsUpdateRequestDTO request)
+        public async Task<bool> UpdateTenantModuleAndItsOperationsAsync(TenantModuleOperationsUpdateRequestDTO request)
         {
             try
             {
@@ -80,8 +79,8 @@ namespace ems.persistance.Repositories
                     // 🟠 1. Update TenantEnabledModule
                     await _context.Database.ExecuteSqlRawAsync(
                         @"UPDATE [AxionPro].[TenantEnabledModule]
-                  SET IsEnabled = {0}, UpdatedDateTime = GETUTCDATE()
-                  WHERE TenantId = {1} AND ModuleId = {2}",
+                        SET IsEnabled = {0}, UpdatedDateTime = GETUTCDATE()
+                        WHERE TenantId = {1} AND ModuleId = {2}",
                         module.IsEnabled, request.TenantId, module.ModuleId
                     );
 
@@ -119,19 +118,38 @@ namespace ems.persistance.Repositories
             }
         }
 
+        //public async Task<List<TenantEnabledModule>> GetAllEnabledTrueModulesWithOperationsByTenantIdAsync(long? tenantId)
+        //{
+        //    try
+        //    {
+        //        var modules = await _context.TenantEnabledModules
+        //            .Where(m => m.TenantId == tenantId )
+        //            .Include(m => m.Module)
+        //                .ThenInclude(mod => mod.ModuleOperationMappings
+        //                    .Where(mop => mop.IsActive == true)) // Only active mappings
+        //            .ToListAsync();
+
+        //        return modules;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "Error while fetching enabled modules and operations for TenantId: {TenantId}", tenantId);
+        //        return new List<TenantEnabledModule>(); // Return empty list on failure
+        //    }
+        //}
 
 
 
-
-        public async Task<List<TenantEnabledModule>> GetTenantEnabledModulesWithOperationsAsync(long tenantId)
+        //yeh function sirf enabled module or operation laata hai , login mei bhi used
+        public async Task<List<TenantEnabledModule>> GetAllTenantEnabledModulesWithOperationsAsync(long? tenantId)
         {
             try
             {
                 var modules = await _context.TenantEnabledModules
-                    .Where(m => m.TenantId == tenantId && m.IsEnabled == true)
+                    .Where(m => m.TenantId == tenantId && m.IsEnabled)
                     .Include(m => m.Module)
                         .ThenInclude(mod => mod.ModuleOperationMappings
-                            .Where(mop => mop.IsActive==true)) // Only active mappings
+                            .Where(mop => mop.IsActive ==true)) // ✅ filtered include EF Core 5+
                     .ToListAsync();
 
                 return modules;
@@ -139,38 +157,48 @@ namespace ems.persistance.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while fetching enabled modules and operations for TenantId: {TenantId}", tenantId);
-                return new List<TenantEnabledModule>(); // Return empty list on failure
+                return new List<TenantEnabledModule>();
             }
         }
 
-        public  async Task<TenantEnabledModuleOperationsResponseDTO> GetEnabledModulesWithOperationsAsync(TenantEnabledModuleOperationsRequestDTO tenantEnabledModuleOperationsRequestDTO)
+
+
+        public async Task<TenantEnabledModuleOperationsResponseDTO> GetAllEnabledTrueModulesWithOperationsByTenantIdAsync(TenantEnabledModuleOperationsRequestDTO tenantEnabledModuleOperationsRequestDTO)
         {
             try
             {
                 var tenantId = tenantEnabledModuleOperationsRequestDTO.TenantId;
 
-                // ✅ Get all enabled modules for the tenant
-                var modules = await _context.TenantEnabledModules
+                // 🟢 Step 1: Get all enabled modules
+                var tenantModules = await _context.TenantEnabledModules
                     .Where(t => t.TenantId == tenantId && t.IsEnabled)
-                    .Select(t => new EnabledModuleActiveDTO
-                    {
-                        Id = t.Module.Id,
-                        ModuleName = t.Module.ModuleName,
-                        ParentModuleId = t.Module.ParentModuleId,
-                        ParentModuleName = t.Module.ParentModule != null ? t.Module.ParentModule.ModuleName : "",
-                        IsEnabled = t.IsEnabled,
+                    .Include(t => t.Module)
+                    .ThenInclude(m => m.ParentModule)
+                    .ToListAsync();
 
-                        Operations = _context.TenantEnabledOperations
-                            .Where(op => op.TenantId == tenantId &&
-                                         op.ModuleId == t.ModuleId &&
-                                         op.IsEnabled )
-                            .Select(op => new EnabledOperationActiveDTO
-                            {
-                                Id = op.OperationId,
-                                OperationName = op.Operation.OperationName
-                            }).ToList()
+                // 🟢 Step 2: Get all enabled operations
+                var tenantOperations = await _context.TenantEnabledOperations
+                    .Where(op => op.TenantId == tenantId && op.IsEnabled)
+                    .Include(op => op.Operation)
+                    .ToListAsync();
 
-                    }).ToListAsync();
+                // 🧠 Step 3: Map manually in memory
+                var modules = tenantModules.Select(t => new EnabledModuleActiveDTO
+                {
+                    Id = t.Module.Id,
+                    ModuleName = t.Module.ModuleName,
+                    ParentModuleId = t.Module.ParentModuleId,
+                    ParentModuleName = t.Module.ParentModule != null ? t.Module.ParentModule.ModuleName : "",
+                    IsEnabled = t.IsEnabled,
+                    Operations = tenantOperations
+                        .Where(op => op.ModuleId == t.ModuleId)
+                        .Select(op => new EnabledOperationActiveDTO
+                        {
+                            Id = op.OperationId,
+                            OperationName = op.Operation?.OperationName ?? "",
+                            IsEnabled = op.IsEnabled
+                        }).ToList()
+                }).ToList();
 
                 return new TenantEnabledModuleOperationsResponseDTO
                 {
@@ -188,6 +216,63 @@ namespace ems.persistance.Repositories
                 };
             }
         }
+
+        public async Task<TenantEnabledModuleOperationsResponseDTO> GetAllEnabledModulesWithOperationsByTenantIdAsync(TenantEnabledModuleOperationsRequestDTO tenantEnabledModuleOperationsRequestDTO)
+        {
+            try
+            {
+                var tenantId = tenantEnabledModuleOperationsRequestDTO.TenantId;
+
+                // Step 1: Get all enabled modules
+                var moduleEntities = await _context.TenantEnabledModules
+                    .Where(t => t.TenantId == tenantId)
+                    .Include(t => t.Module)
+                        .ThenInclude(m => m.ParentModule)
+                    .ToListAsync();
+
+                // Step 2: Get all operations for this tenant
+                var operationEntities = await _context.TenantEnabledOperations
+                    .Where(op => op.TenantId == tenantId)
+                    .Include(op => op.Operation)
+                    .ToListAsync();
+
+                // Step 3: Map to DTO
+                var modules = moduleEntities.Select(t => new EnabledModuleActiveDTO
+                {
+                    Id = t.Module.Id,
+                    ModuleName = t.Module.ModuleName,
+                    ParentModuleId = t.Module.ParentModuleId,
+                    ParentModuleName = t.Module.ParentModule?.ModuleName ?? "",
+                    IsEnabled = t.IsEnabled, // ✅ Set from TenantEnabledModules
+
+                    Operations = operationEntities
+                        .Where(op => op.ModuleId == t.ModuleId)
+                        .Select(op => new EnabledOperationActiveDTO
+                        {
+                            Id = op.OperationId,
+                            OperationName = op.Operation?.OperationName ?? "",
+                            IsEnabled = op.IsEnabled // ✅ Set from TenantEnabledOperations
+                        }).ToList()
+                }).ToList();
+
+                return new TenantEnabledModuleOperationsResponseDTO
+                {
+                    TenantId = tenantId,
+                    Modules = modules
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching enabled modules and operations for tenant.");
+                return new TenantEnabledModuleOperationsResponseDTO
+                {
+                    TenantId = tenantEnabledModuleOperationsRequestDTO.TenantId,
+                    Modules = null
+                };
+            }
+        }
+
+
     }
 
 }

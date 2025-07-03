@@ -10,7 +10,7 @@ namespace ems.application.DTOs.EmailTemplate
     {
         public string TemplateCode { get; set; }
         public string ToEmail { get; set; }
-        public long TenantId { get; set; }
+        public long? TenantId { get; set; }
         public Dictionary<string, string> Placeholders { get; set; }
     }
 }

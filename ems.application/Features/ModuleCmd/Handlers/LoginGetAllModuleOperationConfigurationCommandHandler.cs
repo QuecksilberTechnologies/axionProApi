@@ -15,30 +15,30 @@ using System.Threading.Tasks;
 namespace ems.application.Features.ModuleCmd.Handlers
 {
 
-    public class GetAllModuleOperationConfigurationCommandHandler : IRequestHandler<GetAllModuleOperationConfigurationCommand, ApiResponse<List<TenantEnableModuleDTO>>>
+    public class LoginGetAllModuleOperationConfigurationCommandHandler : IRequestHandler<LoginGetAllModuleOperationConfigurationCommand, ApiResponse<List<TenantEnableModuleDTO>>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<GetAllModuleOperationConfigurationCommandHandler> _logger;
+        private readonly ILogger<LoginGetAllModuleOperationConfigurationCommandHandler> _logger;
 
-        public GetAllModuleOperationConfigurationCommandHandler(
+        public LoginGetAllModuleOperationConfigurationCommandHandler(
             IMapper mapper,
             IUnitOfWork unitOfWork,
-            ILogger<GetAllModuleOperationConfigurationCommandHandler> logger)
+            ILogger<LoginGetAllModuleOperationConfigurationCommandHandler> logger)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
-        public async Task<ApiResponse<List<TenantEnableModuleDTO>>> Handle(GetAllModuleOperationConfigurationCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<TenantEnableModuleDTO>>> Handle(LoginGetAllModuleOperationConfigurationCommand request, CancellationToken cancellationToken)
         {
             try
             {
-               // var tenantId = request.moduleOperationConfigurationRequestDTO.TenantId;
-                var tenantId = 118;
+               // var TenantId = request.moduleOperationConfigurationRequestDTO.TenantId;
+                var TenantId = 118;
 
-                var moduleEntities = await _unitOfWork.TenantModuleConfigurationRepository.GetTenantEnabledModulesWithOperationsAsync(118);
+                var moduleEntities = await _unitOfWork.TenantModuleConfigurationRepository.GetAllTenantEnabledModulesWithOperationsAsync(118);
 
                 var moduleDTOs = _mapper.Map<List<TenantEnableModuleDTO>>(moduleEntities);
 
@@ -51,7 +51,7 @@ namespace ems.application.Features.ModuleCmd.Handlers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while fetching enabled module-operation configuration for tenantId: {TenantId}", request.ModuleOperationConfigurationRequestDTO.TenantId);
+                _logger.LogError(ex, "Error occurred while fetching enabled module-operation configuration for TenantId: {TenantId}", request.ModuleOperationConfigurationRequestDTO.TenantId);
 
                 return new ApiResponse<List<TenantEnableModuleDTO>>
                 {

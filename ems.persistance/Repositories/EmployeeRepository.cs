@@ -47,20 +47,20 @@ namespace ems.persistance.Repositories
                 _logger?.LogInformation("Fetching employee details for ID: {EmployeeId}", employeeId);
 
                 var employee = await context.Employees
-                    .Where(e => e.Id == employeeId && e.IsActive==ConstantValues.IsByDefaultTrue && e.IsSoftDeleted==ConstantValues.IsByDefaultFalse)
-                    .Select(e => new Employee
-                    {
-                        Id = e.Id,
-                        TenantId = e.TenantId,
-                        DesignationId = e.DesignationId,
-                        DepartmentId = e.DepartmentId,
-                        EmployeeTypeId = e.EmployeeTypeId,
-                        OfficialEmail = e.OfficialEmail,
-                        FirstName = e.FirstName,
-                        MiddleName= e.MiddleName, 
-                        LastName =  e.LastName
-
-                    })
+                  .Where(e =>    e.Id == employeeId  && e.IsActive == ConstantValues.IsByDefaultTrue &&
+                  e.IsSoftDeleted == ConstantValues.IsByDefaultFalse)
+                  .Select(e => new Employee
+                  {
+                      Id = e.Id,
+                      TenantId = e.TenantId ?? 0L,  // 👈 Null fallback to 0L
+                      DesignationId = e.DesignationId,
+                      DepartmentId = e.DepartmentId,
+                      EmployeeTypeId = e.EmployeeTypeId,
+                      OfficialEmail = e.OfficialEmail,
+                      FirstName = e.FirstName,
+                      MiddleName = e.MiddleName,
+                      LastName = e.LastName
+                  })
                     .FirstOrDefaultAsync();
 
                 return employee; // Sirf required fields return ho rahe hain!

@@ -6,8 +6,8 @@ namespace ems.application.Interfaces.Repositories
 {
     public interface IForgotPasswordOtpRepository
     {
-        Task<ForgotPasswordOTPDetail?> GetValidOtpByEmployeeIdAsync(long employeeId,long tenantId);
-        Task<ForgotPasswordOTPDetail?> GetOtpValidateTrueAndUsedFalseByEmployeeIdAsync(long employeeId,long tenantId);
+        Task<ForgotPasswordOTPDetail?> GetValidOtpByEmployeeIdAsync(long employeeId,long? TenantId);
+        Task<ForgotPasswordOTPDetail?> GetOtpValidateTrueAndUsedFalseByEmployeeIdAsync(long employeeId,long? TenantId);
 
         
         Task<long> AddAsync(ForgotPasswordOTPDetail otp);

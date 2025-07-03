@@ -7,7 +7,7 @@ public partial class Designation
 {
     public int Id { get; set; }
 
-    public long TenantId { get; set; }  
+    public long? TenantId { get; set; }  
 
     public string DesignationName { get; set; } = null!;
     public  bool? IsSoftDeleted { get; set; }

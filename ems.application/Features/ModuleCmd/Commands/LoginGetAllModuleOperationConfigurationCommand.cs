@@ -10,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.ModuleCmd.Commands
 {
-    public class GetAllModuleOperationConfigurationCommand : IRequest<ApiResponse<List<TenantEnableModuleDTO>>>
+    public class LoginGetAllModuleOperationConfigurationCommand : IRequest<ApiResponse<List<TenantEnableModuleDTO>>>
     {
         public ModuleOperationConfigurationRequestDTO ModuleOperationConfigurationRequestDTO { get; set; }
 
-        public GetAllModuleOperationConfigurationCommand(ModuleOperationConfigurationRequestDTO dto)
+        public LoginGetAllModuleOperationConfigurationCommand(ModuleOperationConfigurationRequestDTO dto)
         {
             ModuleOperationConfigurationRequestDTO = dto;
         }

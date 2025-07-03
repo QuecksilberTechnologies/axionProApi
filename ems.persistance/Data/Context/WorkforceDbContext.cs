@@ -835,6 +835,8 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.ModuleCode).HasMaxLength(50);
                 entity.Property(e => e.ModuleName).HasMaxLength(100);
                 entity.Property(e => e.Remark).HasMaxLength(200);
+                entity.Property(e => e.Path)
+                   .HasMaxLength(100);
                 entity.Property(e => e.SubModuleUrl)
                     .HasMaxLength(200)
                     .HasColumnName("SubModuleURL");
@@ -1577,18 +1579,40 @@ namespace ems.persistance.Data.Context
                     .HasConstraintName("FK__RefreshTo__Login__60FC61CA");
             });
 
+
+
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Role__3214EC0723371271");
 
                 entity.ToTable("Role", "AxionPro");
 
+                entity.HasIndex(e => e.RoleCode, "UX_Role_System_RoleCode")
+                    .IsUnique()
+                    .HasFilter("([TenantId] IS NULL AND [IsSoftDeleted]=(0))");
+
+                entity.HasIndex(e => e.RoleName, "UX_Role_System_RoleName")
+                    .IsUnique()
+                    .HasFilter("([TenantId] IS NULL AND [IsSoftDeleted]=(0))");
+
+                entity.HasIndex(e => new { e.TenantId, e.RoleCode }, "UX_Role_Tenant_RoleCode")
+                    .IsUnique()
+                    .HasFilter("([TenantId] IS NOT NULL AND [IsSoftDeleted]=(0))");
+
+                entity.HasIndex(e => new { e.TenantId, e.RoleName }, "UX_Role_Tenant_RoleName")
+                    .IsUnique()
+                    .HasFilter("([TenantId] IS NOT NULL AND [IsSoftDeleted]=(0))");
+
                 entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.DeletedById).HasDefaultValue(0L);
                 entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
-                entity.Property(e => e.IsSoftDeleted).HasDefaultValue(false);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
                 entity.Property(e => e.Remark).HasMaxLength(200);
+                entity.Property(e => e.RoleCode)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
                 entity.Property(e => e.RoleName).HasMaxLength(100);
+                entity.Property(e => e.RoleType).HasMaxLength(50);
                 entity.Property(e => e.UpdatedById).HasDefaultValue(0L);
                 entity.Property(e => e.UpdatedDateTime)
                     .HasDefaultValueSql("((0))")
@@ -1596,13 +1620,11 @@ namespace ems.persistance.Data.Context
 
                 entity.HasOne(d => d.Tenant).WithMany(p => p.Roles)
                     .HasForeignKey(d => d.TenantId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Role_Tenant");
             });
 
             modelBuilder.Entity<RoleModuleAndPermission>(entity =>
             {
-                entity.Property(e => e.IsSoftDeleted).HasDefaultValue(false);
                 entity.HasKey(e => e.Id).HasName("PK_RoleModuleAndPermission_Id");
 
                 entity.ToTable("RoleModuleAndPermission", "AxionPro");
@@ -1612,10 +1634,12 @@ namespace ems.persistance.Data.Context
                 entity.HasIndex(e => e.RoleId, "IDX_RolesPermission_RoleId");
 
                 entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.ImageIcon).HasMaxLength(200);
                 entity.Property(e => e.Remark)
                     .HasMaxLength(255)
                     .IsUnicode(false);
+                
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Module).WithMany(p => p.RoleModuleAndPermissions)
@@ -1838,6 +1862,8 @@ namespace ems.persistance.Data.Context
                 entity.HasKey(e => e.Id).HasName("PK__TenantEn__3214EC07047C5B46");
 
                 entity.ToTable("TenantEnabledOperation", "AxionPro");
+
+                entity.HasIndex(e => new { e.ModuleId, e.OperationId }, "TEO_ModuleId_OperationId").IsUnique();
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")

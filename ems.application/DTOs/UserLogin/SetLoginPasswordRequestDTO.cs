@@ -10,7 +10,7 @@ namespace ems.application.DTOs.UserLogin
     {
         public string LoginId { get; set; }          // User's login ID
         public long EmployeeId { get; set; }          // User's login ID
-        public long TenantId { get; set; }          // User's login ID
+        public long? TenantId { get; set; }          // User's login ID
         public bool HasFirstLogin { get; set; }          // User's login ID
         public string PasswordOld { get; set; }         // User's password
         public string PasswordNew { get; set; }         // User's password

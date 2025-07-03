@@ -13,6 +13,7 @@ namespace ems.application.DTOs.UserRole
         public string RoleName { get; set; }
         public int RoleId { get; set; }
         public bool IsActive { get; set; }
+      
         public bool IsPrimaryRole { get; set; }
         public string Remark { get; set; }
         public DateTime AssignedDateTime { get; set; }
@@ -23,7 +24,8 @@ namespace ems.application.DTOs.UserRole
         public DateTime AddedDateTime { get; set; }
         public long? UpdatedById { get; set; }
         public DateTime? UpdatedDateTime { get; set; }
-    }
+       
+    } 
 
     
 }
