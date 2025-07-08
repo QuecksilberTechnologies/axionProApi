@@ -36,4 +36,8 @@ public partial class ModuleOperationMapping
  
     public virtual Operation Operation { get; set; } = null!;
     public virtual Module? Module { get; set; }
+    public virtual PageTypeEnum? PageTypeEnum { get; set; }
+
+
+
 }

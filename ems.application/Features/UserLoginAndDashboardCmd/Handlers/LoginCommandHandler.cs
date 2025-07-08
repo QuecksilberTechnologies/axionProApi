@@ -25,6 +25,8 @@ using System.Reflection;
 using ems.application.DTOs.RoleModulePermission;
 using ems.application.DTOs.Operation;
 using ems.application.DTOs.SubscriptionModule;
+using FluentValidation;
+using System;
 
 namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 {
@@ -201,22 +203,83 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 // 🧩 Step 9: Load Common Items
                 //  var commonItems = await _unitOfWork.CommonRepository.GetCommonItemAsync();
 
+                // ✅ Step 1: Get CommonMenuParent first (wait until it completes)
                 var parent = await _unitOfWork.ModuleRepository.GetCommonMenuParentAsync();
-                 if (parent == null) return null;
+                if (parent == null) return null;
 
-               List <ModuleDTO> CommonItems = await _unitOfWork.ModuleRepository.GetCommonMenuTreeAsync(parent.Id);
+                // ✅ Step 2: ONLY AFTER FIRST IS DONE, call second method
+                List<ModuleDTO> CommonItems = await _unitOfWork.ModuleRepository.GetCommonMenuTreeAsync(parent.Id);
+
+                // ✅ Step 3: THEN call RolePermissions API
                 var requestDto = new GetActiveRoleModuleOperationsRequestDTO
                 {
                     RoleIds = allRoleIdsCsv,
                     TenantId = empInfo.TenantId
                 };
 
+
+          
+
                 var rolePermissions = await _unitOfWork.CommonRepository
-                    .GetActiveRoleModuleOperationsAsync(requestDto);
+                      .GetActiveRoleModuleOperationsAsync(requestDto);
+
+
+
+                var grouped = rolePermissions
+             .GroupBy(m => new { m.MainModuleId, m.MainModuleName }) // 🔷 Group by Main Module
+             .Select(main => new MainModuleDto
+             {
+                 MainModuleId = main.Key.MainModuleId,
+                 MainModuleName = main.Key.MainModuleName,
+
+                 SubModules = main
+                     .GroupBy(sm => new { sm.ParentModuleId, sm.SubModuleName }) // 🔷 Sub Module Group
+                     .Select(sub => new SubModuleDto
+                     {
+                         SubModuleId = sub.Key.ParentModuleId,
+                         SubModuleName = sub.Key.SubModuleName,
+
+                         Modules = sub
+                             .GroupBy(mod => new
+                             {
+                                 mod.ModuleId,
+                                 mod.ModuleName,
+                                 mod.DisplayName,
+                                 mod.ImageIconWeb,
+                                 mod.ImageIconMobile,
+                                 mod.Path,              // ✅ Newly Added
+                                 mod.SubModuleURL,                  // ✅ From ModuleOperationMapping
+                                                 // ✅ From ModuleOperationMapping
+                                 mod.DataViewStructureId,
+                                 mod.DataViewStructureName
+                             })
+                             .Select(mod => new ModuleDto
+                             {
+                                 ModuleId = mod.Key.ModuleId,
+                                 ModuleName = mod.Key.ModuleName,
+                                 DisplayName = mod.Key.DisplayName,
+                                 ImageIconWeb = mod.Key.ImageIconWeb,
+                                 ImageIconMobile = mod.Key.ImageIconMobile,
+                                 SubModuleURL = mod.Key.SubModuleURL,              // ✅
+                                 Path = mod.Key.Path,                        // ✅
+                                                  
+                                 DataViewStructureId = mod.Key.DataViewStructureId,
+                                 DataViewStructureName = mod.Key.DataViewStructureName,
+
+                                 Operations = mod
+                                     .Select(op => new OperationDto
+                                     {
+                                         OperationId = op.OperationId,
+                                         OperationName = op.OperationName
+                                     }).ToList()
+                             }).ToList()
+                     }).ToList()
+             }).ToList();
+
 
 
                 // 🔐 Step 10: Fetch Permissions
-              
+
                 //  var permissionList = new List<List<RoleModulePermission>> { rolePermissions };
 
                 // 🚀 Step 11: Final Response Object
@@ -227,9 +290,12 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                     Success = ConstantValues.isSucceeded,
                     EmployeeInfo = employeeInfo,
                     CommonItems = CommonItems,
-                    OperationalMenus = rolePermissions,
+                    OperationalMenus = grouped,
                     Allroles = allRoleIdsCsv?.Trim()
                 };
+
+
+            
 
                 // ✅ Final Return
                 return ApiResponse<LoginResponseDTO>.Success(loginResponse, "Login successful.");

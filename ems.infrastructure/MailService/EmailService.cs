@@ -30,7 +30,7 @@ namespace ems.infrastructure.MailService
         {
             try
             {
-                tenantId = 157;
+                tenantId = 187;
                 subject = "Verification Email";
                 var config = await _configRepo.GetActiveEmailConfigAsync(tenantId);
 

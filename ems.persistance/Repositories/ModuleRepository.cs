@@ -1,33 +1,30 @@
-﻿using ems.application.Interfaces.IRepositories;
+﻿using ems.application.DTOs;
+using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ems.persistance.Repositories
 {
     public class ModuleRepository : IModuleRepository
     {
+        private readonly IDbContextFactory<WorkforceDbContext> _contextFactory;
+        private readonly ILogger<ModuleRepository> _logger;
 
-
-        private WorkforceDbContext _context;
-        private ILogger<ModuleRepository> _logger;
-
-        public ModuleRepository(WorkforceDbContext context, ILogger<ModuleRepository> logger)
+        public ModuleRepository(
+            IDbContextFactory<WorkforceDbContext> contextFactory,
+            ILogger<ModuleRepository> logger)
         {
-            this._context = context;
-            this._logger = logger;
+            _contextFactory = contextFactory;
+            _logger = logger;
         }
         public async Task<Module?> GetModuleByIdAsync(long moduleId)
         {
             try
             {
-                return await _context.Modules.FirstOrDefaultAsync(m => m.Id == moduleId && m.IsActive == true);
+                await using var context = await _contextFactory.CreateDbContextAsync();
+                return await context.Modules.FirstOrDefaultAsync(m => m.Id == moduleId && m.IsActive == true);
             }
             catch (Exception ex)
             {
@@ -35,68 +32,69 @@ namespace ems.persistance.Repositories
                 return null;
             }
         }
+
         public async Task<Module?> GetCommonMenuParentAsync()
         {
             try
             {
-                return await _context.Modules
-                    .FirstOrDefaultAsync(m => m.IsCommonMenu == true && m.IsModuleDisplayInUi == true && m.IsActive ==true);
+                await using var context = await _contextFactory.CreateDbContextAsync();
+                return await context.Modules
+                    .FirstOrDefaultAsync(m => m.IsCommonMenu == true && m.IsModuleDisplayInUi == true && m.IsActive == true);
             }
             catch (Exception ex)
             {
-                // ✅ Logging ya custom handling
                 throw new Exception("Error fetching CommonMenu parent module.", ex);
             }
         }
-
-
 
         public async Task<List<ModuleDTO>> GetCommonMenuTreeAsync(int? parentId)
         {
             try
             {
-                // ✅ Step 1: Get all active, UI-displayable modules once
-                var allModules = await _context.Modules
+                await using var context = await _contextFactory.CreateDbContextAsync();
+
+                var allModules = await context.Modules
                     .Where(m => m.IsActive && m.IsModuleDisplayInUi)
                     .OrderBy(m => m.Id)
                     .ToListAsync();
 
-                // ✅ Step 2: Recursive in-memory build
                 var result = BuildMenuTree(allModules, parentId);
-
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error in GetCommonMenuTreeAsync with ParentId={ParentId}", parentId);
+                _logger.LogError(ex, "❌ Error in GetCommonMenuTreeAsync with ParentId={ParentId}", parentId);
                 throw;
             }
         }
 
         private List<ModuleDTO> BuildMenuTree(List<Module> allModules, int? parentId)
         {
-            var children = allModules
+            return allModules
                 .Where(m => m.ParentModuleId == parentId)
+                .OrderBy(m => m.ItemPriority < 0 ? int.MaxValue : m.ItemPriority) // ✅ custom priority sort
+                .ThenBy(m => m.ModuleName) // optional fallback
                 .Select(m => new ModuleDTO
                 {
                     Id = m.Id,
                     ModuleName = m.ModuleName,
                     SubModuleUrl = m.SubModuleUrl,
+                    Path = m.Path,
+                    DisplayName = m.DisplayName,
+                    ItemPriority = m.ItemPriority,
+                    ImageIconMobile = m.ImageIconMobile,
+                    ImageIconWeb = m.ImageIconWeb,
                     Children = BuildMenuTree(allModules, m.Id)
                 })
                 .ToList();
-
-            return children;
         }
-
-
-
 
         public async Task<List<Module>> GetAllModulesAsync()
         {
             try
             {
-                return await _context.Modules
+                await using var context = await _contextFactory.CreateDbContextAsync();
+                return await context.Modules
                     .Where(m => m.IsActive == true)
                     .OrderBy(m => m.ModuleName)
                     .ToListAsync();
@@ -112,11 +110,13 @@ namespace ems.persistance.Repositories
         {
             try
             {
+                await using var context = await _contextFactory.CreateDbContextAsync();
+
                 module.AddedDateTime = DateTime.Now;
                 module.IsActive = true;
 
-                await _context.Modules.AddAsync(module);
-                await _context.SaveChangesAsync();
+                await context.Modules.AddAsync(module);
+                await context.SaveChangesAsync();
 
                 return module;
             }
@@ -129,44 +129,29 @@ namespace ems.persistance.Repositories
 
         public async Task<Module> AddSubModuleAsync(Module module)
         {
-            try
-            {
-                module.AddedDateTime = DateTime.Now;
-                module.IsActive = true;
-
-                await _context.Modules.AddAsync(module);
-                await _context.SaveChangesAsync();
-
-                return module;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error while adding module");
-                throw;
-            }
+            return await AddModuleAsync(module); // Same logic as AddModule
         }
 
         public async Task<bool> UpdateModuleAsync(Module module)
         {
             try
             {
-                var existing = await _context.Modules.FindAsync(module.Id);
-                if (existing == null)
-                    return false;
+                await using var context = await _contextFactory.CreateDbContextAsync();
+
+                var existing = await context.Modules.FindAsync(module.Id);
+                if (existing == null) return false;
 
                 existing.ModuleName = module.ModuleName;
-            //    existing.SubModuleURL = module.SubModuleURL;
                 existing.ParentModuleId = module.ParentModuleId;
                 existing.ImageIconWeb = module.ImageIconWeb;
                 existing.ImageIconMobile = module.ImageIconMobile;
-             //   existing.IsModuleDisplayInUI = module.IsModuleDisplayInUI;
                 existing.IsActive = module.IsActive;
                 existing.UpdatedById = module.UpdatedById;
                 existing.UpdatedDateTime = DateTime.Now;
                 existing.Remark = module.Remark;
 
-                _context.Modules.Update(existing);
-                await _context.SaveChangesAsync();
+                context.Modules.Update(existing);
+                await context.SaveChangesAsync();
 
                 return true;
             }
@@ -181,15 +166,16 @@ namespace ems.persistance.Repositories
         {
             try
             {
-                var module = await _context.Modules.FindAsync(moduleId);
-                if (module == null)
-                    return false;
+                await using var context = await _contextFactory.CreateDbContextAsync();
+
+                var module = await context.Modules.FindAsync(moduleId);
+                if (module == null) return false;
 
                 module.IsActive = false;
                 module.UpdatedDateTime = DateTime.Now;
 
-                _context.Modules.Update(module);
-                await _context.SaveChangesAsync();
+                context.Modules.Update(module);
+                await context.SaveChangesAsync();
 
                 return true;
             }

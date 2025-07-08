@@ -20,6 +20,7 @@ public class UnitOfWork  : IUnitOfWork
 
     private readonly WorkforceDbContext _context;
 
+    private readonly IDbContextFactory<WorkforceDbContext> _contextFactory;
 
     private readonly ILoggerFactory _loggerFactory;
     private IDbContextTransaction? _currentTransaction;
@@ -57,12 +58,21 @@ public class UnitOfWork  : IUnitOfWork
 
 
 
-    public UnitOfWork(WorkforceDbContext context, IMapper mapper, ILoggerFactory loggerFactory)
+    //public UnitOfWork(WorkforceDbContext context, IMapper mapper, ILoggerFactory loggerFactory)
+    //{
+    //    _context = context;
+    //   // _mapper = mapper;
+    //    _loggerFactory = loggerFactory;
+    //}
+    public UnitOfWork(WorkforceDbContext context,
+                  IDbContextFactory<WorkforceDbContext> contextFactory,
+                  ILoggerFactory loggerFactory)
     {
         _context = context;
-       // _mapper = mapper;
+        _contextFactory = contextFactory;
         _loggerFactory = loggerFactory;
     }
+
 
     // Repositories
     //public IAttendanceRepository AttendanceReopsitory
@@ -73,8 +83,8 @@ public class UnitOfWork  : IUnitOfWork
     //    }
     //}
 
-    
-           
+
+
 
     public IUserLoginReopsitory UserLoginReopsitory
     {
@@ -123,17 +133,18 @@ public class UnitOfWork  : IUnitOfWork
            public IForgotPasswordOtpRepository ForgotPasswordOtpRepository
             {
                   get
-                {
+                  {
             return _forgotPasswordOtpRepository ??= new ForgotPasswordOtpRepository(_context, _loggerFactory.CreateLogger<ForgotPasswordOtpRepository>());
                }
             }
-    public IModuleRepository ModuleRepository
-    {
-        get
-        {
-            return _moduleRepository ??= new ModuleRepository(_context, _loggerFactory.CreateLogger<ModuleRepository>());
-        }
-    }
+               public IModuleRepository ModuleRepository
+                  {
+                      get
+                        {
+                       return _moduleRepository ??= new ModuleRepository(_contextFactory, _loggerFactory.CreateLogger<ModuleRepository>());
+                       }
+                 }
+
 
     public IEmployeeTypeBasicMenuRepository EmployeeTypeBasicMenuRepository
     {

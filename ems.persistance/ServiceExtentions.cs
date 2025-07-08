@@ -14,8 +14,6 @@ namespace ems.persistance
 {
     public static class ServiceExtentions
     {
-
-
         public static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
             // Debugging: Connection String Check Karein
@@ -24,14 +22,28 @@ namespace ems.persistance
             {
                 throw new Exception("Connection String is null or empty!");
             }
-            // ✅ DbContext with EF Core Logging + Serilog
+            services.AddDbContextFactory<WorkforceDbContext>(options =>
+                  options.UseSqlServer(connectionString)
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors()
+                .LogTo(Console.WriteLine, LogLevel.Information)
+     );
+
+            // You still need this if other repos use direct injection
             services.AddDbContext<WorkforceDbContext>(options =>
                 options.UseSqlServer(connectionString)
-                       .EnableSensitiveDataLogging() // Logs parameter values
-                       .EnableDetailedErrors()       // Logs detailed exception info
-                     .LogTo(Console.WriteLine, LogLevel.Information) // 👈 EF logs to console
-                     .LogTo(Log.Logger.Information, LogLevel.Information) // 👈 EF logs to Serilog
+                       .EnableSensitiveDataLogging()
+                       .EnableDetailedErrors()
+                       .LogTo(Console.WriteLine, LogLevel.Information)
             );
+
+            services.AddScoped<IWorkforceDbContext>(provider =>
+                provider.GetRequiredService<WorkforceDbContext>());
+
+
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>(); //  
+
 
             // ✅ Correct Scoped DbContext Injection
             services.AddScoped<IWorkforceDbContext>(provider => provider.GetRequiredService<WorkforceDbContext>());
@@ -66,12 +78,13 @@ namespace ems.persistance
 
             services.AddTransient<ITenantSubscriptionRepository, TenantSubscriptionRepository>();
             services.AddTransient<IPlanModuleMappingRepository, PlanModuleMappingRepository>();
-            services.AddTransient<IModuleRepository, ModuleRepository>();
+            services.AddScoped<IModuleRepository, ModuleRepository>();
             services.AddTransient<ITenantModuleConfigurationRepository, TenantModuleConfigurationRepository>();
+           
             services.AddTransient<IModuleOperationMappingRepository, ModuleOperationMappingRepository>();
+            services.AddTransient<ICommonServiceSyncRepository, CommonServiceSyncRepository>();
 
           
-
             // Debugging Logs
             Console.WriteLine("✅ Persistence Layer Configured Successfully.");
         }

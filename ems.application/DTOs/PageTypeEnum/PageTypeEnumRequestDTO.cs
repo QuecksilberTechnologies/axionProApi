@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Interfaces.IContext
+namespace ems.application.DTOs.PageTypeEnum
 {
-    public interface IWorkforceDbContext
+    public class PageTypeEnumRequestDTO
     {
-          
+     public long   EmployeeId {  get; set; }
     }
-    
-    
-
 }

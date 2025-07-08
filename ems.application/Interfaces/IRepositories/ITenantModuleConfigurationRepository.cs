@@ -13,7 +13,8 @@ namespace ems.application.Interfaces.IRepositories
    public interface  ITenantModuleConfigurationRepository
     {
         Task  CreateByDefaultEnabledModulesAsync(long? TenantId, List<TenantEnabledModule> moduleEntities, List<TenantEnabledOperation> operationEntities);
-      //yeh function sirf enabled module or operation laata hai , login mei bhi used
+        
+        //yeh function sirf enabled module or operation laata hai , login mei bhi used
         Task<List<TenantEnabledModule>> GetAllTenantEnabledModulesWithOperationsAsync(long? TenantId);
         //Task<List<TenantEnabledModule>> GetAllEnabledTrueModulesWithOperationsByTenantIdAsync(long? TenantId);
         Task <TenantEnabledModuleOperationsResponseDTO> GetAllEnabledModulesWithOperationsByTenantIdAsync(TenantEnabledModuleOperationsRequestDTO tenantEnabledModuleOperationsRequestDTO);

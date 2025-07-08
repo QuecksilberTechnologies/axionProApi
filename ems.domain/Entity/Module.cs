@@ -11,8 +11,11 @@ public partial class Module
     public string? ModuleCode { get; set; }
 
     public string ModuleName { get; set; } = null!;
+    public int ItemPriority { get; set; }
+
 
     public string? SubModuleUrl { get; set; }
+    public string? DisplayName { get; set; }
     public string? Path { get; set; }
 
     public int? ParentModuleId { get; set; }
@@ -62,7 +65,11 @@ public class ModuleDTO
     public int Id { get; set; }
     public string ModuleName { get; set; }
     public string? SubModuleUrl { get; set; }
+    public string? DisplayName { get; set; }
     public string? Path { get; set; }
+    public string? ImageIconWeb { get; set; }
+    public string? ImageIconMobile { get; set; }
+    public int? ItemPriority { get; set; }
     public List<ModuleDTO> Children { get; set; } = new();
 }
 

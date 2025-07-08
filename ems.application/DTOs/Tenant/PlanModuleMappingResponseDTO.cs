@@ -26,9 +26,9 @@ namespace ems.application.DTOs.Tenant
     public class OperationResponseDTO
     {
         public int OperationId { get; set; }
-        public string DisplayName { get; set; }
-        public string PageUrl { get; set; }
-        public string IconUrl { get; set; }
+        public string? DisplayName { get; set; }
+        public string? PageUrl { get; set; }
+        public string ?IconUrl { get; set; }
     }
 
 }

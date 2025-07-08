@@ -69,7 +69,6 @@ namespace ems.application.Features.RegistrationCmd.Handlers
 
                 // Step 3: Begin Transaction
                 await _unitOfWork.BeginTransactionAsync();
-
                 // Step 4: Add Tenant
                 long newTenantId = await _unitOfWork.TenantRepository.AddTenantAsync(tenantEntity);
 
@@ -112,19 +111,28 @@ namespace ems.application.Features.RegistrationCmd.Handlers
 
 
                 PlanModuleMappingResponseDTO subscriptionPlans = await _unitOfWork.PlanModuleMappingRepository.GetModulesBySubscriptionPlanIdAsync(request.TenantCreateRequestDTO.SubscriptionPlanId);
-                    
-                List<TenantEnabledModule> enabledModules = subscriptionPlans.Modules
-                              .Select(m => new TenantEnabledModule
-                                      {
-                                       TenantId = newTenantId,
-                                        ModuleId = m.ModuleId,
-                                         IsEnabled = true,
-                                           AddedById = newTenantId,
-                                           AddedDateTime = DateTime.Now
-                                       }).ToList();
-                               
 
-                          var tenantEnabledOperations = subscriptionPlans.Modules
+                // ✅ Step: Prepare list of modules to enable for the newly created tenant
+                // We're mapping each module from the subscription plan to a TenantEnabledModule entry.
+                // - TenantId: current tenant's ID
+                // - ModuleId: actual module to enable
+                // - ParentModuleId: link to parent (used for hierarchy/menu tree)
+                // - IsEnabled: default true
+                // - AddedById / AddedDateTime: audit fields
+
+                List<TenantEnabledModule> enabledModules = subscriptionPlans.Modules
+                    .Select(m => new TenantEnabledModule
+                    {
+                        TenantId = newTenantId,             // ID of the newly registered tenant
+                        ModuleId = m.ModuleId,              // Module being assigned
+                        IsEnabled = true,                   // Mark it as enabled by default
+                        ParentModuleId = m.MainModuleId,    // Parent module (for menu hierarchy)
+                        AddedById = newTenantId,            // Audit: who is adding
+                        AddedDateTime = DateTime.Now        // Audit: when it's being added
+                    }).ToList();
+
+                  
+                var tenantEnabledOperations = subscriptionPlans.Modules
                                .SelectMany(module => module.Operations.Select(op => new TenantEnabledOperation
                                   {
                                        TenantId = newTenantId,

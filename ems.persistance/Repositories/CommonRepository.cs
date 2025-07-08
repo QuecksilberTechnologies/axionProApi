@@ -46,27 +46,21 @@ namespace ems.persistance.Repositories
         {
             try
             {
-                string sqlQuery = "EXEC AxionPro.GetActiveRoleModuleOperations @TenantId, @RoleIds";
+                string sqlQuery = "EXEC AxionPro.GetActiveRoleModuleOperations @TenantId = {0}, @RoleIds = {1}";
 
-                var parameters = new[]
-                {
-            new SqlParameter("@TenantId", request.TenantId),
-            new SqlParameter("@RoleIds", request.RoleIds)
-        };
-
-                var result = await _context.RoleModulePermissions
-                    .FromSqlRaw(sqlQuery, parameters)
+                var result = await _context.Set<RoleModuleOperationResponseDTO>()
+                    .FromSqlRaw(sqlQuery, request.TenantId, request.RoleIds)
                     .ToListAsync();
 
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error fetching module permissions for roles: {RoleIds}", request.RoleIds);
+                _logger.LogError(ex, "❌ Error fetching module permissions for roles: {RoleIds}", request.RoleIds);
                 throw;
             }
         }
-
+     //   The required column 'ParentModuleName' was not present in the results of a 'FromSql' operation.
 
         //public async Task<List<ProjectSubModuleDetailDTO>> GetDasboardMenuAsync(string Roles)
         //{

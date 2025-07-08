@@ -1,4 +1,5 @@
-﻿using ems.application.Interfaces.IRepositories;
+﻿using ems.application.Interfaces.IContext;
+using ems.application.Interfaces.IRepositories;
 using ems.application.Interfaces.ITokenService;
 using ems.application.Interfaces.Repositories;
 using ems.domain.Entity;
@@ -12,8 +13,9 @@ public interface IUnitOfWork : IDisposable
     IUserLoginReopsitory UserLoginRepository { get; }
     IForgotPasswordOtpRepository ForgotPasswordOtpRepository {  get; }
     ITenantModuleConfigurationRepository TenantModuleConfigurationRepository { get; }
-    
-   
+
+
+
     ICommonRepository CommonRepository { get; }
     ICountryRepository CountryRepository { get; }
     //

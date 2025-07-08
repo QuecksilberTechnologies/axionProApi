@@ -15,6 +15,7 @@ namespace ems.persistance.Data.Context
 
         public virtual DbSet<AccoumndationAllowancePolicyByDesignation> AccoumndationAllowancePolicyByDesignations { get; set; }
         public virtual DbSet<ForgotPasswordOTPDetail> ForgotPasswordOTPDetails { get; set; }
+        public virtual DbSet<PageTypeEnum> PageTypeEnums { get; set; }
 
         public virtual DbSet<Module> Modules { get; set; }
         public virtual DbSet<TenantSubscription> TenantSubscriptions { get; set; }
@@ -881,6 +882,7 @@ namespace ems.persistance.Data.Context
                   });
 
 
+
             modelBuilder.Entity<ModuleOperationMapping>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__ModuleOp__3214EC07BF86A196");
@@ -918,6 +920,23 @@ namespace ems.persistance.Data.Context
                     .HasForeignKey(d => d.OperationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ModuleOperation_Operation");
+
+                entity.HasOne(d => d.PageTypeEnum).WithMany(p => p.ModuleOperationMappings)
+                    .HasForeignKey(d => d.Id)
+                    .HasConstraintName("FK_ModuleOperationMapping_PageTypeEnum");
+            });
+
+
+            modelBuilder.Entity<PageTypeEnum>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__PageType__3214EC07D71C5D81");
+
+                entity.ToTable("PageTypeEnum", "AxionPro");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.PageTypeName)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
             });
 
 
@@ -1863,7 +1882,9 @@ namespace ems.persistance.Data.Context
 
                 entity.ToTable("TenantEnabledOperation", "AxionPro");
 
-                entity.HasIndex(e => new { e.ModuleId, e.OperationId }, "TEO_ModuleId_OperationId").IsUnique();
+                // 🔐 Unique constraint on TenantId + ModuleId + OperationId
+                entity.HasIndex(e => new { e.TenantId, e.ModuleId, e.OperationId }, "UQ_Tenant_Module_Operation")
+                      .IsUnique();
 
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")

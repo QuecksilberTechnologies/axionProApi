@@ -1,4 +1,5 @@
-﻿using ems.application.DTOs.UserLogin;
+﻿using ems.application.DTOs.PageTypeEnum;
+using ems.application.DTOs.UserLogin;
 using ems.application.Features.EmployeeCmd.Commands;
 using ems.application.Features.UserLoginAndDashboardCmd.Commands;
  
@@ -163,6 +164,25 @@ namespace ems.api.Controllers.Login
 
         }
 
+        [HttpGet("get-page-type")]        
+        public async Task<IActionResult> GetPageTypes([FromQuery] PageTypeEnumRequestDTO request)
+        {
+            try
+            {
+                // 🔁 Static method ko direct call kar rahe hain
+                var result = StaticPageTypeData.GetSamplePageTypes();
+
+                if (result == null || !result.Any())
+                    return NotFound("❌ No Page Types found for the provided criteria.");
+
+                return Ok(result); // ✅ Return 200 with data
+            }
+            catch (Exception ex)
+            {
+              //  _logger.LogError(ex, "❌ Error fetching PageTypes for TenantId {TenantId}", request.EmployeeId);
+                return StatusCode(500, "An error occurred while fetching page types.");
+            }
+        }
 
 
         [HttpPost("forgot-password-by-login-id")]

@@ -24,7 +24,7 @@ namespace ems.application.DTOs.UserLogin
         public string? Allroles { get; set; }
 
         public List<ModuleDTO>? CommonItems { get; set; }
-        public List<RoleModuleOperationResponseDTO>? OperationalMenus { get; set; }
+        public List<MainModuleDto>? OperationalMenus { get; set; }
         
 
 

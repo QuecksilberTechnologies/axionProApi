@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ems.domain.Entity;
 using ems.infrastructure.MailService;
+using ems.infrastructure.BackgroundJob;
 
 namespace ems.infrastructure
 {
@@ -18,25 +19,16 @@ namespace ems.infrastructure
     {
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            // Registering the logger service
+            // Register background service
+            services.AddHostedService<CommonBackgroundService>();  // ✅ This is mandatory
+
+            // Register repositories & services
            
-
-            // Registering the token service with both configuration and logger
-            //services.AddScoped<INewTokenRepository, NewTokenService>(provider =>
-            //{
-            //    var logger = provider.GetRequiredService<ILogger<NewTokenService>>();
-            //    return new NewTokenService(configuration, logger);
-            //});
-
             services.AddScoped<ILoggerService, LoggerService>();
-            services.AddScoped<IEmailService,EmailService>();
-                 
+            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<ITenantEmailConfigRepository, TenantEmailConfigRepository>();
-          
-
-
-
-
         }
     }
+
+
 }

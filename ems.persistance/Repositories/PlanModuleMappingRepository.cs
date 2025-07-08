@@ -75,15 +75,19 @@ namespace ems.persistance.Repositories
                             MainModuleName = p.Module.ParentModule?.ModuleName ?? string.Empty,
 
                             Operations = p.Module.ModuleOperationMappings
-                                .Where(mop => mop.IsActive == true && mop.Operation != null)
-                                .Select(mop => new OperationResponseDTO
-                                {
-                                    OperationId = mop.Operation.Id,
-                                    DisplayName = mop.DisplayName,
-                                    PageUrl = mop.PageUrl,
-                                    IconUrl = mop.IconUrl
-                                })
-                                .ToList()
+                               .Where(mop =>
+                                        mop.IsActive == true &&
+                                        mop.Operation != null/* &&
+                                        mop.Operation.IsActive == true*/)
+                                       .Select(mop => new OperationResponseDTO
+                                            {
+                                         OperationId = mop.Operation.Id,
+                                          DisplayName = mop.DisplayName,
+                                          PageUrl = mop.PageUrl,
+                                          IconUrl = mop.IconUrl
+                                           })
+                                      .ToList()
+
                         })
                         .ToList()
                 };
