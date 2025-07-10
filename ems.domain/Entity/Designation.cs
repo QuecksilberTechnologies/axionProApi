@@ -3,27 +3,32 @@ using System.Collections.Generic;
 
 namespace ems.domain.Entity;
 
+
 public partial class Designation
 {
     public int Id { get; set; }
 
-    public long? TenantId { get; set; }  
+    public long TenantId { get; set; }
 
     public string DesignationName { get; set; } = null!;
-    public  bool? IsSoftDeleted { get; set; }
-    public DateTime? SoftDeletedDateTime { get; set; }
+
     public string? Description { get; set; }
 
-    public bool IsActive { get; set; }
+    public bool? IsActive { get; set; }
 
-    public long AddedById { get; set; }
+    public long? AddedById { get; set; }
 
-    public DateTime AddedDateTime { get; set; }
+    public DateTime? AddedDateTime { get; set; }
 
     public long? UpdatedById { get; set; }
-    public long? SoftDeletedById { get; set; }
 
     public DateTime? UpdatedDateTime { get; set; }
+
+    public bool? IsSoftDeleted { get; set; }
+
+    public DateTime? SoftDeletedDateTime { get; set; }
+
+    public long? SoftDeletedById { get; set; }
 
     public virtual ICollection<AccoumndationAllowancePolicyByDesignation> AccoumndationAllowancePolicyByDesignations { get; set; } = new List<AccoumndationAllowancePolicyByDesignation>();
 
@@ -32,6 +37,8 @@ public partial class Designation
     public virtual ICollection<LeavePolicyByDesignation> LeavePolicyByDesignations { get; set; } = new List<LeavePolicyByDesignation>();
 
     public virtual ICollection<MealAllowancePolicyByDesignation> MealAllowancePolicyByDesignations { get; set; } = new List<MealAllowancePolicyByDesignation>();
+
+    public virtual Tenant Tenant { get; set; } = null!;
 
     public virtual ICollection<TravelAllowancePolicyByDesignation> TravelAllowancePolicyByDesignations { get; set; } = new List<TravelAllowancePolicyByDesignation>();
 }

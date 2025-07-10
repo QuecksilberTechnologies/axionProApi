@@ -206,7 +206,7 @@ namespace ems.persistance.Repositories
                 _logger.LogInformation("Validating user login for LoginId: {LoginId}", loginId);
 
                 var loginParam = new SqlParameter("@LoginId", loginId ?? (object)DBNull.Value);
-                var resultParam = new SqlParameter("@Result", SqlDbType.Int)
+                var resultParam = new SqlParameter("@Result", SqlDbType.BigInt)
                 {
                     Direction = ParameterDirection.Output
                 };
@@ -215,7 +215,7 @@ namespace ems.persistance.Repositories
 
                 await _context.Database.ExecuteSqlRawAsync(sqlQuery, loginParam, resultParam);
 
-                return (int)resultParam.Value;  // Output Parameter से Result Return करें
+                return (long)resultParam.Value;  // Output Parameter से Result Return करें
             }
             catch (SqlException ex)
             {
@@ -228,16 +228,15 @@ namespace ems.persistance.Repositories
                 return -1;  // Error Case
             }
         }
-
-
-        public async Task<long> ValidateActiveUserCrendentialOnlyAsync(string loginId)
+       
+    public async Task<long> ValidateActiveUserCrendentialOnlyAsync(string loginId)
         {
             try
             {
                 _logger.LogInformation("Validating user login for LoginId: {LoginId}", loginId);
 
                 var loginParam = new SqlParameter("@LoginId", loginId ?? (object)DBNull.Value);
-                var resultParam = new SqlParameter("@Result", SqlDbType.Int)
+                var resultParam = new SqlParameter("@Result", SqlDbType.BigInt)
                 {
                     Direction = ParameterDirection.Output
                 };
@@ -246,7 +245,7 @@ namespace ems.persistance.Repositories
 
                 await _context.Database.ExecuteSqlRawAsync(sqlQuery, loginParam, resultParam);
 
-                return (int)resultParam.Value;  // Output Parameter से Result Return करें
+                return (long)resultParam.Value;  // Output Parameter से Result Return करें
             }
             catch (SqlException ex)
             {

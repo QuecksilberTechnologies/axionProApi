@@ -97,6 +97,40 @@ namespace ems.persistance.Repositories
             }
         }
 
+        public async Task<List<Role>> GetAllActiveRolesAsync(Role role)
+        {
+            try
+            {
+                _logger.LogInformation("Fetching roles for TenantId: {TenantId}", role.TenantId);
+
+                IQueryable<Role> query = _context.Roles.AsQueryable();
+
+                // ✅ Apply filters
+                if (role.TenantId > 0)
+                    query = query.Where(r => r.TenantId == role.TenantId);
+                    query = query.Where(r => r.IsActive == true && r.IsSoftDeleted ==false);
+
+                // ✅ Optional: check for soft delete if column exists
+                // query = query.Where(r => r.IsSoftDeleted == false);
+
+                var roles = await query.OrderBy(r => r.RoleName).ToListAsync();
+
+                if (roles == null || !roles.Any())
+                {
+                    _logger.LogWarning("No roles found for TenantId: {TenantId}", role.TenantId);
+                    return new List<Role>();
+                }
+
+                _logger.LogInformation("Successfully retrieved {Count} roles.", roles.Count);
+                return roles;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching roles for TenantId: {TenantId}", role.TenantId);
+                return new List<Role>();
+            }
+        }
+
         public async Task<List<Role>> GetAllRolesAsync(Role role)
         {
             try
@@ -108,8 +142,7 @@ namespace ems.persistance.Repositories
                 // ✅ Apply filters
                 if (role.TenantId > 0)
                     query = query.Where(r => r.TenantId == role.TenantId);
-
-                query = query.Where(r => r.IsActive == true);
+                query = query.Where(r => r.IsActive == role.IsActive && r.IsSoftDeleted == false);
 
                 // ✅ Optional: check for soft delete if column exists
                 // query = query.Where(r => r.IsSoftDeleted == false);
@@ -220,7 +253,11 @@ namespace ems.persistance.Repositories
         {
             try
             {
-                role.AddedDateTime = DateTime.Now; // or DateTime.UtcNow                
+          
+                role.AddedDateTime = DateTime.Now; // or DateTime.UtcNow
+                role.RoleType = "Tenant";
+                role.RoleCode = "Tenant-User";
+                role.IsSystemDefault = false;                         
                 await _context.Roles.AddAsync(role);
                 await _context.SaveChangesAsync();
 
@@ -238,14 +275,13 @@ namespace ems.persistance.Repositories
         {
             try
             {
-                var existingRole = await _context.Roles.FirstOrDefaultAsync(r => r.Id == role.Id);
+                var existingRole = await _context.Roles.FirstOrDefaultAsync(r => r.Id == role.Id && r.IsSoftDeleted==false && r.TenantId== role.TenantId);
 
                 if (existingRole == null)
                 {
                     _logger.LogWarning("Role with ID {RoleId} not found.", role.Id);
                     return null; // Empty object dena accha practice nahi, isliye null return karo
-                }
-
+                }            
                 existingRole.RoleName = role.RoleName;
                 existingRole.Remark = role.Remark;
                 existingRole.IsActive = role.IsActive;

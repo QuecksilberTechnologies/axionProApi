@@ -47,16 +47,17 @@ namespace ems.application.Features.DesignationCmd.Handlers
 
                 // ✅ Set default IsActive = false if null
                 // Option 1: using null-coalescing operator (ternary style)
-                bool isActive = request.designationRequestDTO.IsActive ? request.designationRequestDTO.IsActive : false;
+                //    bool isActive = request.designationRequestDTO.IsActive ? request.designationRequestDTO.IsActive : false;
+                bool isActive = request.designationRequestDTO.IsActive ?? true;
 
                 // 🔍 Fetch data from repository (you should pass IsActive filter also if required)
                 List<Designation> designations = await _unitOfWork.DesignationRepository
-                    .GetAllDesignationAsync(request.designationRequestDTO.TenantId, request.designationRequestDTO.IsActive);
+                    .GetAllDesignationAsync(request.designationRequestDTO.TenantId, isActive);
 
                 // 🔍 Filter on IsActive and IsSoftDeleted if needed
-                designations = designations
-                    .Where(d => d.IsActive == request.designationRequestDTO.IsActive && d.IsSoftDeleted == false)
-                    .ToList();
+                //designations = designations
+                //    .Where(d => d.IsActive == request.designationRequestDTO.IsActive && d.IsSoftDeleted == false)
+                //    .ToList();
 
                 if (designations == null || !designations.Any())
                 {

@@ -230,6 +230,7 @@ namespace ems.persistance.Repositories
                         .ThenInclude(m => m.ParentModule)
                     .ToListAsync();
 
+
                 // Step 2: Get all operations for this tenant
                 var operationEntities = await _context.TenantEnabledOperations
                     .Where(op => op.TenantId == tenantId)
@@ -254,7 +255,7 @@ namespace ems.persistance.Repositories
                             IsEnabled = op.IsEnabled // ✅ Set from TenantEnabledOperations
                         }).ToList()
                 }).ToList();
-
+                 
                 return new TenantEnabledModuleOperationsResponseDTO
                 {
                     TenantId = tenantId,

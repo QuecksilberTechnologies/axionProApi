@@ -25,9 +25,9 @@ namespace ems.application.Features.EmployeeCmd.Commands
     //}
     public class CreateEmployeeCommand : IRequest<EmployeeDTO>
     {
-        public CreateEmployeeDTO EmployeeDTO { get; set; }
+        public CreateEmployeeRequestDTO EmployeeDTO { get; set; }
 
-        public CreateEmployeeCommand(CreateEmployeeDTO createEmployee)
+        public CreateEmployeeCommand(CreateEmployeeRequestDTO createEmployee)
         {
             EmployeeDTO = createEmployee;
         }

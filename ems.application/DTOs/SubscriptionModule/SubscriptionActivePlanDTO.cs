@@ -8,25 +8,26 @@ namespace ems.application.DTOs.SubscriptionModule
 {
     public class SubscriptionActivePlanDTO
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string? PlanName { get; set; }
         public List<ModuleActiveDTO>? Modules { get; set; }
     }
 
     public class ModuleActiveDTO
     {
-       public int?  ParentModuleId { get; set; } 
-       public string  ParentModuleName { get; set; } = string.Empty;
-        public int Id { get; set; }
-        public string ?ModuleName { get; set; }
-        public List<OperationActiveDTO>? Operations { get; set; }
+        public long Id { get; set; }
+        public string? ModuleName { get; set; }
+        public string? DisplayName { get; set; }
+        public long ParentModuleId { get; set; }
+        public List<ModuleActiveDTO> ChildModules { get; set; } = new();
+        public List<OperationActiveDTO> Operations { get; set; } = new();
     }
 
     public class OperationActiveDTO
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string? DisplayName { get; set; }
-        public string? PageUrl { get; set; }
     }
+
 
 }

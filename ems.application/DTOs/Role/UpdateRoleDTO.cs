@@ -6,15 +6,21 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Role
 {
+
     public class UpdateRoleDTO
     {
-        public int Id { get; set; }
+        public int Id { get; set; } // Required for update
+
+        public long EmployeeId { get; set; } // Should not be nullable unless you're using it only from context
+        public int RoleId { get; set; } // Should not be nullable unless you're using it only from context
+        public long TenantId { get; set; } // Should not be nullable unless you're using it only from context
+
         public string RoleName { get; set; } = string.Empty;
-        public string? Remark { get; set; } // Nullable
-        public bool IsActive { get; set; } = false; // Default false
 
+        public string? Remark { get; set; }
 
-        public long? UpdatedById { get; set; } // Nullable
-        public DateTime UpdatedDateTime { get; set; } = DateTime.UtcNow; // Default value
+        public bool IsActive { get; set; } = false;        
+         
     }
+
 }

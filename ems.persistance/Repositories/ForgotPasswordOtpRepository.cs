@@ -23,9 +23,9 @@ namespace ems.persistance.Repositories
         }
         
              public async Task<ForgotPasswordOTPDetail?> GetOtpValidateTrueAndUsedFalseByEmployeeIdAsync(long userId, long? tenantId)
-            {
-            try
-            {
+              {
+               try
+                {
                 var otpDetail = await _context.ForgotPasswordOTPDetails
                     .Where(x => x.UserId == userId
                                 && x.TenantId == tenantId

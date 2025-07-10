@@ -8,6 +8,7 @@ public partial class Tenant :BaseEntity
 {
     public long Id { get; set; }
 
+    public int TenantIndustryId { get; set; }   
     public string CompanyName { get; set; } = null!;
 
     public string? TenantCode { get; set; }
@@ -23,10 +24,11 @@ public partial class Tenant :BaseEntity
     public int CountryId { get; set; }
 
     public bool IsVerified { get; set; }
-
+    public virtual TenantIndustry TenantIndustry { get; set; } = null!;
 
     public virtual ICollection<ForgotPasswordOTPDetail> ForgotPasswordRequests { get; set; } = new List<ForgotPasswordOTPDetail>();
 
+    public virtual ICollection<Designation> Designations { get; set; } = new List<Designation>();
 
     public virtual ICollection<Employee> Employees { get; set; } = new List<Employee>();
 

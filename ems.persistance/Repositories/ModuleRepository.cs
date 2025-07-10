@@ -51,13 +51,18 @@ namespace ems.persistance.Repositories
         {
             try
             {
-                await using var context = await _contextFactory.CreateDbContextAsync();
+                List<Module> allModules;
 
-                var allModules = await context.Modules
-                    .Where(m => m.IsActive && m.IsModuleDisplayInUi)
-                    .OrderBy(m => m.Id)
-                    .ToListAsync();
+                // ✅ DbContext used only here
+                await using (var context = await _contextFactory.CreateDbContextAsync())
+                {
+                    allModules = await context.Modules
+                        .Where(m => m.IsActive && m.IsModuleDisplayInUi)
+                        .OrderBy(m => m.Id)
+                        .ToListAsync();
+                }
 
+                // ✅ Outside context — Safe recursion
                 var result = BuildMenuTree(allModules, parentId);
                 return result;
             }
@@ -67,6 +72,7 @@ namespace ems.persistance.Repositories
                 throw;
             }
         }
+
 
         private List<ModuleDTO> BuildMenuTree(List<Module> allModules, int? parentId)
         {
@@ -80,8 +86,7 @@ namespace ems.persistance.Repositories
                     ModuleName = m.ModuleName,
                     SubModuleUrl = m.SubModuleUrl,
                     Path = m.Path,
-                    DisplayName = m.DisplayName,
-                    ItemPriority = m.ItemPriority,
+                    DisplayName = m.DisplayName,                
                     ImageIconMobile = m.ImageIconMobile,
                     ImageIconWeb = m.ImageIconWeb,
                     Children = BuildMenuTree(allModules, m.Id)

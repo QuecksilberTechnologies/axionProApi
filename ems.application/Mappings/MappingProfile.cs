@@ -15,6 +15,7 @@ using ems.application.DTOs.Registration;
 using ems.application.DTOs.Role;
 using ems.application.DTOs.SubscriptionModule;
 using ems.application.DTOs.Tenant;
+using ems.application.DTOs.TenantIndustry;
 using ems.application.DTOs.Transport;
 using ems.application.DTOs.UserLogin;
 using ems.application.DTOs.UserRole;
@@ -150,14 +151,38 @@ namespace ems.application.Mappings
 
             CreateMap<GetRoleIdByRoleCodeRequestDTO,Role>().ReverseMap();  //  
 
-            CreateMap<CreateRoleDTO, Role>();  // ✅ Yeh likhna hoga!
-                CreateMap<UpdateRoleDTO, Role>();  // ✅ Yeh likhna hoga!
-                                                // Role Entity to GetAllRoleDTO Mapping
-                // Direct entity to DTO mapping
-               CreateMap<Role, RoleRequestDTO>().ReverseMap();
-               CreateMap<RoleResponseDTO, Role>().ReverseMap();
 
-                      CreateMap<UserRole, UserRoleDTO>()
+
+
+
+
+               CreateMap< CreateRoleDTO,Role > ()
+                  .ForMember(dest => dest.AddedById, opt => opt.MapFrom(src => src.EmployeeId)) ; // Example
+
+            CreateMap<UpdateRoleDTO, Role>()
+                .ForMember(dest => dest.UpdatedById, opt => opt.MapFrom(src => src.EmployeeId));
+
+
+            // Role Entity to GetAllRoleDTO Mapping
+            // Direct entity to DTO mapping
+            CreateMap<GetActiveRoleRequestDTO,Role >()
+
+                       .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => true));// Example
+
+            CreateMap<GetRoleRequestDTO, Role>();
+
+                  
+
+
+
+            CreateMap<RoleResponseDTO, Role>().ReverseMap();
+
+            //   CreateMap<TenantCreateResponseDTO, TenantIndustry>();
+            CreateMap<TenantIndustry, TenantIndustryResponseDTO>();
+
+
+
+            CreateMap<UserRole, UserRoleDTO>()
                           .ForMember(dest => dest.RoleName, opt => opt.MapFrom(src => src.Role.RoleName)) // Example
                           .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive == true));
 

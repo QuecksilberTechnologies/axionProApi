@@ -5,6 +5,7 @@ using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -67,80 +68,60 @@ namespace ems.persistance.Repositories
 
         public async Task<List<SubscriptionActivePlanDTO>> GetAllPlansAsync()
         {
+            try
+            {
+              //  await using var context = await _contextFactory.CreateDbContextAsync();
 
-                          try
-                             {
-                                    var result = await _context.SubscriptionPlans
-                                   .Where(plan => plan.IsActive)
-                                     .Select(plan => new SubscriptionActivePlanDTO
-                                           {
-                                              Id = plan.Id,
-                                                 PlanName = plan.PlanName,
+                var plans = await _context.SubscriptionPlans
+                    .Where(p => p.IsActive)
+                    .Select(plan => new SubscriptionActivePlanDTO
+                    {
+                        Id = plan.Id,
+                        PlanName = plan.PlanName,
 
-                                                  Modules = plan.PlanModuleMappings
-                                                     .Where(pmm =>
-                                                        pmm.IsActive == true &&
-                                                        pmm.Module.IsActive == true &&
-                                                        pmm.Module.ParentModule != null &&                    // ✅ Only submodules
-                                                        pmm.Module.ParentModule.IsActive == true               // ✅ Parent also active
-                                                                )
-                                                        .Select(pmm => new ModuleActiveDTO
-                                                               {
-                                                                  Id = pmm.Module.Id,
-                                                                  ModuleName = pmm.Module.ModuleName,
-                                                                  ParentModuleId =   pmm.Module.ParentModule.Id,
-                                                                  ParentModuleName = pmm.Module.ParentModule.ModuleName,
-                                                                  Operations = pmm.Module.ModuleOperationMappings
-                                                                  .Where(op => op.IsActive == true && op.Operation.IsActive)
-                                                                  .Select(op => new OperationActiveDTO
-                                                                       {
-                                                                      Id = op.Id,
-                                                                      DisplayName = op.DisplayName
-                                                                            }).ToList()
-                                                                            }).ToList()
-                                                                        }).ToListAsync();
+                        Modules = plan.PlanModuleMappings
+                            .Where(pmm => pmm.IsActive ==true && pmm.Module.IsActive==true)
+                            .Select(pmm => new ModuleActiveDTO
+                            {
+                                Id = pmm.Module.Id,
+                                ModuleName = pmm.Module.ModuleName,
+                                DisplayName = pmm.Module.DisplayName ?? pmm.Module.ModuleName,
+                                ParentModuleId = pmm.Module.ParentModuleId ?? 0,
 
-                //var result = await _context.SubscriptionPlans
-                //     .Where(plan => plan.IsActive)
-                //      .Select(plan => new SubscriptionActivePlanDTO
-                //           {
-                //             Id = plan.Id,
-                //               PlanName = plan.PlanName,
-                //                Modules = plan.PlanModuleMappings
-                //                 .Where(pmm => pmm.IsActive==true && pmm.Module.IsActive==true)
-                //                  .Select(pmm => new ModuleActiveDTO
-                //                              {                                        
-                //                             Id = pmm.Module.Id,
-                //                             ModuleName = pmm.Module.ModuleName,
-                //                             Operations = pmm.Module.ModuleOperationMappings
+                                //Operations = pmm.Module.ModuleOperationMappings
+                                //    .Where(mop => mop.IsActive == true && mop.Operation.IsActive == true)
+                                //    .Select(mop => new OperationActiveDTO
+                                //    {
+                                //        Id = mop.Id,
+                                //        DisplayName = mop.Operation.OperationName
+                                //    }).ToList()
+                            }).ToList()
+                    }).ToListAsync();
 
-                //                             .Where(op => op.IsActive==true && op.Operation.IsActive==true)
-                //                             .Select(op => new OperationActiveDTO
-                //                                 {
-                //                               Id = op.Id,
-                //                               DisplayName = op.DisplayName
-                //                                }).ToList()
-                //                                }).ToList()
-                //                             }).ToListAsync();
+                // ✅ Nest modules: Parent -> Child
+                foreach (var plan in plans)
+                {
+                    var moduleDict = plan.Modules.ToDictionary(m => m.Id, m => m);
+                    var topLevelModules = new List<ModuleActiveDTO>();
 
+                    foreach (var module in plan.Modules)
+                    {
+                        if (module.ParentModuleId != 0 && moduleDict.TryGetValue(module.ParentModuleId, out var parent))
+                        {
+                            parent.ChildModules.Add(module);
+                        }
+                        else
+                        {
+                            topLevelModules.Add(module);
+                        }
+                    }
 
-                //    var result = await _context.SubscriptionPlans
-                //  .Where(plan => plan.IsActive).Include(plan => plan.PlanModuleMappings.Where(pmm => pmm.IsActive == true))
-                //       .ThenInclude(pmm => pmm.Module).ThenInclude(module => module.ModuleOperationMappings.Where(op => op.IsActive == true)).
-                //      Include(pmm => pmm.PlanModuleMappings.Where(op => op.IsActive == true)).ThenInclude(op => op.Module.ModuleOperationMappings.Where(
-                //         op => op.IsActive == true)).ToListAsync();
+                    plan.Modules = topLevelModules;
+                }
 
+                _logger.LogInformation("Fetched {Count} subscription plan(s).", plans.Count);
 
-
-
-
-
-
-
-                _logger.LogInformation("Fetched {Count} subscription plan(s).", result.Count);
-
-
-                return result;
+                return plans;
             }
             catch (Exception ex)
             {
@@ -148,6 +129,7 @@ namespace ems.persistance.Repositories
                 return new List<SubscriptionActivePlanDTO>();
             }
         }
+
 
 
         public async Task<SubscriptionPlanResponseDTO> GetPlanByIdAsync(int id)

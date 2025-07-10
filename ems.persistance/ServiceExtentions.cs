@@ -16,48 +16,39 @@ namespace ems.persistance
     {
         public static void AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
-            // Debugging: Connection String Check Karein
+            // ✅ Connection string check
             var connectionString = configuration.GetConnectionString("DefaultConnection");
             if (string.IsNullOrEmpty(connectionString))
-            {
                 throw new Exception("Connection String is null or empty!");
-            }
-            services.AddDbContextFactory<WorkforceDbContext>(options =>
-                  options.UseSqlServer(connectionString)
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors()
-                .LogTo(Console.WriteLine, LogLevel.Information)
-     );
 
-            // You still need this if other repos use direct injection
+            // ✅ Register DbContextFactory for safe multi-threading
+            services.AddDbContextFactory<WorkforceDbContext>(options =>
+                options.UseSqlServer(connectionString)
+                       .EnableSensitiveDataLogging()
+                       .EnableDetailedErrors()
+                       .LogTo(Console.WriteLine, LogLevel.Information));
+
+            // ✅ Register DbContext (for direct injection)
             services.AddDbContext<WorkforceDbContext>(options =>
                 options.UseSqlServer(connectionString)
                        .EnableSensitiveDataLogging()
                        .EnableDetailedErrors()
-                       .LogTo(Console.WriteLine, LogLevel.Information)
-            );
+                       .LogTo(Console.WriteLine, LogLevel.Information));
 
+            // ✅ Register IWorkforceDbContext (Interface based usage)
             services.AddScoped<IWorkforceDbContext>(provider =>
                 provider.GetRequiredService<WorkforceDbContext>());
-
-
-
-            services.AddScoped<IUnitOfWork, UnitOfWork>(); //  
-
-
-            // ✅ Correct Scoped DbContext Injection
-            services.AddScoped<IWorkforceDbContext>(provider => provider.GetRequiredService<WorkforceDbContext>());
 
             // ✅ Unit of Work
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            // ✅ Repositories should be Scoped (instead of Transient)
+            // ✅ All Repositories as Scoped
             services.AddScoped<ICommonRepository, CommonRepository>();
             services.AddScoped<INewTokenRepository, NewTokenRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IAssetRepository, AssetRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-            services.AddScoped<IUserLoginReopsitory, UserLoginReopsitory>();  // **FIXED**
+            services.AddScoped<IUserLoginReopsitory, UserLoginReopsitory>();
             services.AddScoped<ILeaveRepository, LeaveRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IUserRoleRepository, UserRoleRepository>();
@@ -73,21 +64,18 @@ namespace ems.persistance
             services.AddScoped<IEmailTemplateRepository, EmailTemplateRepository>();
             services.AddScoped<ITenantRepository, TenantRepository>();
             services.AddScoped<ICountryRepository, CountryRepository>();
-            services.AddTransient<ITenantEmailConfigRepository, TenantEmailConfigRepository>();
-            services.AddTransient<ISubscriptionRepository, SubscriptionRepository>();
-
-            services.AddTransient<ITenantSubscriptionRepository, TenantSubscriptionRepository>();
-            services.AddTransient<IPlanModuleMappingRepository, PlanModuleMappingRepository>();
+            services.AddScoped<ITenantEmailConfigRepository, TenantEmailConfigRepository>();
+            services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+            services.AddScoped<ITenantSubscriptionRepository, TenantSubscriptionRepository>();
+            services.AddScoped<IPlanModuleMappingRepository, PlanModuleMappingRepository>();
             services.AddScoped<IModuleRepository, ModuleRepository>();
-            services.AddTransient<ITenantModuleConfigurationRepository, TenantModuleConfigurationRepository>();
-           
-            services.AddTransient<IModuleOperationMappingRepository, ModuleOperationMappingRepository>();
-            services.AddTransient<ICommonServiceSyncRepository, CommonServiceSyncRepository>();
+            services.AddScoped<ITenantModuleConfigurationRepository, TenantModuleConfigurationRepository>();
+            services.AddScoped<IModuleOperationMappingRepository, ModuleOperationMappingRepository>();
+            services.AddScoped<ICommonServiceSyncRepository, CommonServiceSyncRepository>();
+            services.AddScoped<ITenantIndustryRepository, TenantIndustryRepository>();
 
-          
-            // Debugging Logs
+            // ✅ Log
             Console.WriteLine("✅ Persistence Layer Configured Successfully.");
         }
     }
-
 }

@@ -18,6 +18,9 @@ namespace ems.persistance.Data.Context
         public virtual DbSet<PageTypeEnum> PageTypeEnums { get; set; }
 
         public virtual DbSet<Module> Modules { get; set; }
+
+        public virtual DbSet<TenantIndustry> TenantIndustries { get; set; }
+
         public virtual DbSet<TenantSubscription> TenantSubscriptions { get; set; }
         public virtual DbSet<SubscriptionPlan> SubscriptionPlans { get; set; }
         public virtual DbSet<PlanModuleMapping> PlanModuleMappings { get; set; }
@@ -708,8 +711,16 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.Description).HasMaxLength(500);
                 entity.Property(e => e.DesignationName).HasMaxLength(255);
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.IsSoftDeleted).HasDefaultValue(false);
+                entity.Property(e => e.SoftDeletedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Tenant).WithMany(p => p.Designations)
+                    .HasForeignKey(d => d.TenantId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Designation_Tenant");
             });
+
             modelBuilder.Entity<ForgotPasswordOTPDetail>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__ForgotPa__3214EC071E853072");
@@ -737,7 +748,26 @@ namespace ems.persistance.Data.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ForgotPasswordOTPDetail_LoginCredential");
             });
-            modelBuilder.Entity<Tenant>(entity =>            {
+
+
+            modelBuilder.Entity<TenantIndustry>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__TenantIn__3214EC0765258C5E");
+
+                entity.ToTable("TenantIndustry", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.Description).HasMaxLength(255);
+                entity.Property(e => e.IndustryName).HasMaxLength(100);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.Remark).HasMaxLength(255);
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+            });
+
+
+            modelBuilder.Entity<Tenant>(entity =>
+            {
                 entity.HasKey(e => e.Id).HasName("PK__Tenant__3214EC0728DD7C6E");
 
                 entity.ToTable("Tenant", "AxionPro");
@@ -746,14 +776,20 @@ namespace ems.persistance.Data.Context
 
                 entity.HasIndex(e => e.TenantEmail, "UQ__Tenant__F7C944DD7E3D53D9").IsUnique();
 
+                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.CompanyEmailDomain).HasMaxLength(255);
                 entity.Property(e => e.CompanyName).HasMaxLength(200);
                 entity.Property(e => e.ContactNumber).HasMaxLength(20);
                 entity.Property(e => e.ContactPersonName).HasMaxLength(100);
+                entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.TenantCode).HasMaxLength(100);
                 entity.Property(e => e.TenantEmail).HasMaxLength(200);
-                // Common Entities
-                entity.ConfigureBaseEntity();
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.TenantIndustry).WithMany(p => p.Tenants)
+                    .HasForeignKey(d => d.TenantIndustryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Tenant_TenantIndustry");
             });
 
             modelBuilder.Entity<TenantEmailConfig>(entity =>
@@ -814,6 +850,7 @@ namespace ems.persistance.Data.Context
             });
 
 
+
             modelBuilder.Entity<Module>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Module__3214EC078891AB2D");
@@ -823,6 +860,7 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
                     .HasColumnType("datetime");
+                entity.Property(e => e.DisplayName).HasMaxLength(100);
                 entity.Property(e => e.ImageIconMobile)
                     .HasMaxLength(255)
                     .IsUnicode(false);
@@ -833,11 +871,11 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.IsModuleDisplayInUi)
                     .HasDefaultValue(true)
                     .HasColumnName("IsModuleDisplayInUI");
+                entity.Property(e => e.ItemPriority).HasDefaultValue(0);
                 entity.Property(e => e.ModuleCode).HasMaxLength(50);
                 entity.Property(e => e.ModuleName).HasMaxLength(100);
+                entity.Property(e => e.Path).HasMaxLength(100);
                 entity.Property(e => e.Remark).HasMaxLength(200);
-                entity.Property(e => e.Path)
-                   .HasMaxLength(100);
                 entity.Property(e => e.SubModuleUrl)
                     .HasMaxLength(200)
                     .HasColumnName("SubModuleURL");

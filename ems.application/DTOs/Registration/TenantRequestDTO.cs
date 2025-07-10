@@ -11,6 +11,7 @@ namespace ems.application.DTOs.Registration
        
         public int SubscriptionPlanId { get; set; } 
 
+        public int TenantIndustryId { get; set; } 
         public string CompanyName { get; set; } = null!;
 
         public string TenantCode { get; set; } = null!;

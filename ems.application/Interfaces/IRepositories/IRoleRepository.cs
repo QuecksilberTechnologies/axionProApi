@@ -21,8 +21,10 @@ namespace ems.application.Interfaces.IRepositories
         Task<Role> GetRoleByIdAsync(int roleId);
         Task<int>GetRoleIdByRoleInfoAsync(Role roleId);
 
-            // Get all roles
+        // Get all roles
+        
         Task<List<Role>> GetAllRolesAsync(Role role);
+        Task<List<Role>> GetAllActiveRolesAsync(Role role);
 
         // Update an existing role
          Task<Role> UpdateRoleAsync(Role role);

@@ -600,11 +600,10 @@ namespace ems.persistance.Repositories
                 if (asset == null || asset.TenantId <= 0)
                 {
                     _logger.LogWarning("Asset is null or TenantId is invalid while fetching Asset.");
-                    return new List<Asset>();
-                }
+                    return new List<Asset>();                }
 
                 // ✅ Set static filters and sanitize
-                asset.IsSoftDeleted = ConstantValues.IsByDefaultFalse;
+              
                 asset.AssetName = string.IsNullOrWhiteSpace(asset.AssetName) ? null : asset.AssetName;
                 asset.IsActive = asset.IsActive ?? true;
                 asset.AddedById = asset.AddedById == 0 ? null : asset.AddedById;
@@ -620,6 +619,15 @@ namespace ems.persistance.Repositories
                 // ✅ Base query
                 IQueryable<Asset> query = _context.Assets
                     .Where(x => x.TenantId == asset.TenantId);
+                if (asset.IsActive.HasValue)
+                    query = query.Where(x => x.IsActive == asset.IsActive);
+                else
+                    query = query.Where(x => x.IsActive == true); // Default filter
+
+                if (asset.IsSoftDeleted.HasValue)
+                    query = query.Where(x => x.IsSoftDeleted == asset.IsSoftDeleted);
+                else
+                    query = query.Where(x => x.IsSoftDeleted == false); // Default filter
 
                 // ✅ Dynamic filters
                 if (!string.IsNullOrEmpty(asset.AssetName))
@@ -639,12 +647,7 @@ namespace ems.persistance.Repositories
 
                 if (asset.IsRepairable.HasValue)
                     query = query.Where(x => x.IsRepairable == asset.IsRepairable); 
-
-                if (asset.IsActive.HasValue)
-                    query = query.Where(x => x.IsActive == asset.IsActive);
-
-                if (asset.IsSoftDeleted.HasValue)
-                    query = query.Where(x => x.IsSoftDeleted == asset.IsSoftDeleted);
+                     
 
                 if (asset.AddedById.HasValue && asset.AddedById.Value > 0)
                     query = query.Where(x => x.AddedById == asset.AddedById);

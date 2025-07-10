@@ -34,6 +34,8 @@ namespace ems.application.Features.RoleCmd.Handlers
         {
             try
             {
+
+              
                 Role roleEntity = _mapper.Map<Role>(request.createRoleDTO);
                 Role createdRoles = await _roleRepository.CreateRoleAsync(roleEntity);
 

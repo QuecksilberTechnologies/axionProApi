@@ -12,7 +12,7 @@ namespace ems.application.DTOs.Designation
         public long EmployeeId { get; set; }
         public int RoleId { get; set; }
         public int DesignationId { get; set; }
-        public bool  IsActive { get; set; }
+        public bool?  IsActive { get; set; }
      
     }
 }

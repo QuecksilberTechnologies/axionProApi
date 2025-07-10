@@ -24,7 +24,7 @@ namespace ems.api.Controllers.Role
             _mediator = mediator;
             _logger = logger;
         }
-        [HttpPost("updaterole")]
+        [HttpPost("update-role-by-tenant-admin")]
         // [Authorize]
         public async Task<IActionResult> UpdateRole([FromBody] UpdateRoleDTO updateRoleDTO)
         {
@@ -38,7 +38,7 @@ namespace ems.api.Controllers.Role
             return Ok(result);
         }
 
-        [HttpPost("addrole")]
+        [HttpPost("add-role-by-tenant-admin")]
          //  [Authorize]
         public async Task<IActionResult> CreateRole([FromBody] CreateRoleDTO createRoleDTO)
         {
@@ -52,8 +52,29 @@ namespace ems.api.Controllers.Role
             return Ok(result);
         }
      //   [Authorize]
-        [HttpGet("get-allrole-by-tenant")]
-        public async Task<IActionResult> GetAllRoles([FromQuery] RoleRequestDTO? roleRequestDTO)
+        [HttpGet("get-all-active-role-by-tenant-user")]
+        public async Task<IActionResult> GetAllActiveRole([FromQuery] GetActiveRoleRequestDTO? roleRequestDTO)
+        {
+            if (roleRequestDTO == null)
+            {
+                // _logger.LogWarning("Received null request for getting roles.");
+                // return BadRequest(new ApiResponse<List<GetAllRoleDTO>>(false, "Invalid request", null));
+            }
+
+            // _logger.LogInformation("Received request to get roles for userId: {LoginId}", roleRequestDTO.Id);
+
+            var query = new GetAllActiveRoleQuery(roleRequestDTO);  //  Fix: No parameter needed in GetAllRoleQuery
+            var result = await _mediator.Send(query);
+
+            if (!result.IsSucceeded)
+            {
+                return Unauthorized(result);
+            }
+
+            return Ok(result);
+        }
+        [HttpGet("get-all-role-by-tenant-admin")]
+        public async Task<IActionResult> GetAllRoles([FromQuery] GetRoleRequestDTO? roleRequestDTO)
         {
             if (roleRequestDTO == null)
             {
@@ -73,7 +94,6 @@ namespace ems.api.Controllers.Role
 
             return Ok(result);
         }
-
         [HttpPost("get-role-by-role-code")]
         public async Task<IActionResult> GetGlobalRole([FromBody] GetRoleIdByRoleCodeRequestDTO? getRoleIdByRoleCodeRequestDTO)
         {

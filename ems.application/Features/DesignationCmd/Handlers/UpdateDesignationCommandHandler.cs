@@ -59,21 +59,21 @@ namespace ems.application.Features.DesignationCmd.Handlers
                 // Set trimmed value back
                 request.dto.DesignationName = designationName;
                 // ✅ Step 3: Check for duplicate name (excluding same ID)
-                bool isDuplicate = await designationRepository.CheckDuplicateValueAsync(
-                    request.dto.TenantId,
-                    designationName
+                //bool isDuplicate = await designationRepository.CheckDuplicateValueAsync(
+                //    request.dto.TenantId,
+                //    designationName
                      
-                );
+                //);
 
-                if (isDuplicate)
-                {
-                    return new ApiResponse<bool>
-                    {
-                        IsSucceeded = false,
-                        Message = "This designation name already exists.",
-                        Data = false
-                    };
-                }
+                //if (isDuplicate)
+                //{
+                //    return new ApiResponse<bool>
+                //    {
+                //        IsSucceeded = false,
+                //        Message = "This designation name already exists.",
+                //        Data = false
+                //    };
+                //}
 
                 // ✅ Step 4: Map and Update
                 Designation designation = _mapper.Map<Designation>(request.dto);

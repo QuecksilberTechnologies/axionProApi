@@ -70,10 +70,10 @@ namespace ems.persistance.Repositories
                         {
                             ModuleId = p.Module.Id,
                             ModuleName = p.Module.ModuleName,
+                            //DisplayName = p.Module.DisplayName?.ToString()?? string.Empty,
                             ParentModuleId = p.Module.ParentModuleId,
                             MainModuleId = p.Module.ParentModule?.Id ?? 0,
                             MainModuleName = p.Module.ParentModule?.ModuleName ?? string.Empty,
-
                             Operations = p.Module.ModuleOperationMappings
                                .Where(mop =>
                                         mop.IsActive == true &&
@@ -82,9 +82,9 @@ namespace ems.persistance.Repositories
                                        .Select(mop => new OperationResponseDTO
                                             {
                                          OperationId = mop.Operation.Id,
-                                          DisplayName = mop.DisplayName,
-                                          PageUrl = mop.PageUrl,
-                                          IconUrl = mop.IconUrl
+                                        
+                                          //PageUrl = mop.PageUrl,
+                                          //IconUrl = mop.IconUrl
                                            })
                                       .ToList()
 
@@ -94,6 +94,7 @@ namespace ems.persistance.Repositories
 
                 return response;
             }
+
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while fetching modules and operations for SubscriptionPlanId: {SubscriptionPlanId}", subscriptionPlanId);

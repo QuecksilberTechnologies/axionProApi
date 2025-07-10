@@ -20,8 +20,8 @@ public class EmployeeController : ControllerBase
         _logger = logger;  // Logger service ko inject karna
     }
 
-    [HttpPost("createemployee")]
-    public async Task<IActionResult> CreateEmployee([FromBody] CreateEmployeeDTO employeeCreateDto)
+    [HttpPost("create-employee-by-any")]
+    public async Task<IActionResult> CreateEmployee([FromBody] CreateEmployeeRequestDTO employeeCreateDto)
     {
         var command = new CreateEmployeeCommand(employeeCreateDto);
         _logger.LogInfo("Creating new employee"); // Log the info message

@@ -36,12 +36,12 @@ namespace ems.application.Features.AssetCmd.Handlers
             {
                 // DTO ko Entity mein map karein
 
-    
-                var assetStatus = _mapper.Map<AssetStatus>(request.assetStatusRequestDTO);
-                 
-                  
+                 var assetStatus = _mapper.Map<AssetStatus>(request.assetStatusRequestDTO);
+                 assetStatus.AddedById = request.assetStatusRequestDTO.EmployeeId;
 
-               AssetStatus assetsList = await _unitOfWork.AssetRepository.AddAssetStatusByTenantAsync(assetStatus);             
+
+
+                AssetStatus assetsList = await _unitOfWork.AssetRepository.AddAssetStatusByTenantAsync(assetStatus);             
                 // Entity list to DTO list
                 var resultDTOList = _mapper.Map<AssetStatusResponseDTO>(assetsList);
                 return new ApiResponse<AssetStatusResponseDTO>

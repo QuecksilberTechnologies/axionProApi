@@ -11,7 +11,7 @@ public partial class TenantEnabledModule
 
     public int ModuleId { get; set; }
   
-    public int ParentModuleId { get; set; }
+    public int? ParentModuleId { get; set; }
 
     public bool IsEnabled { get; set; }
 

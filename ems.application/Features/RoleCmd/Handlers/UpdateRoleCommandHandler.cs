@@ -41,7 +41,9 @@ namespace ems.application.Features.RoleCmd.Handlers
             try
             {
                 // Mapping DTO to Entity
+
                 Role roleEntity = _mapper.Map<Role>(request.updateRoleDTO);
+
                 _logger.LogDebug("Mapped UpdateRoleDTO to Role entity: {@RoleEntity}", roleEntity);
 
                 // Update role in the repository

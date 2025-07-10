@@ -58,8 +58,8 @@ namespace ems.persistance.Repositories
         {
             try
             {
-                
 
+                designation.Id = 0;
                 designation.AddedDateTime = DateTime.Now; // or DateTime.UtcNow                
                 await _context.Designations.AddAsync(designation);
                 // Changes ko save karenge
@@ -67,8 +67,8 @@ namespace ems.persistance.Repositories
 
                 // Added role ko return karenge
                 // `GetAllRolesAsync()` se returned IEnumerable ko List mein convert karenge
-                return (await GetAllDesignationAsync(designation.TenantId, designation.IsActive))
-                 .OrderByDescending(r => r.Id) // Latest Role पहले आएगा
+                return (await GetAllDesignationAsync(designation.TenantId, designation.IsActive==true))
+                 .OrderByDescending(r => r.Id) // Latest Role  
                  .ToList();
             }
             catch (Exception ex)
