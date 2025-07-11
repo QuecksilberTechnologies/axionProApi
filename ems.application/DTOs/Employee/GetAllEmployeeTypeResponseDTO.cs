@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Employee
 {
-    public class GetAllEmployeeTypeDTO
+    public class GetAllEmployeeTypeResponseDTO
     {
-        public int EmployeeTypeId { get; set; }
+
+        public int Id { get; set; }
         public string? TypeName { get; set; }
         public string? Description { get; set; }
         public string? Remark { get; set; }

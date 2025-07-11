@@ -22,4 +22,6 @@ public partial class Department
     public long? UpdatedById { get; set; }
 
     public DateTime? UpdatedDateTime { get; set; }
+    public virtual ICollection<EmployeeManagerMapping> EmployeeManagerMappings { get; set; } = new List<EmployeeManagerMapping>();
+
 }

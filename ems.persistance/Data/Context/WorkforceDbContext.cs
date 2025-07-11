@@ -137,7 +137,7 @@ namespace ems.persistance.Data.Context
         public virtual DbSet<EmailTemplate> EmailTemplates { get; set; }
 
         public virtual DbSet<RoleModuleAndPermission> RoleModuleAndPermissions { get; set; }
-
+        public virtual DbSet<ReportingType> ReportingTypes { get; set; }
         public virtual DbSet<ServiceProvider> ServiceProviders { get; set; }
 
         public virtual DbSet<ServiceProviderContact> ServiceProviderContacts { get; set; }
@@ -1235,6 +1235,55 @@ namespace ems.persistance.Data.Context
                     .HasConstraintName("FK_EmployeeStatusHistory_OldEmployeeType");
             });
 
+
+            modelBuilder.Entity<EmployeeManagerMapping>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC075BB6D3FC");
+
+                entity.ToTable("EmployeeManagerMapping", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.Description).HasMaxLength(500);
+                entity.Property(e => e.EffectiveFrom).HasColumnType("datetime");
+                entity.Property(e => e.EffectiveTo).HasColumnType("datetime");
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.Remark).HasMaxLength(250);
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Department).WithMany(p => p.EmployeeManagerMappings)
+                    .HasForeignKey(d => d.DepartmentId)
+                    .HasConstraintName("FK_EmployeeManagerMapping_Department");
+
+                entity.HasOne(d => d.Designation).WithMany(p => p.EmployeeManagerMappings)
+                    .HasForeignKey(d => d.DesignationId)
+                    .HasConstraintName("FK_EmployeeManagerMapping_Designation");
+
+                entity.HasOne(d => d.Employee).WithMany(p => p.EmployeeManagerMappingEmployees)
+                    .HasForeignKey(d => d.EmployeeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EmployeeManagerMapping_Employee");
+
+                entity.HasOne(d => d.Manager).WithMany(p => p.EmployeeManagerMappingManagers)
+                    .HasForeignKey(d => d.ManagerId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EmployeeManagerMapping_Manager");
+
+                entity.HasOne(d => d.ReportingType).WithMany(p => p.EmployeeManagerMappings)
+                    .HasForeignKey(d => d.ReportingTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EmployeeManagerMapping_ReportingType");
+
+                entity.HasOne(d => d.Tenant).WithMany(p => p.EmployeeManagerMappings)
+                    .HasForeignKey(d => d.TenantId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_EmployeeManagerMapping_Tenant");
+            });
+
+
+
+
             modelBuilder.Entity<EmployeeType>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC0760C5ED38");
@@ -1583,9 +1632,29 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.SoftDeleteDateTime).HasColumnType("datetime");
             });
 
-           
- 
-        
+
+            modelBuilder.Entity<ReportingType>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Reportin__3214EC0773736C22");
+
+                entity.ToTable("ReportingType", "AxionPro");
+
+                entity.HasIndex(e => e.TypeName, "UQ__Reportin__D4E7DFA8AC2E2E45").IsUnique();
+
+                entity.Property(e => e.AddedDateTime)
+                    .HasDefaultValueSql("(getdate())")
+                    .HasColumnType("datetime");
+                entity.Property(e => e.Description).HasMaxLength(250);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.TypeName)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+            });
+
+
+
+
             modelBuilder.Entity<RefreshToken>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__RefreshT__3214EC0731D02168");

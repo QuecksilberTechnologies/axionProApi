@@ -46,7 +46,7 @@ namespace ems.application.Features.EmployeeCmd.Handlers
                     DateOfBirth = new DateOnly(1990, 1, 15), // January 15, 1990
                     DateOfOnBoarding = new DateOnly(2023, 5, 1), // May 1, 2023
                     DateOfExit = null, // Still employed
-                    SpecializationId = 2, // Assuming this ID corresponds to a specialization
+                    //SpecializationId = 2, // Assuming this ID corresponds to a specialization
                     DesignationId = 3, // Assuming this ID corresponds to a designation
                     EmployeeTypeId = 1, // Assuming this ID corresponds to a type of employee
                     DepartmentId = 5, // Assuming this ID corresponds to a department

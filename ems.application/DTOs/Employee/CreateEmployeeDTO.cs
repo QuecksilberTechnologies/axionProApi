@@ -9,51 +9,47 @@ namespace ems.application.DTOs.Employee
 
     public class CreateEmployeeRequestDTO
     {
-        public class CreateEmployeeDTO
-        {
-            public long TenantId { get; set; }
-            public string? EmployeeDocumentId { get; set; }
-            public string? EmployementCode { get; set; }
+        public required long TenantId { get; set; }
 
-            public string? LastName { get; set; }
-            public string? MiddleName { get; set; }
-            public string? FirstName { get; set; }
+        public string? EmployeeDocumentId { get; set; } // optional
 
-            public DateTime? DateOfBirth { get; set; }
-            public DateTime? DateOfOnBoarding { get; set; }
-            public DateTime? DateOfExit { get; set; }
+        public required string EmployementCode { get; set; }
 
-            public long? SpecializationId { get; set; }
-            public long? DesignationId { get; set; }
-            public long? EmployeeTypeId { get; set; }
-            public long? DepartmentId { get; set; }
+        public required string LastName { get; set; }
 
-            public string? OfficialEmail { get; set; }
+        public required string MiddleName { get; set; }
 
-            public bool? HasPermanent { get; set; }
-          
-             public bool IsActive { get; set; }
+        public required string FirstName { get; set; }
 
-            public long? FunctionalId { get; set; }
-            public long? ReferalId { get; set; }
+        public required DateTime DateOfBirth { get; set; }
 
-            public string? Remark { get; set; }
+        public required DateTime DateOfOnBoarding { get; set; }
 
-            // Audit Fields
-            public long? AddedById { get; set; }
-            public DateTime? AddedDateTime { get; set; }
+        public DateTime? DateOfExit { get; set; } // optional
 
-            public long? UpdatedById { get; set; }
-            public DateTime? UpdatedDateTime { get; set; }
+        public long DesignationId { get; set; } // optional if 0 (use validation)
 
-            public long? DeletedById { get; set; }
-            public DateTime? DeletedDateTime { get; set; }
+        public required long EmployeeTypeId { get; set; }
 
-           // public bool IsSoftDeleted { get; set; }
-        }
+        public int? DepartmentId { get; set; } // optional
 
-        // Add more fields as per your requirement
+        public int? RoleId { get; set; } // optional
+
+        public string? OfficialEmail { get; set; } // optional
+
+        public required bool? HasPermanent { get; set; }
+
+        public required bool IsActive { get; set; }
+
+        public long? FunctionalId { get; set; } // optional
+
+        public long? ReferalId { get; set; } // optional
+
+        public string? Remark { get; set; } // optional
     }
+
+    // Add more fields as per your requirement
+
 
 
 

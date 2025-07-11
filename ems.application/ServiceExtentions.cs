@@ -14,12 +14,13 @@ namespace ems.application
             //
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddMediatR(conf => conf.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-      
+           
 
             services.AddAutoMapper(typeof(MappingProfile).Assembly);
              //registration of fluent validation
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             //services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviors<,>));
+
         }
     }
 }

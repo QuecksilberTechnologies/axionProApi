@@ -146,8 +146,6 @@ namespace ems.application.Mappings
             CreateMap<LeaveType, GetAllLeaveTypeDTO>();
             CreateMap<UpdateLeaveTypeDTO, LeaveType>();  // ✅ Yeh likhna hoga!
 
-            // Map Employee to EmployeeDTO
-              CreateMap<Employee, EmployeeDTO>();
 
             CreateMap<GetRoleIdByRoleCodeRequestDTO,Role>().ReverseMap();  //  
 
@@ -192,10 +190,12 @@ namespace ems.application.Mappings
 
 
             // Agar reverse mapping chahiye toh, isse bhi add kar sakte hain
-            CreateMap<EmployeeDTO, Employee>();
+                CreateMap<CreateEmployeeByTenantAdminRequestDTO, Employee>();
                 CreateMap<EmployeeLoginInfoDTO, LoginResponseDTO>().ForMember(dest => dest.EmployeeInfo, opt => opt.MapFrom(src => src));
                 CreateMap<Category, CategoryResponseDTO>();
-
+            // Map Employee to EmployeeDTO
+            CreateMap<Employee, EmployeeDTO>();
+            CreateMap<EmployeeDTO, Employee>();
             CreateMap<Employee, EmployeeLoginInfoDTO>()
                   .ForMember(dest => dest.EmployeeId, opt => opt.MapFrom(src => src.Id))
                         // `Employee.Id` ➝ `EmployeeInfoDTO.EmployeeId`

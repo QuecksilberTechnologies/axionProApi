@@ -76,14 +76,14 @@ namespace ems.infrastructure.MailService
             try
             {
 
-                tenantId = 17;
+                tenantId = 187;
                 subject = "Verification Email";
                 var config = await _configRepo.GetActiveEmailConfigAsync(tenantId);
 
                 if (config == null)
                 {
                     _logger.LogWarning("No active SMTP config found for TenantId: {TenantId}", tenantId);
-                  //  return false;
+                     return false;
                 }
 
                 var email = new MimeMessage();

@@ -65,7 +65,7 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(c =>
     {
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "EMS API", Version = "v1" });
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Axion-Pro API", Version = "1.0" });
         c.SchemaFilter<NullSchemaFilter>(); // ✅ This line is important
     });
 
@@ -84,7 +84,7 @@ try
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "EMS API V1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Axion-Pro API V1");
         c.RoutePrefix = string.Empty; // Swagger root par open ho
     });
 

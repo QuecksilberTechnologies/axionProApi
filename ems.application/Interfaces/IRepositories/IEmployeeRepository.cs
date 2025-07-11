@@ -13,6 +13,7 @@ public interface IEmployeeRepository
    //  Task DeleteEmployeeAsync(int id);
    // Task AddAsync(Employee employeeEntity);
     Task<Employee> AddAsync(Employee entity);  // Ensure this returns Task<Employee>
-    
-    
+    Task<long> AddEmployeeByAdminAsync(Employee entity);  // Ensure this returns Task<Employee>
+
+
 }

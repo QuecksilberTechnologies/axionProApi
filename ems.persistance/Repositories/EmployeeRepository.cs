@@ -92,6 +92,35 @@ namespace ems.persistance.Repositories
             }
         }
 
+        public async Task<long> AddEmployeeByAdminAsync(Employee entity)
+        {
+            if (entity == null)
+                throw new ArgumentNullException(nameof(entity), "Employee entity cannot be null.");
+
+            // Optional: Validate required properties
+            if (string.IsNullOrWhiteSpace(entity.FirstName))
+                throw new ArgumentException("First name is required.", nameof(entity.FirstName));
+
+            if (string.IsNullOrWhiteSpace(entity.EmployementCode))
+                throw new ArgumentException("Employment code is required.", nameof(entity.EmployementCode));
+
+            try
+            {
+                // Add to DB
+                await context.Employees.AddAsync(entity);
+                await context.SaveChangesAsync();
+
+                // Return generated EmployeeId
+                return entity.Id;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while adding employee in AddEmployeeByAdminAsync.");
+                throw new Exception("An error occurred while adding employee. Please try again later.", ex);
+            }
+        }
+
+
         // Method to fetch employee type by ID
 
     }

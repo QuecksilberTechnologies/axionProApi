@@ -43,6 +43,7 @@ public partial class Tenant :BaseEntity
     public virtual ICollection<TenantEnabledOperation> TenantEnabledOperations { get; set; } = new List<TenantEnabledOperation>();
 
     public virtual ICollection<TenantProfile> TenantProfiles { get; set; } = new List<TenantProfile>();
+    public virtual ICollection<EmployeeManagerMapping> EmployeeManagerMappings { get; set; } = new List<EmployeeManagerMapping>();
 
     public virtual ICollection<TenantSubscription> TenantSubscriptions { get; set; } = new List<TenantSubscription>();
 }

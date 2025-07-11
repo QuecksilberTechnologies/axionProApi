@@ -26,7 +26,7 @@ public partial class Employee :BaseEntity
 
     public DateOnly? DateOfExit { get; set; }
 
-    public int? SpecializationId { get; set; }
+   // public int? SpecializationId { get; set; }
 
     public int? DesignationId { get; set; }
 
@@ -53,6 +53,10 @@ public partial class Employee :BaseEntity
     public virtual ICollection<AssetHistory> AssetHistoryScrapApprovedByNavigations { get; set; } = new List<AssetHistory>();
 
     public virtual ICollection<AttendanceHistory> AttendanceHistories { get; set; } = new List<AttendanceHistory>();
+    public virtual ICollection<EmployeeManagerMapping> EmployeeManagerMappings { get; set; } = new List<EmployeeManagerMapping>();
+    public virtual ICollection<EmployeeManagerMapping> EmployeeManagerMappingEmployees { get; set; } = new List<EmployeeManagerMapping>();
+    public virtual ICollection<EmployeeManagerMapping> EmployeeManagerMappingManagers { get; set; } = new List<EmployeeManagerMapping>();
+
 
     public virtual Designation? Designation { get; set; }
 
