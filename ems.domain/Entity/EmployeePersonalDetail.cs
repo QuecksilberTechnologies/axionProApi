@@ -30,4 +30,12 @@ public partial class EmployeePersonalDetail
     public string? EmergencyContactNumber { get; set; }
 
     public virtual Employee Employee { get; set; } = null!;
+    public long? AddedById { get; set; }
+    public DateTime? AddedDateTime { get; set; }
+    public long? UpdatedById { get; set; }
+    public DateTime? UpdatedDateTime { get; set; }
+    public bool? IsSoftDeleted { get; set; }
+
+    public long? DeletedById { get; set; }
+    public DateTime? DeletedDateTime { get; set; }
 }

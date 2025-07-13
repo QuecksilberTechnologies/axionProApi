@@ -57,14 +57,14 @@ namespace ems.application.Features.EmployeeCmd.Handlers
                 {
                     return ApiResponse<long>.Fail("Unauthorized: User ID not found in token.");
                 }
-               var userIdClaimValue = "embedded.deepesh@gmail.com";
+                // userIdClaimValue = "embedded.deepesh@gmail.com";
                 // 🧠 Validate user via repository
-                long empId = await _unitOfWork.CommonRepository.ValidateActiveUserLoginOnlyAsync(userIdClaimValue);
-                _logger.LogInformation("Validation result for LoginId {LoginId}: EmployeeId = {empId}", userIdClaimValue, empId);
+                long empId = await _unitOfWork.CommonRepository.ValidateActiveUserLoginOnlyAsync(userIdClaim.Value);
+                _logger.LogInformation("Validation result for LoginId {LoginId}: EmployeeId = {empId}", userIdClaim.Value, empId);
 
                 if (empId < 1)
                 {
-                    _logger.LogWarning("User validation failed for LoginId: {LoginId}", userIdClaimValue);
+                    _logger.LogWarning("User validation failed for LoginId: {LoginId}", userIdClaim.Value);
                     await _unitOfWork.RollbackTransactionAsync();
                     return ApiResponse<long>.Fail("User is not authenticated or authorized to perform this action.");
                 }

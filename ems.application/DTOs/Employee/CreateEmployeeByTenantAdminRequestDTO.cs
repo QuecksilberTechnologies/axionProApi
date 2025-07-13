@@ -11,6 +11,8 @@ namespace ems.application.DTOs.Employee
     {
         [Required]
         public long TenantId { get; set; }
+        [Required] 
+        public int EmployeeDocumentId { get; set; }
         [MaxLength(100)]      
         public required string OfficialEmail { get; set; }
         [Required]

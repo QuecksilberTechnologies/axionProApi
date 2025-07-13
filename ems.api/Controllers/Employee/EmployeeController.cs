@@ -1,6 +1,7 @@
 ﻿
 using ems.application.DTOs.Employee;
 using ems.application.Features.EmployeeCmd.Commands;
+using ems.application.Features.UserLoginAndDashboardCmd.Commands;
 using ems.application.Interfaces.ILogger;
 using ems.application.Wrappers;
 using MediatR;
@@ -103,6 +104,61 @@ public class EmployeeController : ControllerBase
             return StatusCode(500, errorResponse);
         }
     }
+
+    
+    [HttpPost("get-active-employee-info-to-update-by-id")]
+    public async Task<IActionResult> GetEmployeeById([FromBody] GetEmployeeInfoRequestDTO requestDto)
+    {
+        try
+        {
+            if (requestDto == null || requestDto.EmployeeId <= 0)
+            {
+                return BadRequest(ApiResponse<GetEmployeeInfoWithAccessResponseDTO>.Fail("Invalid request data."));
+            }
+
+            var command = new GetSelfEmployeementInfoCommand(requestDto);
+            var result = await _mediator.Send(command);
+
+            if (result.IsSucceeded)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return Unauthorized(result); // or BadRequest based on business rule
+            }
+        }
+        catch (Exception ex)
+        {
+            var errorResponse = ApiResponse<GetEmployeeInfoWithAccessResponseDTO>.Fail("Failed to fetch employee info.", new List<string> { ex.Message });
+            return StatusCode(500, errorResponse);
+        }
+    }
+    [HttpPut("update-employee-field-by-tenant-user-him-self")]
+    public async Task<IActionResult> UpdateEmployeeField([FromBody] UpdateEmployeeInfoWithAccessCommand command)
+    {
+        if (command?.Dto == null || string.IsNullOrWhiteSpace(command.Dto.FieldName))
+        {
+            return BadRequest(ApiResponse<bool>.Fail("Invalid request. Field name is required."));
+        }
+
+        try
+        {
+            var result = await _mediator.Send(command);
+
+            if (result.IsSucceeded)
+                return Ok(result);
+            else
+                return BadRequest(result);
+        }
+        catch (Exception ex)
+        {
+            var errorResponse = ApiResponse<bool>.Fail("An unexpected error occurred while updating employee info.",
+                new List<string> { ex.Message });
+            return StatusCode(500, errorResponse);
+        }
+    }
+
 
 }
 

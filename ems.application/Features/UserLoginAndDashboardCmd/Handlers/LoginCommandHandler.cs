@@ -146,7 +146,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 
                 // 👥 Step 6: Fetch all roles
                 var userRoles = await _unitOfWork.UserRoleRepository.GetEmployeeRolesWithDetailsByIdAsync(empId, empInfo.TenantId);
-
+                 
                 bool isAdmin = userRoles.Any(ur => ur.Role.RoleType == ConstantValues.TenantAdminRoleType &&   ur.Role.IsSystemDefault == ConstantValues.IsByDefaultFalse &&
                  ur.Role.RoleCode.Equals(ConstantValues.TenantAdminRoleCode, StringComparison.OrdinalIgnoreCase) &&
                  ur.Role.IsActive == true &&
@@ -159,46 +159,49 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                       updateTenantEnabledOperationFromModuleOperationRequestDTO.TenantId = empInfo.TenantId;
                       var updatedDone = _unitOfWork.CommonRepository.UpdateTenantEnabledOperationFromModuleOperationRequestDTO(updateTenantEnabledOperationFromModuleOperationRequestDTO);
                   }
-
-
-
-                string? allRoleIdsCsv = userRoles?
+                List<UserRoleDTO>? userRoleDTOs = null;
+                string? allRoleIdsCsv = null;
+                UserRoleDTO? primaryRole = null;
+                if (userRoles.Count !=0)
+                {
+                     allRoleIdsCsv = userRoles?
                     .Where(r => r.RoleId != null)
                     .Select(r => r.RoleId.ToString())
                     .Aggregate((a, b) => $"{a},{b}");
 
-                if (!string.IsNullOrEmpty(allRoleIdsCsv))
-                    _logger.LogInformation("Fetched Role IDs for LoginId {LoginId}: {Roles}", loginRequest.LoginId, allRoleIdsCsv);
-                else
-                    _logger.LogWarning("No roles found for LoginId {LoginId}", loginRequest.LoginId);
+                    if (!string.IsNullOrEmpty(allRoleIdsCsv))
+                        _logger.LogInformation("Fetched Role IDs for LoginId {LoginId}: {Roles}", loginRequest.LoginId, allRoleIdsCsv);
+                    else
+                        _logger.LogWarning("No roles found for LoginId {LoginId}", loginRequest.LoginId);
 
 
-                // 🧠 Step 7: Map roles to DTOs
-                List<UserRoleDTO> userRoleDTOs = _mapper.Map<List<UserRoleDTO>>(userRoles);
+                    // 🧠 Step 7: Map roles to DTOs
+                      userRoleDTOs = _mapper.Map<List<UserRoleDTO>>(userRoles);
+                    // ✅ Find & separate primary role
+                        primaryRole = userRoleDTOs.FirstOrDefault(ur => ur.IsPrimaryRole && ur.IsActive);
 
-                // Getting Tenant Enabled module list
-                var TenantEnabledModulesWithOperationData = await _unitOfWork.TenantModuleConfigurationRepository.GetAllTenantEnabledModulesWithOperationsAsync(empInfo.TenantId);
+                    if (primaryRole != null)
+                        userRoleDTOs.Remove(primaryRole); // Remove primary from list
 
-                // ✅ Find & separate primary role
-                var primaryRole = userRoleDTOs.FirstOrDefault(ur => ur.IsPrimaryRole && ur.IsActive);
+                    // 🎯 Extract secondary role IDs
+                    List<int> secondaryRoleIds = userRoleDTOs
+                        .Where(ur => ur.RoleId > 0)
+                        .Select(ur => ur.RoleId)
+                        .ToList();
 
-                if (primaryRole != null)
-                    userRoleDTOs.Remove(primaryRole); // Remove primary from list
+                    string secondaryRolesCsv = secondaryRoleIds.Any()
+                        ? string.Join(",", secondaryRoleIds)
+                        : "NULL";
+                    // 🧾 Step 8: Map Employee Info
+                 
+                }
 
-                // 🎯 Extract secondary role IDs
-                List<int> secondaryRoleIds = userRoleDTOs
-                    .Where(ur => ur.RoleId > 0)
-                    .Select(ur => ur.RoleId)
-                    .ToList();
-
-                string secondaryRolesCsv = secondaryRoleIds.Any()
-                    ? string.Join(",", secondaryRoleIds)
-                    : "NULL";
-
-                // 🧾 Step 8: Map Employee Info
-                var employeeInfo = _mapper.Map<EmployeeLoginInfoDTO>(empInfo);
+                EmployeeLoginInfoDTO? employeeInfo = _mapper.Map<EmployeeLoginInfoDTO>(empInfo);
                 employeeInfo.UserPrimaryRole = primaryRole;
                 employeeInfo.UserSecondryRoles = userRoleDTOs;
+                // Getting Tenant Enabled module list
+                var TenantEnabledModulesWithOperationData = await _unitOfWork.TenantModuleConfigurationRepository.GetAllTenantEnabledModulesWithOperationsAsync(empInfo.TenantId);
+                          
 
                 // 🧩 Step 9: Load Common Items
                 //  var commonItems = await _unitOfWork.CommonRepository.GetCommonItemAsync();

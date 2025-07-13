@@ -30,4 +30,16 @@ public partial class EmployeeEducation
     public bool IsActive { get; set; }
 
     public virtual Employee Employee { get; set; } = null!;
+
+    public int? AddedById { get; set; }
+
+    public DateTime? AddedDateTime { get; set; }
+
+    public int? UpdatedById { get; set; }
+    public DateTime? UpdatedDateTime { get; set; }
+    
+    public long? DeletedById { get; set; }
+    public DateTime? DeletedDateTime { get; set; }
+    public bool? IsSoftDeleted { get; set; }
+
 }

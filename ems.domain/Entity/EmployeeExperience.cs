@@ -25,7 +25,41 @@ public partial class EmployeeExperience
 
     public long? VerifiedBy { get; set; }
 
-    public bool IsActive { get; set; }
+    public bool? IsSoftDeleted { get; set; }
+
+    public int? ExperienceTypeId { get; set; }
+
+    public string? Location { get; set; }
+
+    public decimal? Ctc { get; set; }
+
+    public string? ReportingManagerName { get; set; }
+
+    public string? ReportingManagerNumber { get; set; }
+
+    public string? ReportingManagerEmail { get; set; }
+
+    public string? WorkedWithName { get; set; }
+
+    public string? WorkedWithContactNumber { get; set; }
+
+    public string? WorkedWithDesignation { get; set; }
+
+    public string? ExperienceLetterPath { get; set; }
+
+    public string? Comment { get; set; }
+
+    public long? AddedById { get; set; }
+
+    public DateTime? AddedDateTime { get; set; }
+
+    public long? UpdatedById { get; set; }
+
+    public DateTime? UpdatedDateTime { get; set; }
+
+    public long? DeletedById { get; set; }
+
+    public DateTime? DeletedDateTime { get; set; }
 
     public virtual Employee Employee { get; set; } = null!;
 }

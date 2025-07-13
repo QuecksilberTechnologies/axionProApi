@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Common\Attributes\" />
     <Folder Include="DTOs\BasicMenu\" />
     <Folder Include="DTOs\Module\NewFolder\" />
     <Folder Include="DTOs\NewFolder1\" />

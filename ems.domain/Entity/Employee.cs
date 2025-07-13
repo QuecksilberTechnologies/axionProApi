@@ -20,11 +20,11 @@ public partial class Employee :BaseEntity
 
     public string? FirstName { get; set; } = null!;
 
-    public DateOnly? DateOfBirth { get; set; }
+    public DateTime? DateOfBirth { get; set; }
 
-    public DateOnly? DateOfOnBoarding { get; set; }
+    public DateTime? DateOfOnBoarding { get; set; }
 
-    public DateOnly? DateOfExit { get; set; }
+    public DateTime? DateOfExit { get; set; }
 
    // public int? SpecializationId { get; set; }
 

@@ -190,7 +190,9 @@ namespace ems.application.Mappings
 
 
             // Agar reverse mapping chahiye toh, isse bhi add kar sakte hain
-                CreateMap<CreateEmployeeByTenantAdminRequestDTO, Employee>();
+                CreateMap<Employee, CreateEmployeeByTenantAdminRequestDTO>();
+               
+            
                 CreateMap<EmployeeLoginInfoDTO, LoginResponseDTO>().ForMember(dest => dest.EmployeeInfo, opt => opt.MapFrom(src => src));
                 CreateMap<Category, CategoryResponseDTO>();
             // Map Employee to EmployeeDTO

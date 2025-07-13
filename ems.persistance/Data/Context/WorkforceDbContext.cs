@@ -90,8 +90,10 @@ namespace ems.persistance.Data.Context
         public virtual DbSet<EmployeeExperience> EmployeeExperiences { get; set; }
 
         public virtual DbSet<EmployeePersonalDetail> EmployeePersonalDetails { get; set; }
+        public virtual DbSet<EmployeeInsurancePolicy> EmployeeInsurancePolicies { get; set; }
 
-        public virtual DbSet<EmployeePolicy> EmployeePolicies { get; set; }
+
+        public virtual DbSet<EmployeeInsurancePolicy> EmployeePolicies { get; set; }
 
         public virtual DbSet<EmployeeStatusHistory> EmployeeStatusHistories { get; set; }
 
@@ -1029,6 +1031,7 @@ namespace ems.persistance.Data.Context
                     .HasConstraintName("FK_Employee_Tenant");
             });
 
+
             modelBuilder.Entity<EmployeeBankDetail>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC072E9F930F");
@@ -1042,6 +1045,7 @@ namespace ems.persistance.Data.Context
                     .HasColumnType("datetime");
                 entity.Property(e => e.BankName).HasMaxLength(100);
                 entity.Property(e => e.BranchName).HasMaxLength(100);
+                entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.Ifsccode)
                     .HasMaxLength(20)
                     .HasColumnName("IFSCCode");
@@ -1056,6 +1060,8 @@ namespace ems.persistance.Data.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_EmployeeBank_Employee");
             });
+
+
 
             modelBuilder.Entity<EmployeeCategorySkill>(entity =>
             {
@@ -1104,12 +1110,15 @@ namespace ems.persistance.Data.Context
                     .HasConstraintName("FK_WorkstationType");
             });
 
+
             modelBuilder.Entity<EmployeeDependent>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC074B6A13E2");
 
-                entity.ToTable("EmployeeDependents", "AxionPro");
+                entity.ToTable("EmployeeDependent", "AxionPro");
 
+                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.DependentName).HasMaxLength(200);
                 entity.Property(e => e.Description).HasMaxLength(255);
                 entity.Property(e => e.Relation).HasMaxLength(50);
@@ -1128,16 +1137,18 @@ namespace ems.persistance.Data.Context
             {
                 entity.ToTable("EmployeeEducation", "AxionPro");
 
+                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.Degree).HasMaxLength(50);
+                entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.EducationGap).HasDefaultValue(false);
                 entity.Property(e => e.GpaorPercentage)
                     .HasMaxLength(100)
                     .HasColumnName("GPAOrPercentage");
                 entity.Property(e => e.GradeOrPercentage).HasMaxLength(50);
                 entity.Property(e => e.InstituteName).HasMaxLength(100);
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
                 entity.Property(e => e.ReasonOfEducationGap).HasMaxLength(255);
                 entity.Property(e => e.Remark).HasMaxLength(100);
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Employee).WithMany(p => p.EmployeeEducations)
                     .HasForeignKey(d => d.EmployeeId)
@@ -1151,25 +1162,51 @@ namespace ems.persistance.Data.Context
 
                 entity.ToTable("EmployeeExperience", "AxionPro");
 
+                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.CompanyName)
                     .HasMaxLength(200)
                     .IsUnicode(false);
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.Ctc)
+                    .HasColumnType("decimal(18, 2)")
+                    .HasColumnName("CTC");
+                entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.IsVerified).HasDefaultValueSql("(NULL)");
                 entity.Property(e => e.JobTitle)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+                entity.Property(e => e.Location)
                     .HasMaxLength(100)
                     .IsUnicode(false);
                 entity.Property(e => e.ReasonForLeaving)
                     .HasMaxLength(500)
                     .IsUnicode(false);
                 entity.Property(e => e.Remark).HasMaxLength(500);
+                entity.Property(e => e.ReportingManagerEmail)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+                entity.Property(e => e.ReportingManagerName)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+                entity.Property(e => e.ReportingManagerNumber)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.WorkedWithContactNumber)
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+                entity.Property(e => e.WorkedWithDesignation)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+                entity.Property(e => e.WorkedWithName)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Employee).WithMany(p => p.EmployeeExperiences)
                     .HasForeignKey(d => d.EmployeeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_EmployeeExperience_Employee");
             });
-
+            
             modelBuilder.Entity<EmployeePersonalDetail>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC074796302D");
@@ -1177,7 +1214,9 @@ namespace ems.persistance.Data.Context
                 entity.ToTable("EmployeePersonalDetail", "AxionPro");
 
                 entity.Property(e => e.AadhaarNumber).HasMaxLength(20);
+                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.BloodGroup).HasMaxLength(10);
+                entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.DrivingLicenseNumber).HasMaxLength(20);
                 entity.Property(e => e.EmergencyContactName).HasMaxLength(100);
                 entity.Property(e => e.EmergencyContactNumber).HasMaxLength(15);
@@ -1185,6 +1224,7 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.Nationality).HasMaxLength(50);
                 entity.Property(e => e.PanNumber).HasMaxLength(20);
                 entity.Property(e => e.PassportNumber).HasMaxLength(20);
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.VoterId).HasMaxLength(20);
 
                 entity.HasOne(d => d.Employee).WithMany(p => p.EmployeePersonalDetails)
@@ -1193,14 +1233,17 @@ namespace ems.persistance.Data.Context
                     .HasConstraintName("FK_EmployeePersonalDetail_Employee");
             });
 
-            modelBuilder.Entity<EmployeePolicy>(entity =>
+            modelBuilder.Entity<EmployeeInsurancePolicy>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC0705F48FB6");
 
-                entity.ToTable("EmployeePolicy", "AxionPro");
+                entity.ToTable("EmployeeInsurancePolicy", "AxionPro");
 
+                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.Description).HasColumnType("text");
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<EmployeeStatusHistory>(entity =>
@@ -1353,6 +1396,30 @@ namespace ems.persistance.Data.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Interview__Inter__2BC97F7C");
             });
+
+            modelBuilder.Entity<InsurancePolicy>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__PolicyMa__3214EC07A7865FF0");
+
+                entity.ToTable("InsurancePolicy", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.AgentContactNumber).HasMaxLength(20);
+                entity.Property(e => e.AgentName).HasMaxLength(150);
+                entity.Property(e => e.AgentOfficeNumber).HasMaxLength(20);
+                entity.Property(e => e.CoverageType).HasMaxLength(100);
+                entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.Description).HasMaxLength(500);
+                entity.Property(e => e.EndDate).HasColumnType("datetime");
+                entity.Property(e => e.InsurancePolicyName).HasMaxLength(200);
+                entity.Property(e => e.InsurancePolicyNumber).HasMaxLength(100);
+                entity.Property(e => e.IsActive).HasDefaultValue(true);
+                entity.Property(e => e.ProviderName).HasMaxLength(100);
+                entity.Property(e => e.Remark).HasMaxLength(500);
+                entity.Property(e => e.StartDate).HasColumnType("datetime");
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+            });
+
 
             modelBuilder.Entity<InterviewPanel>(entity =>
             {

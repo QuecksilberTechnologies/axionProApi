@@ -1,4 +1,5 @@
-﻿using ems.application.Constants;
+﻿using ems.application.Common.Helpers;
+using ems.application.Constants;
 using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -119,11 +121,51 @@ namespace ems.persistance.Repositories
                 throw new Exception("An error occurred while adding employee. Please try again later.", ex);
             }
         }
+ 
+public async Task<bool> UpdateEmployeeFieldAsync(long employeeId, string fieldName, object? fieldValue, long updatedById)
+    {
+        try
+        {
+                var employee = await context.Employees.FirstOrDefaultAsync(e => e.Id == employeeId && !e.IsSoftDeleted == true && !e.IsActive == false);
 
+                if (employee == null)
+                return false;
 
-        // Method to fetch employee type by ID
+            // Get property (case-insensitive)
+            var propertyInfo = typeof(Employee)
+                .GetProperty(fieldName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
 
+            if (propertyInfo == null || !propertyInfo.CanWrite)
+                return false;
+
+            // ✅ Safe conversion
+            if (!TryConvertObjectToValue.TryConvertValue(fieldValue, propertyInfo.PropertyType, out var convertedValue))
+            {
+                Console.WriteLine($"[Conversion Failed] Field: {fieldName}, Value: {fieldValue}");
+                return false;
+            }
+
+            // ✅ Set the value
+            propertyInfo.SetValue(employee, convertedValue);
+
+            // ✅ Audit trail
+            employee.UpdatedById = updatedById;
+            employee.UpdatedDateTime = DateTime.UtcNow;
+
+            await context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[EXCEPTION] UpdateEmployeeFieldAsync: {ex.Message}");
+            return false;
+        }
     }
+
+
+    // Method to fetch employee type by ID
+
+}
 }
 
 

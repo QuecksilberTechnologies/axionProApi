@@ -43,8 +43,8 @@ namespace ems.application.Features.EmployeeCmd.Handlers
                     LastName = "Yadav",
                     MiddleName = "",
                     FirstName = "Yadav",
-                    DateOfBirth = new DateOnly(1990, 1, 15), // January 15, 1990
-                    DateOfOnBoarding = new DateOnly(2023, 5, 1), // May 1, 2023
+                    DateOfBirth = new DateTime(1990, 1, 15), // January 15, 1990
+                    DateOfOnBoarding = new DateTime(2023, 5, 1), // May 1, 2023
                     DateOfExit = null, // Still employed
                     //SpecializationId = 2, // Assuming this ID corresponds to a specialization
                     DesignationId = 3, // Assuming this ID corresponds to a designation

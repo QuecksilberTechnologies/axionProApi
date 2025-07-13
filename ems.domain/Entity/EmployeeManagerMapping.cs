@@ -51,6 +51,7 @@ namespace ems.domain.Entity
         public virtual ReportingType ReportingType { get; set; } = null!;
 
         public virtual Tenant Tenant { get; set; } = null!;
+
     }
 
 }
