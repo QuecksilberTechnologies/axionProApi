@@ -29,6 +29,11 @@ public partial class EmployeeDependent
     public DateTime? AddedDateTime { get; set; }
     public long? UpdatedById { get; set; }
     public bool? IsSoftDeleted { get; set; }
+    public long? InfoVerifiedById { get; set; }
+
+    public bool? IsInfoVerified { get; set; }
+
+    public DateTime? InfoVerifiedDateTime { get; set; }
 
     public long? DeletedById { get; set; }
     public DateTime? DeletedDateTime { get; set; }

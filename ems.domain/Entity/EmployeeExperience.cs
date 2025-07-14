@@ -21,9 +21,9 @@ public partial class EmployeeExperience
 
     public string? Remark { get; set; }
 
-    public bool? IsVerified { get; set; }
+    public bool? IsExperienceVerified { get; set; }
 
-    public long? VerifiedBy { get; set; }
+    public long? ExperienceVerificationBy { get; set; }
 
     public bool? IsSoftDeleted { get; set; }
 
@@ -60,6 +60,17 @@ public partial class EmployeeExperience
     public long? DeletedById { get; set; }
 
     public DateTime? DeletedDateTime { get; set; }
+
+    public bool? IsExperienceVerifiedByMail { get; set; }
+
+    public bool? IsExperienceVerifiedByCall { get; set; }
+
+    public long? InfoVerifiedById { get; set; }
+
+    public bool? IsInfoVerified { get; set; }
+
+    public DateTime? InfoVerifiedDateTime { get; set; }
+    public DateTime? ExperienceVerificationDateTime { get; set; }
 
     public virtual Employee Employee { get; set; } = null!;
 }

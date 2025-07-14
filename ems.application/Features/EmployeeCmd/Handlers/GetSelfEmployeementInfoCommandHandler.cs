@@ -53,11 +53,27 @@ namespace ems.application.Features.EmployeeCmd.Handlers
                 var employee = await _employeeRepository.GetEmployeeByIdAsync(empId);
                 if (employee == null)
                     return ApiResponse<GetEmployeeInfoWithAccessResponseDTO>.Fail("Employee data not found.");
-                   CreateEmployeeByTenantAdminRequestDTO adminDto = _mapper.Map<CreateEmployeeByTenantAdminRequestDTO>(employee);
-                var accessDto = EmployeeMapperHelper.ConvertToAccessResponseDTO(adminDto);
-                // ✅ Map manually from employee to GetEmployeeInfoWithAccessResponseDTO (ReadOnly = true)
+                if (employee.IsEditAllowed == true || employee.IsEditAllowed == null)
+                {
 
-                return ApiResponse<GetEmployeeInfoWithAccessResponseDTO>.Success(accessDto);
+                    GetEditableEmployeeProfileInfoRequestDTO adminDto = _mapper.Map<GetEditableEmployeeProfileInfoRequestDTO>(employee);
+
+                    Console.WriteLine("Verification status not set.");
+                    var accessDto = EmployeeProfileInfoMapperHelper.ConvertToAccessResponseDTO(adminDto);
+
+                    return ApiResponse<GetEmployeeInfoWithAccessResponseDTO>.Success(accessDto);
+                }
+                else
+                {
+                    GetDisabledEmployeeProfileInfoRequestDTO adminDto = _mapper.Map<GetDisabledEmployeeProfileInfoRequestDTO>(employee);
+
+                    var accessDto = EmployeeProfileInfoMapperHelper.ConvertToAccessResponseDTO(adminDto);
+                 
+
+                    return ApiResponse<GetEmployeeInfoWithAccessResponseDTO>.Success(accessDto);
+                }
+
+
             }
             catch (Exception ex)
             {
@@ -68,6 +84,9 @@ namespace ems.application.Features.EmployeeCmd.Handlers
 
 
     }
+
+
+
 }
 
 

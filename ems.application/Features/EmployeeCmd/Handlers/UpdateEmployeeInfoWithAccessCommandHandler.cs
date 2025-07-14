@@ -35,7 +35,7 @@ namespace ems.application.Features.EmployeeCmd.Handlers
         {
             try
             {
-                var dto = request.Dto;
+                var dto = request.updateEmployeeInfoWithAccessRequest;
 
                 if (string.IsNullOrWhiteSpace(dto.FieldName))
                     return ApiResponse<bool>.Fail("Field name is required.");
@@ -45,10 +45,10 @@ namespace ems.application.Features.EmployeeCmd.Handlers
                     return ApiResponse<bool>.Fail("Employee not found.");
 
                 // 👇 Step 1: Convert to Create DTO
-                var createDto = _mapper.Map<CreateEmployeeByTenantAdminRequestDTO>(employee);
+                var createDto = _mapper.Map<GetEditableEmployeeProfileInfoRequestDTO>(employee);
 
                 // 👇 Step 2: Generate FieldWithAccess version (for read-only info)
-                var accessDto = EmployeeMapperHelper.ConvertToAccessResponseDTO(createDto);
+                var accessDto = EmployeeProfileInfoMapperHelper.ConvertToAccessResponseDTO(createDto);
 
                 // 👇 Step 3: Find property info (case-insensitive)
                 var accessProp = typeof(GetEmployeeInfoWithAccessResponseDTO)

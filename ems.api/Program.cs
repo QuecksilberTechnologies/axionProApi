@@ -1,4 +1,5 @@
 ﻿using ems.api.Common;
+using ems.api.Common.Swagger;
 using ems.api.Middlewares;
 using ems.application;
 using ems.infrastructure;
@@ -66,7 +67,36 @@ try
     builder.Services.AddSwaggerGen(c =>
     {
         c.SwaggerDoc("v1", new OpenApiInfo { Title = "Axion-Pro API", Version = "1.0" });
-        c.SchemaFilter<NullSchemaFilter>(); // ✅ This line is important
+
+        c.SchemaFilter<NullSchemaFilter>();
+
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Enter 'Bearer' followed by space and your JWT token.\n\nExample: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+        });
+
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] { }
+        }
+    });
+
+        // ✅ Yeh line add karo!
+        c.OperationFilter<AuthorizeCheckOperationFilter>();
     });
 
     builder.Services.AddApplication();

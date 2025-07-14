@@ -29,13 +29,17 @@ namespace ems.application.DTOs.Employee
         public FieldWithAccess<string?> Remark { get; set; } = new();
 
         // Audit Fields
-        public FieldWithAccess<long?> AddedById { get; set; } = new();
+        public FieldWithAccess<long?>AddedById { get; set; } = new();
         public FieldWithAccess<DateTime?> AddedDateTime { get; set; } = new();
         public FieldWithAccess<long?> UpdatedById { get; set; } = new();
         public FieldWithAccess<DateTime?> UpdatedDateTime { get; set; } = new();
         public FieldWithAccess<long?> DeletedById { get; set; } = new();
         public FieldWithAccess<DateTime?> DeletedDateTime { get; set; } = new();
         public FieldWithAccess<bool> IsSoftDeleted { get; set; } = new();
+        public FieldWithAccess<long?> InfoVerifiedById { get; set; } = new();
+        public FieldWithAccess<DateTime?> InfoVerifiedDateTime { get; set; } = new();
+        public FieldWithAccess<bool> IsInfoVerified { get; set; } = new();
+
     }
 
 }

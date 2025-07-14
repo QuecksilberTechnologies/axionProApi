@@ -1011,12 +1011,13 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.FirstName).HasMaxLength(100);
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
                 entity.Property(e => e.IsSoftDeleted).HasDefaultValue(false);
+                entity.Property(e => e.IsEditAllowed).HasDefaultValue(false);
                 entity.Property(e => e.LastName).HasMaxLength(100);
                 entity.Property(e => e.MiddleName).HasMaxLength(100);
                 entity.Property(e => e.OfficialEmail).HasMaxLength(255);
                 entity.Property(e => e.Remark).HasMaxLength(200);
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
-
+               // entity.Property(e => e.InfoVerifiedDateTime).HasColumnType("datetime");
                 entity.HasOne(d => d.Designation).WithMany(p => p.Employees)
                     .HasForeignKey(d => d.DesignationId)
                     .OnDelete(DeleteBehavior.SetNull)
@@ -1030,6 +1031,7 @@ namespace ems.persistance.Data.Context
                     .HasForeignKey(d => d.TenantId)
                     .HasConstraintName("FK_Employee_Tenant");
             });
+
 
 
             modelBuilder.Entity<EmployeeBankDetail>(entity =>
@@ -1054,6 +1056,7 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.Upiid)
                     .HasMaxLength(100)
                     .HasColumnName("UPIId");
+                entity.Property(e => e.InfoVerifiedDateTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Employee).WithMany(p => p.EmployeeBankDetails)
                     .HasForeignKey(d => d.EmployeeId)
@@ -1126,12 +1129,14 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.UpdatedDateTime)
                     .HasDefaultValueSql("(getdate())")
                     .HasColumnType("datetime");
+                entity.Property(e => e.InfoVerifiedDateTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Employee).WithMany(p => p.EmployeeDependents)
                     .HasForeignKey(d => d.EmployeeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_EmployeeDependents_Employee");
             });
+
 
             modelBuilder.Entity<EmployeeEducation>(entity =>
             {
@@ -1149,6 +1154,7 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.ReasonOfEducationGap).HasMaxLength(255);
                 entity.Property(e => e.Remark).HasMaxLength(100);
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.InfoVerifiedDateTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Employee).WithMany(p => p.EmployeeEducations)
                     .HasForeignKey(d => d.EmployeeId)
@@ -1170,7 +1176,7 @@ namespace ems.persistance.Data.Context
                     .HasColumnType("decimal(18, 2)")
                     .HasColumnName("CTC");
                 entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
-                entity.Property(e => e.IsVerified).HasDefaultValueSql("(NULL)");
+                entity.Property(e => e.IsExperienceVerified).HasDefaultValueSql("(NULL)");
                 entity.Property(e => e.JobTitle)
                     .HasMaxLength(100)
                     .IsUnicode(false);
@@ -1191,6 +1197,8 @@ namespace ems.persistance.Data.Context
                     .HasMaxLength(20)
                     .IsUnicode(false);
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.ExperienceVerificationDateTime).HasColumnType("datetime");
+                entity.Property(e => e.InfoVerifiedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.WorkedWithContactNumber)
                     .HasMaxLength(20)
                     .IsUnicode(false);
@@ -1206,7 +1214,8 @@ namespace ems.persistance.Data.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_EmployeeExperience_Employee");
             });
-            
+
+
             modelBuilder.Entity<EmployeePersonalDetail>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Employee__3214EC074796302D");
@@ -1226,6 +1235,7 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.PassportNumber).HasMaxLength(20);
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.VoterId).HasMaxLength(20);
+                entity.Property(e => e.InfoVerifiedDateTime).HasColumnType("datetime");
 
                 entity.HasOne(d => d.Employee).WithMany(p => p.EmployeePersonalDetails)
                     .HasForeignKey(d => d.EmployeeId)

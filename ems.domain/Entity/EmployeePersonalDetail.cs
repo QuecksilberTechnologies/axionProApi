@@ -35,7 +35,9 @@ public partial class EmployeePersonalDetail
     public long? UpdatedById { get; set; }
     public DateTime? UpdatedDateTime { get; set; }
     public bool? IsSoftDeleted { get; set; }
-
+    public long? InfoVerifiedById { get; set; }
+    public bool? IsInfoVerified { get; set; }
+    public DateTime? InfoVerifiedDateTime { get; set; }
     public long? DeletedById { get; set; }
     public DateTime? DeletedDateTime { get; set; }
 }

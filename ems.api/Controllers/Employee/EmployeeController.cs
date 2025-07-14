@@ -4,8 +4,13 @@ using ems.application.Features.EmployeeCmd.Commands;
 using ems.application.Features.UserLoginAndDashboardCmd.Commands;
 using ems.application.Interfaces.ILogger;
 using ems.application.Wrappers;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.ComponentModel;
+using System.Reflection;
+using System.Security.AccessControl;
 
 namespace ems.api.Controllers.Employee;
 
@@ -22,19 +27,19 @@ public class EmployeeController : ControllerBase
         _logger = logger;  // Logger service ko inject karna
     }
 
-    [HttpPost("create-employee-by-permitted-user")]
-    public async Task<IActionResult> CreateEmployee([FromBody] CreateEmployeeRequestDTO employeeCreateDto)
-    {
-        var command = new CreateEmployeeCommand(employeeCreateDto);
-        _logger.LogInfo("Creating new employee"); // Log the info message
+    //[HttpPost("create-employee-by-permitted-user")]
+    //public async Task<IActionResult> CreateEmployee([FromBody] CreateEmployeeRequestDTO employeeCreateDto)
+    //{
+    //    var command = new CreateEmployeeCommand(employeeCreateDto);
+    //    _logger.LogInfo("Creating new employee"); // Log the info message
 
-        var result = await _mediator.Send(command);
+    //    var result = await _mediator.Send(command);
 
-        return Ok(result);
-    }
+    //    return Ok(result);
+    //}
 
-    [HttpPost("create-employee-by-tenant-admin-with-minimal-info")]
-    public async Task<IActionResult> CreateByAdminEmployee([FromBody] CreateEmployeeByTenantAdminRequestDTO employeeCreateDto)
+    [HttpPost("create-employee-by-tenant-permitted-user")]
+    public async Task<IActionResult> CreateByAdminEmployee([FromBody] CreateEmployeeByTenantPermittedUserRequestDTO employeeCreateDto)
     {
         var command = new CreateEmployeeByTenantAdminCommand(employeeCreateDto);
          _logger.LogInfo("Creating new employee"); // Log the info message
@@ -104,9 +109,9 @@ public class EmployeeController : ControllerBase
             return StatusCode(500, errorResponse);
         }
     }
-
+ 
     
-    [HttpPost("get-active-employee-info-to-update-by-id")]
+    [HttpPost("get-my-editable-employee-profile-info")]
     public async Task<IActionResult> GetEmployeeById([FromBody] GetEmployeeInfoRequestDTO requestDto)
     {
         try
@@ -134,17 +139,21 @@ public class EmployeeController : ControllerBase
             return StatusCode(500, errorResponse);
         }
     }
-    [HttpPut("update-employee-field-by-tenant-user-him-self")]
-    public async Task<IActionResult> UpdateEmployeeField([FromBody] UpdateEmployeeInfoWithAccessCommand command)
+    [HttpPut("update-employee-field-by-tenant-user")]
+    public async Task<IActionResult> UpdateEmployeeField([FromBody] UpdateEmployeeInfoWithAccessRequestDTO commandDto)
     {
-        if (command?.Dto == null || string.IsNullOrWhiteSpace(command.Dto.FieldName))
+        if (commandDto == null || string.IsNullOrWhiteSpace(commandDto.FieldName))
         {
             return BadRequest(ApiResponse<bool>.Fail("Invalid request. Field name is required."));
         }
 
         try
         {
-            var result = await _mediator.Send(command);
+            // ✅ Wrap DTO in the command class
+            var command = new UpdateEmployeeInfoWithAccessCommand(commandDto);
+
+            // ✅ Send command instead of DTO
+            ApiResponse<bool> result = await _mediator.Send(command);
 
             if (result.IsSucceeded)
                 return Ok(result);
@@ -158,6 +167,7 @@ public class EmployeeController : ControllerBase
             return StatusCode(500, errorResponse);
         }
     }
+
 
 
 }

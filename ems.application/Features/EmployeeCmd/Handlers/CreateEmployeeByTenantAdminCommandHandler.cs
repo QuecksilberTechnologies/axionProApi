@@ -53,7 +53,7 @@ namespace ems.application.Features.EmployeeCmd.Handlers
 
                 // 🔐 Get current logged-in userId from JWT token
                 Claim? userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier);
-                if (userIdClaim != null)
+                if (userIdClaim == null)
                 {
                     return ApiResponse<long>.Fail("Unauthorized: User ID not found in token.");
                 }

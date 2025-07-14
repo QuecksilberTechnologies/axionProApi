@@ -11,11 +11,11 @@ namespace ems.application.Features.EmployeeCmd.Commands
 {
     public class UpdateEmployeeInfoWithAccessCommand : IRequest<ApiResponse<bool>>
     {
-        public UpdateEmployeeInfoWithAccessRequestDTO Dto { get; set; }
+        public UpdateEmployeeInfoWithAccessRequestDTO updateEmployeeInfoWithAccessRequest { get; set; }
 
         public UpdateEmployeeInfoWithAccessCommand(UpdateEmployeeInfoWithAccessRequestDTO dto)
         {
-            Dto = dto;
+            updateEmployeeInfoWithAccessRequest = dto;
         }
 
     }

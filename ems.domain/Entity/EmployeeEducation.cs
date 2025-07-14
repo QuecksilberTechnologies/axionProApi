@@ -41,5 +41,9 @@ public partial class EmployeeEducation
     public long? DeletedById { get; set; }
     public DateTime? DeletedDateTime { get; set; }
     public bool? IsSoftDeleted { get; set; }
+    public bool? IsInfoVerified { get; set; }
+    public long? InfoVerifiedById { get; set; }
+
+    public DateTime? InfoVerifiedDateTime { get; set; }
 
 }

@@ -33,8 +33,12 @@ public partial class EmployeeBankDetail
     public bool? IsSoftDeleted { get; set; }
     
     public DateTime? UpdatedDateTime { get; set; }
+    public bool? IsInfoVerified { get; set; }
+    public long? InfoVerifiedById { get; set; }
 
-  
+    public DateTime? InfoVerifiedDateTime { get; set; }
+
+
 
 
 }

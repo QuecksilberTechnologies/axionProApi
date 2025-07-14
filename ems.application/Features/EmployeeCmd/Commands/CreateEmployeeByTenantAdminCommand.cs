@@ -11,9 +11,9 @@ namespace ems.application.Features.EmployeeCmd.Commands
 {
     public class CreateEmployeeByTenantAdminCommand : IRequest<ApiResponse<long>>
     {
-        public CreateEmployeeByTenantAdminRequestDTO Dto { get; set; }
+        public CreateEmployeeByTenantPermittedUserRequestDTO Dto { get; set; }
 
-        public CreateEmployeeByTenantAdminCommand(CreateEmployeeByTenantAdminRequestDTO dto)
+        public CreateEmployeeByTenantAdminCommand(CreateEmployeeByTenantPermittedUserRequestDTO dto)
         {
             Dto = dto;
         }
