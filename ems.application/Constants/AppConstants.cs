@@ -32,13 +32,29 @@ namespace ems.application.Constants
         public static readonly bool fail= false;
         public static readonly DateTime ExpireTokenDate = DateTime.UtcNow.AddDays(5);
         public static readonly string IP ="100.100.100.100";
-        public static readonly string SuperAdminRoleName = "Super-Admin";
-        public static readonly string SuperAdminRoleType = "System";
-        public static readonly string TenantAdminRoleType = "Tenant";
-        public static readonly string SuperAdminRoleCode = "Auth-0";
-        public static readonly string TenantAdminRoleCode = "Tenant-Admin";
-        public static readonly string TenantAdminName = "Tenant-Admin"; 
-        public static readonly string TenantAdminRoleRemark = "This is an auto-generated Admin account by AI for the initial setup of the tenant.";
+        public static readonly string SuperAdminRoleName = "Super Admin";
+        public static readonly string SuperAdminRoleType = "SYSTEM";
+        public static readonly string SuperAdminRoleCode = "Auth_0";
+
+
+        public static readonly string TenantAdminRoleName = "Admin";
+        public static readonly string TenantAdminRoleType = "TENANT";
+        public static readonly string TenantAdminRoleCode = "TENANT_ADMIN";
+       
+        
+        public static readonly string TenantHRRoleCode = "TENANT_HR";
+        public static readonly string TenantHRRoleType = "TENANT_OPERATIONAL";
+        public static readonly string TenantHRManagerRoleName = "HR Manager";
+
+
+        public static readonly string TenantEmployeeRoleCode = "TENANT_EMPLOYEE";
+        public static readonly string TenantEmployeeRoleType = "EMPLOYEE";
+        public static readonly string TenantEmployeeRoleName = "Employee";
+
+
+
+
+        public static readonly string TenantAllRoleRemark = "This is an auto-generated Admin account by AI for the initial setup of the tenant.";
         public static readonly bool IsByDefaultTrue = true;
         public static readonly bool IsByDefaultFalse = false;         
         public static readonly long SystemUserIdByDefaultZero = 0; // For system-generated entries

@@ -14,6 +14,7 @@ public interface IUnitOfWork : IDisposable
     IForgotPasswordOtpRepository ForgotPasswordOtpRepository {  get; }
     ITenantModuleConfigurationRepository TenantModuleConfigurationRepository { get; }
 
+     IDepartmentRepository DepartmentRepository { get; }
 
 
     ICommonRepository CommonRepository { get; }

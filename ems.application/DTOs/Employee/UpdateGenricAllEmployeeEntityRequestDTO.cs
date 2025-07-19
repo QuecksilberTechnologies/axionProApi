@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Employee
 {
-    public class UpdateEmployeeInfoWithAccessRequestDTO
+    public class UpdateGenricAllEmployeeEntityRequestDTO
     {
         public long EmployeeId { get; set; }
         public string FieldName { get; set; } = string.Empty;
+        public string EntityName { get; set; } = string.Empty;
         public object? FieldValue { get; set; }
         public long UpdatedById { get; set; }
     }

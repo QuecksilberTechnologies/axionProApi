@@ -8,21 +8,22 @@ using ems.domain.Entity;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
-using ems.application.DTOs.Employee;
+using ems.application.DTOs.Employee.AccessResponse;
+using ems.application.DTOs.Employee.AccessControlType;
 
 namespace ems.application.Features.EmployeeCmd.Handlers
 {
-    public class UpdateEmployeeInfoWithAccessCommandHandler : IRequestHandler<UpdateEmployeeInfoWithAccessCommand, ApiResponse<bool>>
+    public class UpdateEmployeeBasicInfoWithAccessCommandHandler : IRequestHandler<UpdateEmployeeInfoWithAccessCommand, ApiResponse<bool>>
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<UpdateEmployeeInfoWithAccessCommandHandler> _logger;
+        private readonly ILogger<UpdateEmployeeBasicInfoWithAccessCommandHandler> _logger;
         private readonly IMapper _mapper;
 
-        public UpdateEmployeeInfoWithAccessCommandHandler(
+        public UpdateEmployeeBasicInfoWithAccessCommandHandler(
             IEmployeeRepository employeeRepository,
             IUnitOfWork unitOfWork,
-            ILogger<UpdateEmployeeInfoWithAccessCommandHandler> logger,
+            ILogger<UpdateEmployeeBasicInfoWithAccessCommandHandler> logger,
             IMapper mapper)
         {
             _employeeRepository = employeeRepository;
@@ -43,12 +44,11 @@ namespace ems.application.Features.EmployeeCmd.Handlers
                 var employee = await _employeeRepository.GetEmployeeByIdAsync(dto.EmployeeId);
                 if (employee == null)
                     return ApiResponse<bool>.Fail("Employee not found.");
-
-                // 👇 Step 1: Convert to Create DTO
-                var createDto = _mapper.Map<GetEditableEmployeeProfileInfoRequestDTO>(employee);
+ 
+                var createDto = _mapper.Map<EmployeeInfoEditableFieldsDTO>(employee);
 
                 // 👇 Step 2: Generate FieldWithAccess version (for read-only info)
-                var accessDto = EmployeeProfileInfoMapperHelper.ConvertToAccessResponseDTO(createDto);
+                var accessDto = EmployeeBasicInfoMapperHelper.ConvertToAccessResponseDTO(createDto);
 
                 // 👇 Step 3: Find property info (case-insensitive)
                 var accessProp = typeof(GetEmployeeInfoWithAccessResponseDTO)
@@ -89,7 +89,7 @@ namespace ems.application.Features.EmployeeCmd.Handlers
                 employee.UpdatedDateTime = DateTime.UtcNow;
 
                 // 👇 Step 9: Save using repository
-                var updateStatus = await _unitOfWork.Employees.UpdateEmployeeFieldAsync(dto.EmployeeId, dto.FieldName, convertedValue, dto.UpdatedById);
+                var updateStatus = await _unitOfWork.Employees.UpdateEmployeeFieldAsync(dto.EmployeeId,dto.EntityName, dto.FieldName, convertedValue, dto.UpdatedById);
 
                 if (!updateStatus)
                     return ApiResponse<bool>.Fail("Failed to update employee record.");

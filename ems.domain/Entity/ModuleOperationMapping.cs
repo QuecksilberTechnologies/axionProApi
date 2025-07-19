@@ -10,7 +10,7 @@ public partial class ModuleOperationMapping
 
     public int OperationId { get; set; }
 
-    public string? DisplayName { get; set; }
+  //  public string? DisplayName { get; set; }
 
     public string? PageUrl { get; set; }
 

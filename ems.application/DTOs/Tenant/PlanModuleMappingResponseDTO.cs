@@ -17,7 +17,7 @@ namespace ems.application.DTOs.Tenant
     {
         public int MainModuleId { get; set; }
         public string? MainModuleName { get; set; }
-        //public string? DisplayName { get; set; }
+        public string? DisplayName { get; set; }
         public int ModuleId { get; set; }
         public int? ParentModuleId { get; set; }
         public string? ModuleName { get; set; }

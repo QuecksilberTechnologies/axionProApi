@@ -10,6 +10,15 @@ namespace ems.application.DTOs.SubscriptionModule
     {
         public long Id { get; set; }
         public string? PlanName { get; set; }
+        public int?  MaxUsers { get; set; }
+        public bool? IsMostPopular { get; set; }
+        public bool? IsCustom { get; set; }
+        public bool? IsFree { get; set; }
+        public string? CurrencyKey { get; set; }
+        public decimal? PerDayPrice { get; set; }
+        public decimal? MonthlyPrice { get; set; }
+        public decimal? YearlyPrice { get; set; }
+
         public List<ModuleActiveDTO>? Modules { get; set; }
     }
 
@@ -19,6 +28,7 @@ namespace ems.application.DTOs.SubscriptionModule
         public string? ModuleName { get; set; }
         public string? DisplayName { get; set; }
         public long ParentModuleId { get; set; }
+
         public List<ModuleActiveDTO> ChildModules { get; set; } = new();
         public List<OperationActiveDTO> Operations { get; set; } = new();
     }

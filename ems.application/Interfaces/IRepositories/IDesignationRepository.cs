@@ -19,8 +19,9 @@ namespace ems.application.Interfaces.IRepositories
 
         // Get all designation
         Task<List<Designation>> GetAllDesignationAsync(long? TenantId,bool isActive);
-        Task<List<Designation>> GetAllActiveDesignationAsync(long? TenantId);
-        Task<bool> AutoCreateDesignationAsync(Designation designation);
+        Task<List<Designation>> GetAllDesignationWithDepartmentAsync(long? TenantId,bool isActive,int? Department);
+        Task<List<Designation>> GetAllActiveDesignationWithDepartmentAsync(long? TenantId, int? Department);
+        Task<int> AutoCreateDesignationAsync(List <Designation> designation, int departmentId);
         // Update an existing designation
         Task<bool> UpdateDesignationAsync(Designation designation);
 

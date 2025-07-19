@@ -1,4 +1,5 @@
 ﻿using ems.application.Constants;
+using ems.application.DTOs.Role;
 using ems.application.Interfaces;
 using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
@@ -30,39 +31,10 @@ namespace ems.persistance.Repositories
             _logger = logger;
         }
 
-        public async Task<int> AutoCreateUserRoleAndAutomatedRolePermissionMappingAsync(long? tenantId, long employeeId, Role role)
+        public async Task<int> AutoCreateUserRoleAndAutomatedRolePermissionMappingAsync(long? tenantId, long employeeId, int role)
         {
             try
-            {
-                //// 1. Role Create
-                //role.TenantId = tenantId;
-                //role.IsActive = true;
-                //role.Remark = "System Generated Role";
-                //role.AddedById = tenantId;
-                //role.AddedDateTime = DateTime.Now;
-
-                //await _context.Roles.AddAsync(role);
-                //await _context.SaveChangesAsync(); // Ensure role.Id is generated
-
-                // 2. UserRole Create
-                //var userRole = new UserRole
-                //{
-                //    EmployeeId = employeeId,
-                //    RoleId = role.Id,
-                //    IsActive = true,
-                //    IsPrimaryRole = true,
-                //    Remark = "System Generated user-role",
-                //    AssignedById = tenantId,
-                //    AssignedDateTime = DateTime.Now,
-                //    AddedById = tenantId,
-                //    AddedDateTime = DateTime.Now,
-                //    ApprovalRequired = false,
-                //    ApprovalStatus = null,
-                //    RoleStartDate = DateTime.Now,
-                //    IsSoftDeleted = false
-                //};
-
-                //await _context.UserRoles.AddAsync(userRole);
+            { 
 
                 // 3. Fetch TenantEnabledOperation list for that tenant
                 var enabledOperations = await _context.TenantEnabledOperations
@@ -72,7 +44,7 @@ namespace ems.persistance.Repositories
                 // 4. Convert to RoleModuleAndPermission
                 var rolePermissions = enabledOperations.Select(op => new RoleModuleAndPermission
                 {
-                    RoleId = role.Id,
+                    RoleId = role,
                     ModuleId = op.ModuleId,
                     OperationId = op.OperationId,
                     HasAccess = true,
@@ -96,6 +68,42 @@ namespace ems.persistance.Repositories
                 throw;
             }
         }
+
+     
+        public async Task<List<Role>> GetAllActiveRolesSummaryAsync(long? tenantId)
+        {
+            try
+            {
+                _logger.LogInformation("Fetching roles for TenantId: {TenantId}", tenantId);
+
+                IQueryable<Role> query = _context.Roles.AsQueryable();
+
+                // ✅ Apply filters
+                if (tenantId > 0)
+                    query = query.Where(r => r.TenantId == tenantId);
+                    query = query.Where(r => r.IsActive == true && r.IsSoftDeleted == false);
+
+                // ✅ Optional: check for soft delete if column exists
+                // query = query.Where(r => r.IsSoftDeleted == false);
+
+                var roles = await query.OrderBy(r => r.RoleName).ToListAsync();
+
+                if (roles == null || !roles.Any())
+                {
+                    _logger.LogWarning("No roles found for TenantId: {TenantId}", tenantId);
+                    return new List<Role>();
+                }
+
+                _logger.LogInformation("Successfully retrieved {Count} roles.", roles.Count);
+                return roles;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching roles for TenantId: {TenantId}", tenantId);
+                return new List<Role>();
+            }
+        }
+
 
         public async Task<List<Role>> GetAllActiveRolesAsync(Role role)
         {
@@ -299,7 +307,7 @@ namespace ems.persistance.Repositories
             }
         }
 
-        public async Task<Role> AutoCreatedForTenantRoleAsync(Role role)
+        public async Task<Role> AutoCreatedSingleTenantRoleAsync(Role role)
         {
             try
             {
@@ -338,6 +346,63 @@ namespace ems.persistance.Repositories
             }
         }
 
-       
+        public async Task<int> AutoCreatedForTenantRoleAsync(List<Role> roles)
+        {
+            try
+            {
+                if (roles == null || !roles.Any())
+                {
+                    _logger.LogWarning("AutoCreatedForTenantRoleAsync: Received null or empty role list.");
+                    throw new ArgumentNullException(nameof(roles), "Role list cannot be null or empty.");
+                }
+
+                foreach (var role in roles)
+                {
+                    _logger.LogInformation("Creating Role for TenantId: {TenantId}, RoleName: {RoleName}", role.TenantId, role.RoleName);
+                    role.AddedDateTime = DateTime.Now;
+                }
+
+                await _context.Roles.AddRangeAsync(roles);
+                var insertedCount = await _context.SaveChangesAsync();
+
+                _logger.LogInformation("{Count} Role(s) saved in DB.", insertedCount);
+
+                // 🔍 Each Role insert = 1 row affected → insertedCount should match roles.Count
+                if (insertedCount != roles.Count)
+                {
+                    _logger.LogError("Mismatch in role insert count. Expected: {Expected}, Inserted: {Inserted}",
+                                     roles.Count, insertedCount);
+                    return -1;
+                }
+
+                // 🔍 Return only the Tenant-Admin Role Id
+                var tenantAdminRole = await _context.Roles
+                    .Where(r => r.RoleCode == ConstantValues.TenantAdminRoleCode && !r.IsSoftDeleted==true && r.IsActive==true)
+                    .OrderByDescending(r => r.Id)
+                    .FirstOrDefaultAsync();
+
+                if (tenantAdminRole != null)
+                {
+                    _logger.LogInformation("Tenant-Admin role created successfully with Id: {Id}", tenantAdminRole.Id);
+                    return tenantAdminRole.Id;
+                }
+
+                _logger.LogWarning("Tenant-Admin role not found after insert.");
+                return -1;
+            }
+            catch (DbUpdateException dbEx)
+            {
+                _logger.LogError(dbEx, "Database update failed while creating roles.");
+                throw;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred in AutoCreatedForTenantRoleAsync.");
+                throw;
+            }
+        }
+
+      
+      
     }
 }

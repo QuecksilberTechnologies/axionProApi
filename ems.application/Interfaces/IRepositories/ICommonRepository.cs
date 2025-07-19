@@ -1,4 +1,5 @@
-﻿using ems.application.DTOs.Operation;
+﻿using ems.application.DTOs.Module.NewFolder;
+using ems.application.DTOs.Operation;
 using ems.application.DTOs.ProjectModule;
 using ems.application.DTOs.RoleModulePermission;
 using ems.application.DTOs.UserLogin;
@@ -25,9 +26,9 @@ namespace ems.application.Interfaces.IRepositories
             UpdateTenantEnabledOperationFromModuleOperationRequestDTO request);
 
         Task<List<RoleModuleOperationResponseDTO>> GetActiveRoleModuleOperationsAsync( GetActiveRoleModuleOperationsRequestDTO request);
-        
 
-          Task<bool> GetHasAccessOperation(CheckOperationPermissionRequestDTO checkOperationPermissionRequest);
+        Task<List<SubscribedModuleResponseDTO>> GetSubscribedModulesByTenantAsync(long tenantId);
+        Task<bool> GetHasAccessOperation(CheckOperationPermissionRequestDTO checkOperationPermissionRequest);
         Task<bool> HasPermissionAsync(long userId, string permissionCode);
         Task<bool> IsTenantValidAsync(long userId, long? TenantId);
 

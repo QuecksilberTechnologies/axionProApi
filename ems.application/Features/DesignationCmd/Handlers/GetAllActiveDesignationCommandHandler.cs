@@ -32,18 +32,29 @@ namespace ems.application.Features.DesignationCmd.Handlers
     {
         try
         {
-            // 🔍 Validate TenantId
-            if (request.dto.TenantId == null || request.dto.TenantId <= 0)
-            {
-                return new ApiResponse<List<GetAllDesignationDTO>>
+                // 🔍 Validate TenantId
+                if (request.dto.TenantId == null || request.dto.TenantId <= 0)
                 {
-                    IsSucceeded = false,
-                    Message = "Tenant Id should be provided.",
-                    Data = null
-                };
-            }
-            List<Designation> designations = await _unitOfWork.DesignationRepository
-                .GetAllActiveDesignationAsync(request.dto.TenantId);
+                    return new ApiResponse<List<GetAllDesignationDTO>>
+                    {
+                        IsSucceeded = false,
+                        Message = "Tenant Id should be provided.",
+                        Data = null
+                    };
+                }
+
+                if (request.dto.DepartmentId == null || request.dto.DepartmentId <= 0)
+                {
+                    return new ApiResponse<List<GetAllDesignationDTO>>
+                    {
+                        IsSucceeded = false,
+                        Message = "Department Id should be provided.",
+                        Data = null
+                    };
+                }
+
+                List<Designation> designations = await _unitOfWork.DesignationRepository
+                .GetAllActiveDesignationWithDepartmentAsync(request.dto.TenantId, request.dto.DepartmentId);
 
             // 🔍 Filter on IsActive and IsSoftDeleted if needed            
 

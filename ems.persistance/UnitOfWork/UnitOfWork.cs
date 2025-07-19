@@ -25,7 +25,7 @@ public class UnitOfWork  : IUnitOfWork
     private readonly ILoggerFactory _loggerFactory;
     private IDbContextTransaction? _currentTransaction;
     private IForgotPasswordOtpRepository _forgotPasswordOtpRepository;
-
+    private IDepartmentRepository _departmentRepository;
 
     private ITenantModuleConfigurationRepository? _tenantModuleConfigurationRepository;
     private IPlanModuleMappingRepository? _planModuleMappingRepository;
@@ -247,6 +247,7 @@ public class UnitOfWork  : IUnitOfWork
 
     public IOperationRepository OperationRepository => new OperationRepository(_context, _loggerFactory.CreateLogger<OperationRepository>());
     public IDesignationRepository DesignationRepository => new DesignationRepository(_context, _loggerFactory.CreateLogger<DesignationRepository>());
+    public IDepartmentRepository DepartmentRepository => new DepartmentRepository(_context, _loggerFactory.CreateLogger<DepartmentRepository>());
 
 
     public ICategoryRepository CategoryRepository

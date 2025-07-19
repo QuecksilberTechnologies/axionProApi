@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ems.application.DTOs.Module;
+using ems.application.DTOs.Module.NewFolder;
 using ems.application.DTOs.Operation;
 using ems.application.DTOs.ProjectModule;
 using ems.application.DTOs.RoleModulePermission;
@@ -60,7 +61,46 @@ namespace ems.persistance.Repositories
                 throw;
             }
         }
-     //   The required column 'ParentModuleName' was not present in the results of a 'FromSql' operation.
+
+
+        public async Task<List<SubscribedModuleResponseDTO>> GetSubscribedModulesByTenantAsync(long tenantId)
+        {
+            try
+            {
+                _logger.LogInformation("Fetching subscribed modules for TenantId: {TenantId}", tenantId);
+
+                var tenantIdParam = new SqlParameter("@TenantId", tenantId);
+
+                string sqlQuery = "EXEC AxionPro.GetSubscribedModuleByTenantId @TenantId";
+
+                var result = await _context.SubscribedModuleResponseDTOs
+                    .FromSqlRaw(sqlQuery, tenantIdParam)
+                    .ToListAsync();
+
+                if (result == null || !result.Any())
+                {
+                    _logger.LogWarning("No modules found for TenantId: {TenantId}", tenantId);
+                    return new List<SubscribedModuleResponseDTO>();
+                }
+
+                _logger.LogInformation("Total {Count} modules fetched for TenantId: {TenantId}", result.Count, tenantId);
+                return result;
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "SQL Exception occurred while fetching subscribed modules for TenantId: {TenantId}", tenantId);
+                return new List<SubscribedModuleResponseDTO>();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching subscribed modules for TenantId: {TenantId}", tenantId);
+                return new List<SubscribedModuleResponseDTO>();
+            }
+        }
+
+
+
+        //   The required column 'ParentModuleName' was not present in the results of a 'FromSql' operation.
 
         //public async Task<List<ProjectSubModuleDetailDTO>> GetDasboardMenuAsync(string Roles)
         //{

@@ -1,4 +1,5 @@
-﻿using ems.application.DTOs.Operation;
+﻿using ems.application.DTOs.Module.NewFolder;
+using ems.application.DTOs.Operation;
 using ems.application.DTOs.RoleModulePermission;
 using ems.application.Interfaces.IContext;
 using ems.application.Interfaces.IRepositories;
@@ -32,6 +33,7 @@ namespace ems.persistance.Data.Context
         public virtual DbSet<CommonItem> CommonItems { get; set; }
         public virtual DbSet<RoleModuleOperationResponseDTO> RoleModulePermissions { get; set; }
         public virtual DbSet<CheckOperationPermissionRequestDTO> HasAccessOperations { get; set; }
+        public virtual DbSet<SubscribedModuleResponseDTO> SubscribedModuleResponseDTOs{ get; set; }
         public virtual DbSet<Country> Countries { get; set; }
       
         public virtual DbSet<AssetAssignment> AssetAssignments { get; set; }
@@ -180,6 +182,8 @@ namespace ems.persistance.Data.Context
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<SubscribedModuleResponseDTO>().HasNoKey(); // 👈 required
+
             modelBuilder.Entity<AccoumndationAllowancePolicyByDesignation>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Accoumnd__3214EC071BDF4022");
@@ -650,21 +654,44 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.CountryName).HasMaxLength(100);
                 entity.Property(e => e.IsActive).HasDefaultValue(true);
             });
-
             modelBuilder.Entity<Department>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__Departme__3214EC071E7B0B0B");
 
                 entity.ToTable("Department", "AxionPro");
 
-                entity.Property(e => e.AddedDateTime)
-                    .HasDefaultValueSql("(getdate())")
-                    .HasColumnType("datetime");
+                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.DeletedDateTime).HasColumnType("datetime");
                 entity.Property(e => e.DepartmentName).HasMaxLength(255);
                 entity.Property(e => e.Description).HasMaxLength(500);
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
                 entity.Property(e => e.Remark).HasMaxLength(200);
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.TenantIndustry).WithMany(p => p.Departments)
+                    .HasForeignKey(d => d.TenantIndustryId)
+                    .HasConstraintName("FK_Department_TenantIndustry");
+            });
+
+            modelBuilder.Entity<Designation>(entity =>
+            {
+                entity.HasKey(e => e.Id).HasName("PK__Designat__3214EC07F9FF4C75");
+
+                entity.ToTable("Designation", "AxionPro");
+
+                entity.Property(e => e.AddedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.Description).HasMaxLength(500);
+                entity.Property(e => e.DesignationName).HasMaxLength(255);
+                entity.Property(e => e.SoftDeletedDateTime).HasColumnType("datetime");
+                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Department).WithMany(p => p.Designations)
+                    .HasForeignKey(d => d.DepartmentId)
+                    .HasConstraintName("FK_Designation_Department");
+
+                entity.HasOne(d => d.Tenant).WithMany(p => p.Designations)
+                    .HasForeignKey(d => d.TenantId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Designation_Tenant");
             });
 
             modelBuilder.Entity<DepartmentModule>(entity =>
@@ -701,28 +728,7 @@ namespace ems.persistance.Data.Context
                     .HasConstraintName("FK__Departmen__Depar__1A9EF37A");
             });
 
-            modelBuilder.Entity<Designation>(entity =>
-            {
-                entity.HasKey(e => e.Id).HasName("PK__Designat__3214EC07F9FF4C75");
-
-                entity.ToTable("Designation", "AxionPro");
-
-                entity.Property(e => e.AddedDateTime)
-                    .HasDefaultValueSql("(getdate())")
-                    .HasColumnType("datetime");
-                entity.Property(e => e.Description).HasMaxLength(500);
-                entity.Property(e => e.DesignationName).HasMaxLength(255);
-                entity.Property(e => e.IsActive).HasDefaultValue(true);
-                entity.Property(e => e.IsSoftDeleted).HasDefaultValue(false);
-                entity.Property(e => e.SoftDeletedDateTime).HasColumnType("datetime");
-                entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
-
-                entity.HasOne(d => d.Tenant).WithMany(p => p.Designations)
-                    .HasForeignKey(d => d.TenantId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Designation_Tenant");
-            });
-
+           
             modelBuilder.Entity<ForgotPasswordOTPDetail>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__ForgotPa__3214EC071E853072");
@@ -750,7 +756,6 @@ namespace ems.persistance.Data.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ForgotPasswordOTPDetail_LoginCredential");
             });
-
 
             modelBuilder.Entity<TenantIndustry>(entity =>
             {
@@ -932,9 +937,7 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
                     .HasColumnType("datetime");
-                entity.Property(e => e.DisplayName)
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
+              
                 entity.Property(e => e.IconUrl)
                     .HasMaxLength(255)
                     .IsUnicode(false)

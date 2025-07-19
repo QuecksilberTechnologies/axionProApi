@@ -9,23 +9,25 @@ public partial class EmployeeExperience
 
     public long EmployeeId { get; set; }
 
-    public string CompanyName { get; set; } = null!;
+    public string? CompanyName { get; set; } 
 
-    public string JobTitle { get; set; } = null!;
+    public string? JobTitle { get; set; }  
 
-    public DateOnly StartDate { get; set; }
+    public DateTime? StartDate { get; set; }
 
-    public DateOnly? EndDate { get; set; }
+    public DateTime? EndDate { get; set; }
 
     public string? ReasonForLeaving { get; set; }
 
     public string? Remark { get; set; }
 
     public bool? IsExperienceVerified { get; set; }
+    public bool? IsEditAllowed { get; set; }
 
     public long? ExperienceVerificationBy { get; set; }
 
     public bool? IsSoftDeleted { get; set; }
+    public bool? IsActive{ get; set; }
 
     public int? ExperienceTypeId { get; set; }
 
@@ -72,5 +74,5 @@ public partial class EmployeeExperience
     public DateTime? InfoVerifiedDateTime { get; set; }
     public DateTime? ExperienceVerificationDateTime { get; set; }
 
-    public virtual Employee Employee { get; set; } = null!;
+    public virtual Employee? Employee { get; set; }
 }

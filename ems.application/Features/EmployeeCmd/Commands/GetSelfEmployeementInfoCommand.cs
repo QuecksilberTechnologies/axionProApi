@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.EmployeeCmd.Commands
 {
-    public class GetSelfEmployeementInfoCommand :IRequest<ApiResponse<GetEmployeeInfoWithAccessResponseDTO>>
+    public class GetSelfEmployeementInfoCommand : IRequest<ApiResponse<GetEmployeeInfoResponseDTO>>
     {
-        public GetEmployeeInfoRequestDTO Dto { get; set; }
+        public GetSelfEmployeeInfoRequestDTO Dto { get; set; }
 
-    public GetSelfEmployeementInfoCommand(GetEmployeeInfoRequestDTO dto)
-    {
-        Dto = dto;
+        public GetSelfEmployeementInfoCommand(GetSelfEmployeeInfoRequestDTO dto)
+        {
+            Dto = dto;
+        }
     }
-}
 }

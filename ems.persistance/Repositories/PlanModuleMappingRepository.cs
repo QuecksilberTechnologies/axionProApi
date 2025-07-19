@@ -70,7 +70,7 @@ namespace ems.persistance.Repositories
                         {
                             ModuleId = p.Module.Id,
                             ModuleName = p.Module.ModuleName,
-                            //DisplayName = p.Module.DisplayName?.ToString()?? string.Empty,
+                            DisplayName = p.Module.DisplayName?.ToString()?? string.Empty,
                             ParentModuleId = p.Module.ParentModuleId,
                             MainModuleId = p.Module.ParentModule?.Id ?? 0,
                             MainModuleName = p.Module.ParentModule?.ModuleName ?? string.Empty,

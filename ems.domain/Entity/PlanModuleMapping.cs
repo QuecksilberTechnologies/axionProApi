@@ -10,7 +10,7 @@ public partial class PlanModuleMapping
     public int SubscriptionPlanId { get; set; }
 
    public int ModuleId { get; set; }
-
+ 
     public bool? IsActive { get; set; }
     public string? Remark { get; set; }
 

@@ -32,6 +32,9 @@ namespace ems.domain.Entity
 
         public DateTime? DeletedDateTime { get; set; }
 
+        public virtual ICollection<Department> Departments { get; set; } = new List<Department>();
+
+
         public virtual ICollection<Tenant> Tenants { get; set; } = new List<Tenant>();
     }
 

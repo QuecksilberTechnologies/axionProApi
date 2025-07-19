@@ -19,12 +19,19 @@ using ems.application.Interfaces.IEmail;
 using ems.application.DTOs.Tenant;
 using System.Data;
 using ems.application.DTOs.Designation;
+using FluentValidation;
+using ems.application.Common.SeedData;
+using ems.application.Constants.ems.application.Constants;
+using ems.application.DTOs.Module.NewFolder;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace ems.application.Features.RegistrationCmd.Handlers
 {
     public class CreateTenantCommandHandler : IRequestHandler<CreateTenantCommand, ApiResponse<TenantCreateResponseDTO>>
     {
         private readonly IEmailService _emailService;
+        private readonly ICommonRepository _commonRepository;
         private readonly ITenantRepository _tenantRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -35,9 +42,9 @@ namespace ems.application.Features.RegistrationCmd.Handlers
         
         public CreateTenantCommandHandler(
             ITenantRepository tenantRepository, INewTokenRepository tokenService, IRefreshTokenRepository refreshTokenRepository,
-            IMapper mapper,
+            IMapper mapper, 
             IUnitOfWork unitOfWork, 
-            ILogger<CreateTenantCommandHandler> logger , IEmailService emailService)
+            ILogger<CreateTenantCommandHandler> logger , IEmailService emailService, ICommonRepository commonRepository)
 
            {
              _emailService = emailService;
@@ -47,6 +54,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
             _logger = logger;
             _tokenService = tokenService;
             _refreshTokenRepository = refreshTokenRepository;
+            _commonRepository = commonRepository;
            }
         public async Task<ApiResponse<TenantCreateResponseDTO>> Handle(CreateTenantCommand request, CancellationToken cancellationToken)
         {
@@ -147,35 +155,71 @@ namespace ems.application.Features.RegistrationCmd.Handlers
 
                 await _unitOfWork.TenantModuleConfigurationRepository.CreateByDefaultEnabledModulesAsync(newTenantId, enabledModules, tenantEnabledOperations);
 
-                Designation designation = new Designation
+             
+                   List<SubscribedModuleResponseDTO> getDepartnames = _unitOfWork.CommonRepository.GetSubscribedModulesByTenantAsync(newTenantId).Result;
+                 //    List<SubscribedModuleResponseDTO> getDepartnames = enabledModules.ToList();
+
+
+                if (getDepartnames == null || getDepartnames.Count == 0)
                 {
-                    Id = 0 ,
-                    TenantId = newTenantId,
-                    IsActive = DesignationColumnConstants.IsActive,
-                    DesignationName = DesignationColumnConstants.DesignationName,
-                    Description = DesignationColumnConstants.Description,
-                     
-                    UpdatedById = null,
-                    SoftDeletedDateTime = null,
-                    AddedById = newTenantId,
-                    AddedDateTime = DateTime.Now
+                    _logger.LogWarning("No subscribed modules found for TenantId: {TenantId}", newTenantId);
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return new ApiResponse<TenantCreateResponseDTO>
+                    {
+                        IsSucceeded = false,
+                        Message = $"An error occurred while adding department:",
+                        Data = null
+                    };
+                }
+                Dictionary<int, string> departmentDict = getDepartnames.ToDictionary(x => x.ModuleId, x => x.ModuleName);
 
-                    
 
-                };
-                   var IsDesignationCreated = await _unitOfWork.DesignationRepository.AutoCreateDesignationAsync( designation);
-                 
-                if (!IsDesignationCreated)
+                if (departmentDict.Count==0)
+                 {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return new ApiResponse<TenantCreateResponseDTO>
+                    {
+                        IsSucceeded = false,
+                        Message = $"An error occurred while adding department:",
+                        Data = null
+                    };
+                }
+                List<Department> departmentList = DepartmentSeedHelper.GetRuntimeDepartmentsToSeeds(departmentDict, newTenantId, request.TenantCreateRequestDTO.TenantIndustryId, newTenantId);
+
+                int insertedAdminDepartment = await _unitOfWork.DepartmentRepository.AutoCreateDepartmentSeedAsync(departmentList);
+
+                if (insertedAdminDepartment <=0)
                 {
                     await _unitOfWork.RollbackTransactionAsync();
                     return new ApiResponse<TenantCreateResponseDTO>
                     {
-                        IsSucceeded = IsDesignationCreated,
+                        IsSucceeded = false,
+                        Message = $"An error occurred while adding department:",
+                        Data = null
+                    };
+
+                }                
+
+                Dictionary<string, int> deptMap = await _unitOfWork.DepartmentRepository.GetDepartmentNameIdMapAsync(newTenantId);
+
+                List<Designation> designations = DesignationsSeedHelper.GetRuntimeDesignationsToSeed(newTenantId, newTenantId, deptMap);
+             
+                 
+                  
+                int adminDesignationId = await _unitOfWork.DesignationRepository.AutoCreateDesignationAsync(designations, insertedAdminDepartment);
+
+                if (adminDesignationId <= 0)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return new ApiResponse<TenantCreateResponseDTO>
+                    {
+                        IsSucceeded = false,
                         Message = $"An error occurred while adding designation:",
                         Data = null
                     };
 
                 }
+
 
                 // Step 5: Create Employee for Tenant
                 var employee = new Employee
@@ -184,6 +228,8 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                     OfficialEmail = tenantEntity.TenantEmail,
                     HasPermanent = ConstantValues.IsByDefaultTrue,
                     IsActive = ConstantValues.IsByDefaultTrue,
+                    DepartmentId = insertedAdminDepartment,
+                    DesignationId = adminDesignationId,
                     AddedById = newTenantId,
                     AddedDateTime = DateTime.Now,
                     UpdatedById = ConstantValues.SystemUserIdByDefaultZero,
@@ -209,6 +255,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                     };
                 }
 
+
                 // Step 6: Create TenantProfile
                 var tenantProfile = new TenantProfile
                 {
@@ -217,25 +264,51 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                 long newTenantProfileId = await _unitOfWork.TenantRepository.AddTenantProfileAsync(tenantProfile);
 
                 // Step 7: Create Admin Role
-                var role = new Role
+
+                var rolesToCreate = new List<Role>();
+
+                var roleConfigs = new List<(string RoleName, string RoleCode)>
+                    {
+                    (ConstantValues.TenantAdminRoleName, ConstantValues.TenantAdminRoleCode),
+                    (ConstantValues.TenantHRManagerRoleName, ConstantValues.TenantHRRoleCode),                   
+                    (ConstantValues.TenantEmployeeRoleName, ConstantValues.TenantEmployeeRoleCode)
+                     };
+
+                foreach (var (roleName, roleCode) in roleConfigs)
                 {
-                    TenantId = newTenantId,
-                    RoleName = ConstantValues.TenantAdminName,
-                    RoleCode = ConstantValues.TenantAdminRoleCode,
-                    RoleType= ConstantValues.TenantAdminRoleType,
-                    IsSystemDefault = false,
-                    IsActive = ConstantValues.IsByDefaultTrue,
-                    IsSoftDeleted = ConstantValues.IsByDefaultFalse,
-                    Remark = ConstantValues.TenantAdminRoleRemark,
-                    AddedById = newTenantId,
-                    AddedDateTime = DateTime.Now,
-                    UpdatedById = ConstantValues.SystemUserIdByDefaultZero,
-                    UpdatedDateTime = null,
-                    DeletedById = ConstantValues.SystemUserIdByDefaultZero,
-                    DeletedDateTime = null
-                };
-                  var createdRole = await _unitOfWork.RoleRepository.AutoCreatedForTenantRoleAsync(role);
-               // var roleId = await _unitOfWork.RoleRepository.AutoCreateRoleUserRoleAndAutomatedRolePermissionMappingAsync( newTenantId,  employeeId,  role);
+                    var role = new Role
+                    {
+                        TenantId = newTenantId,
+                        RoleName = roleName,
+                        RoleCode = roleCode,
+                        RoleType = ConstantValues.TenantAdminRoleType,
+                        IsSystemDefault = false,
+                        IsActive = ConstantValues.IsByDefaultTrue,
+                        IsSoftDeleted = ConstantValues.IsByDefaultFalse,
+                        Remark = ConstantValues.TenantAllRoleRemark,
+                        AddedById = newTenantId,
+                        AddedDateTime = DateTime.Now,
+                        UpdatedById = ConstantValues.SystemUserIdByDefaultZero,
+                        UpdatedDateTime = null,
+                        DeletedById = ConstantValues.SystemUserIdByDefaultZero,
+                        DeletedDateTime = null
+                    };
+
+                    rolesToCreate.Add(role);
+                }
+
+                // ✅ Pass the correct list
+                var createdAdminRole = await _unitOfWork.RoleRepository.AutoCreatedForTenantRoleAsync(rolesToCreate);
+
+                if (createdAdminRole <= 0)
+                {
+                    _logger.LogWarning("Role creation failed. Rolling back transaction.");
+                    await _unitOfWork.RollbackTransactionAsync();
+                }
+
+
+
+                // var roleId = await _unitOfWork.RoleRepository.AutoCreateRoleUserRoleAndAutomatedRolePermissionMappingAsync( newTenantId,  employeeId,  role);
                 // Step 8: Create LoginCredential
                 var loginCredential = new LoginCredential
                 {
@@ -246,7 +319,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                     Password = ConstantValues.DefaultPassword,
                     HasFirstLogin = ConstantValues.IsByDefaultTrue,
                     IsSoftDeleted = ConstantValues.IsByDefaultFalse,
-                    Remark = ConstantValues.TenantAdminRoleRemark,
+                    Remark = ConstantValues.TenantAllRoleRemark,
                     AddedById = newTenantId,
                     AddedDateTime = DateTime.Now,
                     UpdatedById = ConstantValues.SystemUserIdByDefaultZero,
@@ -261,13 +334,13 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                  UserRole userRole = new UserRole
                  {
                      EmployeeId = employeeId,
-                     RoleId = createdRole.Id,
+                     RoleId = createdAdminRole,
                      IsPrimaryRole = ConstantValues.IsByDefaultTrue,
                      IsActive = ConstantValues.IsByDefaultTrue,
                      AddedById = employeeId,
                      AddedDateTime = DateTime.Now,
                      AssignedDateTime = DateTime.Now,
-                     Remark = ConstantValues.TenantAdminRoleRemark,
+                     Remark = ConstantValues.TenantAllRoleRemark,
                      AssignedById = employeeId,
                      RoleStartDate = DateTime.Now,
                      ApprovalRequired = ConstantValues.IsByDefaultFalse,
@@ -281,7 +354,7 @@ namespace ems.application.Features.RegistrationCmd.Handlers
                 int roleId = (int)await _unitOfWork.UserRoleRepository.AddUserRoleAsync(userRole);
 
 
-               var UserRoleAndPermissionId = await _unitOfWork.RoleRepository.AutoCreateUserRoleAndAutomatedRolePermissionMappingAsync( newTenantId,  employeeId,  role);
+               var UserRoleAndPermissionId = await _unitOfWork.RoleRepository.AutoCreateUserRoleAndAutomatedRolePermissionMappingAsync( newTenantId,  employeeId, createdAdminRole);
 
                 // Step 10: Generate Token for Email
                 string token = await _tokenService.GenerateToken(tenantEntity.TenantEmail);

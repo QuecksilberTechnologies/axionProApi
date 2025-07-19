@@ -9,9 +9,9 @@ namespace ems.application.DTOs.Designation
     public class DesignationRequestDTO
     {
         public long? TenantId { get; set; }
+        public int DepartmentId { get; set; }
         public long EmployeeId { get; set; }
         public int RoleId { get; set; }
-        public int DesignationId { get; set; }
         public bool?  IsActive { get; set; }
      
     }

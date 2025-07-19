@@ -11,9 +11,9 @@ namespace ems.application.Features.EmployeeCmd.Commands
 {
     public class UpdateEmployeeInfoWithAccessCommand : IRequest<ApiResponse<bool>>
     {
-        public UpdateEmployeeInfoWithAccessRequestDTO updateEmployeeInfoWithAccessRequest { get; set; }
+        public UpdateGenricAllEmployeeEntityRequestDTO updateEmployeeInfoWithAccessRequest { get; set; }
 
-        public UpdateEmployeeInfoWithAccessCommand(UpdateEmployeeInfoWithAccessRequestDTO dto)
+        public UpdateEmployeeInfoWithAccessCommand(UpdateGenricAllEmployeeEntityRequestDTO dto)
         {
             updateEmployeeInfoWithAccessRequest = dto;
         }

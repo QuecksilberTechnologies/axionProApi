@@ -2,6 +2,7 @@
 using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -25,34 +26,49 @@ namespace ems.persistance.Repositories
             this.logger = logger;
         }
 
-        public async Task<bool> AutoCreateDesignationAsync(Designation designation)
+        public async Task<int> AutoCreateDesignationAsync(List<Designation> designations,int departmentId)
         {
             try
             {
-                logger.LogInformation("Attempting to create new Designation for TenantId: {TenantId}", designation.TenantId);
-
-                await _context.Designations.AddAsync(designation);
-
-                var result = await _context.SaveChangesAsync(); // 👈 returns affected rows
-
-                if (result > 0)
+                if (designations == null || !designations.Any())
                 {
-                    logger.LogInformation("Designation created successfully with ID: {Id}", designation.Id);
-                    return true;
+                    logger.LogWarning("Designation seed list is null or empty. Seeding aborted.");
+                    return 0;
+                }
+
+                long tenantId = designations.First().TenantId;
+
+                logger.LogInformation("Attempting to create {Count} Designation(s) for TenantId: {TenantId}", designations.Count, tenantId);
+
+                await _context.Designations.AddRangeAsync(designations);
+                var result = await _context.SaveChangesAsync();
+
+                if (result == designations.Count)
+                {
+                    logger.LogInformation("Successfully created {Count} designations for TenantId: {TenantId}", result, tenantId);
+
+                    // Admin Designation ID return karo
+                    var adminDesignation = designations.FirstOrDefault(d => d.Department.TenantId == tenantId && d.Department.IsExecutiveOffice == true);
+                    if (adminDesignation != null)
+                    {
+                        return adminDesignation.Id; // Id will be populated after SaveChangesAsync
+                    }
+
+                    logger.LogWarning("Admin designation not found in the inserted list.");
+                    return 0;
                 }
                 else
                 {
-                    logger.LogWarning("No changes were saved while creating Designation for TenantId: {TenantId}", designation.TenantId);
-                    return false;
+                    logger.LogWarning("Mismatch in inserted designation count. Expected: {Expected}, Inserted: {Inserted}", designations.Count, result);
+                    return 0;
                 }
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error occurred while creating Designation.");
-                throw;
+                logger.LogError(ex, "Error occurred while creating designations.");
+                return 0;
             }
         }
-
 
         public async Task<List<Designation>> CreateDesignationAsync(Designation designation)
         {
@@ -121,6 +137,41 @@ namespace ems.persistance.Repositories
             }
         }
 
+        public async Task<List<Designation>> GetAllDesignationWithDepartmentAsync(long? tenantId, bool isActive, int? departmentId)
+        {
+            try
+            {
+                // 0 ko null treat karo
+                if (departmentId == 0)
+                {
+                    departmentId = null;
+                }
+                logger.LogInformation("Fetching active and non-deleted designations for TenantId: {TenantId} and DepartmentId: {DepartmentId}", tenantId, departmentId);
+
+                var designations = await _context.Designations
+                    .Where(d => d.TenantId == tenantId
+                                && d.IsActive == isActive
+                                && d.IsSoftDeleted == false
+                                && (
+                                    (departmentId == null && d.DepartmentId == null) ||  // ✅ if input is null → match null DepartmentId
+                                    (departmentId != null && d.DepartmentId == departmentId) // ✅ else match given department
+                                ))
+                    .ToListAsync();
+
+                if (!designations.Any())
+                {
+                    logger.LogWarning("No active designations found for TenantId: {TenantId} and DepartmentId: {DepartmentId}", tenantId, departmentId);
+                }
+
+                return designations;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred while fetching designations for TenantId: {TenantId} and DepartmentId: {DepartmentId}", tenantId, departmentId);
+                return new List<Designation>();
+            }
+        }
+
         public async Task<List<Designation>> GetAllDesignationAsync(long? tenantId, bool isActive)
         {
             try
@@ -148,17 +199,22 @@ namespace ems.persistance.Repositories
             }
         }
 
-        public async Task<List<Designation>> GetAllActiveDesignationAsync(long? tenantId)
+        public async Task<List<Designation>> GetAllActiveDesignationWithDepartmentAsync(long? tenantId, int? departmentId)
         {
             try
             {
+
 
                 logger.LogInformation("Fetching active and non-deleted designations for TenantId: {TenantId}", tenantId);
 
                 var designations = await _context.Designations
                     .Where(d => d.TenantId == tenantId
                                 && d.IsActive == true
-                                && !d.IsSoftDeleted == true)
+                                && d.IsSoftDeleted == false
+                                && (
+                                    (departmentId == null && d.DepartmentId == null) ||  // ✅ if input is null → match null DepartmentId
+                                    (departmentId != null && d.DepartmentId == departmentId) // ✅ else match given department
+                                ))
                     .ToListAsync();
 
                 if (!designations.Any())
@@ -250,6 +306,7 @@ namespace ems.persistance.Repositories
             }
         }
 
+       
     }
 }
  

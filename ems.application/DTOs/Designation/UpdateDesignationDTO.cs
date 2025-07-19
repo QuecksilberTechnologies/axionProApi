@@ -10,6 +10,7 @@ namespace ems.application.DTOs.Designation
     {
 
         public int Id { get; set; }
+        public int? DepartmentId { get; set; }
         public long? TenantId { get; set; }
         public string DesignationName { get; set; }
         public string? Description { get; set; }

@@ -43,7 +43,7 @@ namespace ems.persistance.Repositories
                 }
 
                 // 🔁 Update properties
-                existing.DisplayName = mom.DisplayName;
+               
                 existing.PageUrl = mom.PageUrl;
                 existing.IconUrl = mom.IconUrl;
                 existing.IsCommonItem = mom.IsCommonItem;
@@ -143,7 +143,7 @@ namespace ems.persistance.Repositories
                     Id = mapping.Id,
                     ModuleId = mapping.ModuleId,
                     OperationIds = new List<int> { mapping.OperationId },
-                    DisplayName = mapping.DisplayName,
+                     
                     PageURL = mapping.PageUrl,
                     IconURL = mapping.IconUrl,
                     IsCommonItem = mapping.IsCommonItem ?? false,

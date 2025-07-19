@@ -9,17 +9,17 @@ public partial class EmployeeEducation
 
     public long EmployeeId { get; set; }
 
-    public string Degree { get; set; } = null!;
+    public string? Degree { get; set; } 
 
-    public string InstituteName { get; set; } = null!;
+    public string? InstituteName { get; set; } 
 
     public string? Remark { get; set; }
 
-    public DateOnly StartDate { get; set; }
+    public DateTime? StartDate { get; set; }
 
-    public DateOnly? EndDate { get; set; }
+    public DateTime? EndDate { get; set; }
 
-    public string GradeOrPercentage { get; set; } = null!;
+    public string? GradeOrPercentage { get; set; }
 
     public string? GpaorPercentage { get; set; }
 
@@ -27,15 +27,16 @@ public partial class EmployeeEducation
 
     public string? ReasonOfEducationGap { get; set; }
 
-    public bool IsActive { get; set; }
+    public bool? IsActive { get; set; }
+    public bool? IsEditAllowed { get; set; }
 
-    public virtual Employee Employee { get; set; } = null!;
+    public virtual Employee? Employee { get; set; } 
 
-    public int? AddedById { get; set; }
+    public long? AddedById { get; set; }
 
     public DateTime? AddedDateTime { get; set; }
 
-    public int? UpdatedById { get; set; }
+    public long? UpdatedById { get; set; }
     public DateTime? UpdatedDateTime { get; set; }
     
     public long? DeletedById { get; set; }

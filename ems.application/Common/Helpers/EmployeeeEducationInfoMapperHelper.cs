@@ -1,4 +1,5 @@
-﻿using ems.application.DTOs.Employee;
+﻿using ems.application.Common.Attributes;
+using ems.application.DTOs.Employee.AccessResponse;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,16 +8,14 @@ using System.Threading.Tasks;
 
 namespace ems.application.Common.Helpers
 {
-    using ems.application.Common.Attributes;
-
-    public static class EmployeeProfileInfoMapperHelper
+    public static class EmployeeeEducationInfoMapperHelper
     {
-        public static GetEmployeeInfoWithAccessResponseDTO ConvertToAccessResponseDTO<T>(T source)
+        public static GetEmployeeEducationInfoWithAccessResponseDTO ConvertToAccessResponseDTO<T>(T source)
         {
-            var result = new GetEmployeeInfoWithAccessResponseDTO();
+            var result = new GetEmployeeEducationInfoWithAccessResponseDTO();
 
             var sourceProps = typeof(T).GetProperties();
-            var targetProps = typeof(GetEmployeeInfoWithAccessResponseDTO).GetProperties();
+            var targetProps = typeof(GetEmployeeEducationInfoWithAccessResponseDTO).GetProperties();
 
             foreach (var sourceProp in sourceProps)
             {
@@ -83,11 +82,5 @@ namespace ems.application.Common.Helpers
             return result;
         }
 
-
-
     }
-
-
-
 }
-

@@ -8,6 +8,8 @@ public partial class Designation
 {
     public int Id { get; set; }
 
+    public int? DepartmentId { get; set; }
+
     public long TenantId { get; set; }
 
     public string DesignationName { get; set; } = null!;
@@ -29,6 +31,9 @@ public partial class Designation
     public DateTime? SoftDeletedDateTime { get; set; }
 
     public long? SoftDeletedById { get; set; }
+
+    public virtual Department? Department { get; set; }
+
 
     public virtual ICollection<AccoumndationAllowancePolicyByDesignation> AccoumndationAllowancePolicyByDesignations { get; set; } = new List<AccoumndationAllowancePolicyByDesignation>();
 

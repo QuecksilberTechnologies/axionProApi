@@ -73,7 +73,8 @@ namespace ems.application.Features.EmployeeCmd.Handlers
                 var employeeEntity = _mapper.Map<Employee>(request.Dto);
                 employeeEntity.AddedById = empId;
 
-                long employeeId = await _employeeRepository.AddEmployeeByAdminAsync(employeeEntity);
+                long employeeId = await _employeeRepository.AddEmployeeByAdminAsync(employeeEntity, empId);
+
 
                 var loginCredential = new LoginCredential
                 {
@@ -93,9 +94,24 @@ namespace ems.application.Features.EmployeeCmd.Handlers
                     DeletedDateTime = null
 
                 };
+                long bankInfoId = await _unitOfWork.Employees.AddEmployeeBankInfoByAdminAsync(employeeId, empId);
+                if (bankInfoId <= 0)
+                    await _unitOfWork.RollbackTransactionAsync();
                 long newLoginId = await _unitOfWork.UserLoginRepository.CreateUser(loginCredential);
-                    if(newLoginId <= 0 )               
+                    if(newLoginId <= 0 )                        
                       await _unitOfWork.RollbackTransactionAsync();
+                long empEducationId = await _unitOfWork.Employees.AddEmployeeEducationInfoByPermittedUserAsync(employeeId, empId);
+                if (empEducationId <= 0)
+                    await _unitOfWork.RollbackTransactionAsync();
+
+                long empExperienceId = await _unitOfWork.Employees.AddEmployeeExperienceInfoByPermittedUserAsync(employeeId, empId);
+                if (empExperienceId <= 0)
+                    await _unitOfWork.RollbackTransactionAsync();
+                long empPersonalDetailId = await _unitOfWork.Employees.AddEmployeePersonalDetailByAdminAsync(employeeId, empId);
+                if (empPersonalDetailId <= 0)
+                    await _unitOfWork.RollbackTransactionAsync();
+                
+
                 // Step 10: Generate Token for Email
                 string token = await _tokenService.GenerateToken(loginCredential.LoginId);
 

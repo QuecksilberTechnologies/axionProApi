@@ -8,8 +8,10 @@ namespace ems.application.DTOs.Designation
 {
     public class GetAllActiveDesignationRequestDTO
     {
-        public long? TenantId { get; set; }       
-      
- 
+        public long? TenantId { get; set; }
+        public int? DepartmentId { get; set; }
+
+
+
     }
 }

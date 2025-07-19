@@ -51,7 +51,7 @@ namespace ems.api.Controllers.Role
             }
             return Ok(result);
         }
-     //   [Authorize]
+        //   [Authorize]GetAllRoleSummaryQuery
         [HttpGet("get-all-active-role-by-tenant-user")]
         public async Task<IActionResult> GetAllActiveRole([FromQuery] GetActiveRoleRequestDTO? roleRequestDTO)
         {
@@ -73,6 +73,56 @@ namespace ems.api.Controllers.Role
 
             return Ok(result);
         }
+
+
+        [HttpGet("get-all-role-summary")]
+        public async Task<IActionResult> GetAllActiveRoleSummary([FromQuery] GetRoleSummaryRequestDTO? roleRequestDTO)
+        {
+            if (roleRequestDTO == null)
+            {
+                // _logger.LogWarning("Received null request for getting roles.");
+                // return BadRequest(new ApiResponse<List<GetAllRoleDTO>>(false, "Invalid request", null));
+            }
+
+            // _logger.LogInformation("Received request to get roles for userId: {LoginId}", roleRequestDTO.Id);
+
+            var query = new GetAllRoleSummaryQuery(roleRequestDTO);  //  Fix: No parameter needed in GetAllRoleQuery
+            var result = await _mediator.Send(query);
+
+            if (!result.IsSucceeded)
+            {
+                return Unauthorized(result);
+            }
+
+            return Ok(result);
+        }
+
+
+        [HttpGet("get-all-systems-role")]
+        public async Task<IActionResult> GetAllActiveRoleCode([FromQuery] GetActiveRoleRequestDTO? roleRequestDTO)
+        {
+            if (roleRequestDTO == null)
+            {
+                // _logger.LogWarning("Received null request for getting roles.");
+                // return BadRequest(new ApiResponse<List<GetAllRoleDTO>>(false, "Invalid request", null));
+            }
+
+            // _logger.LogInformation("Received request to get roles for userId: {LoginId}", roleRequestDTO.Id);
+
+            var query = new GetAllActiveRoleQuery(roleRequestDTO);  //  Fix: No parameter needed in GetAllRoleQuery
+            var result = await _mediator.Send(query);
+
+            if (!result.IsSucceeded)
+            {
+                return Unauthorized(result);
+            }
+
+            return Ok(result);
+        }
+
+
+
+
         [HttpGet("get-all-role-by-tenant-admin")]
         public async Task<IActionResult> GetAllRoles([FromQuery] GetRoleRequestDTO? roleRequestDTO)
         {

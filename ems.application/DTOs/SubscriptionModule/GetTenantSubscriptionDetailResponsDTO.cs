@@ -10,6 +10,7 @@ namespace ems.application.DTOs.SubscriptionModule
     {
         public long? TenantId { get; set; }
         public string? PlanName { get; set; }
+        public int? TenantSubscriptionId { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
         public bool IsActive { get; set; }

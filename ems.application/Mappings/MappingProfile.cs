@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
 using ems.application.DTOs.Asset;
- 
+
 using ems.application.DTOs.Category;
 using ems.application.DTOs.Client;
 using ems.application.DTOs.Department;
 using ems.application.DTOs.Designation;
 using ems.application.DTOs.EmailTemplate;
 using ems.application.DTOs.Employee;
+using ems.application.DTOs.Employee.AccessControlReadOnlyType;
+using ems.application.DTOs.Employee.AccessControlType;
+using ems.application.DTOs.Employee.AccessResponse;
 using ems.application.DTOs.Leave;
 using ems.application.DTOs.Module;
 using ems.application.DTOs.Operation;
@@ -112,7 +115,7 @@ namespace ems.application.Mappings
             CreateMap<UpdateDesignationDTO, Designation>();
 
             CreateMap<CreateDepartmentDTO, Department>();
-            CreateMap<Department, GetAllDepartmentDTO>();
+            CreateMap<Department, GetAllDepartmentRequestDTO>();
             CreateMap<UpdateDepartmentDTO, Department>();
 
 
@@ -169,11 +172,15 @@ namespace ems.application.Mappings
 
             CreateMap<GetRoleRequestDTO, Role>();
 
-                  
 
+
+            CreateMap<Department,GetAllDepartmentResponseDTO>();
+            CreateMap<GetAllDepartmentResponseDTO,Department>();
 
 
             CreateMap<RoleResponseDTO, Role>().ReverseMap();
+            CreateMap<GetRoleSummaryResponseDTO, Role>();
+            CreateMap<Role, GetRoleSummaryResponseDTO>().ReverseMap();
 
             //   CreateMap<TenantCreateResponseDTO, TenantIndustry>();
             CreateMap<TenantIndustry, TenantIndustryResponseDTO>();
@@ -192,17 +199,45 @@ namespace ems.application.Mappings
             // Agar reverse mapping chahiye toh, isse bhi add kar sakte hain
                 CreateMap<Employee, CreateEmployeeByTenantPermittedUserRequestDTO>();
                 CreateMap<CreateEmployeeByTenantPermittedUserRequestDTO,Employee > ();
-                CreateMap<GetEditableEmployeeProfileInfoRequestDTO,Employee> ();
-                CreateMap<Employee,GetEditableEmployeeProfileInfoRequestDTO> ();
-                CreateMap<GetDisabledEmployeeProfileInfoRequestDTO,Employee>();
-                CreateMap<Employee,GetDisabledEmployeeProfileInfoRequestDTO>();
+                CreateMap<GetEmployeeInfoResponseDTO, Employee> ();
+                CreateMap<Employee, GetEmployeeInfoResponseDTO> ();
+
+            CreateMap<EmployeeBankEditableFieldsDTO, EmployeeBankDetail>();
+            CreateMap<EmployeeBankDetail, EmployeeBankEditableFieldsDTO>();
+              
+            CreateMap<GetEmployeeBankResponseDTO, EmployeeBankDetail>();
+             CreateMap<EmployeeBankDetail, GetEmployeeBankResponseDTO>();
 
             
 
 
-                CreateMap<EmployeeLoginInfoDTO, LoginResponseDTO>().ForMember(dest => dest.EmployeeInfo, opt => opt.MapFrom(src => src));
+                CreateMap<EmployeePersonalDetail,GetEmployeePersonalDetailResponseDTO> ();
+                CreateMap<GetEmployeePersonalDetailResponseDTO,EmployeePersonalDetail> ();
+
+               CreateMap<EmployeeBankDetail, GetEmployeeBankDetailWithAccessResponseDTO> ();
+                CreateMap<GetEmployeeBankDetailWithAccessResponseDTO,EmployeeBankDetail> ();
+
+                 CreateMap<EmployeeEducation, GetEmployeeEducationResponseDTO>();
+                 CreateMap<GetEmployeeEducationResponseDTO, EmployeeEducation>();   
+              
+                CreateMap<EmployeeEducation, EmployeeEducationEditableFieldsDTO>();
+                 CreateMap<EmployeeEducationEditableFieldsDTO, EmployeeEducation>();
+
+            CreateMap<EmployeeExperience, GetEmployeeExperienceResponseDTO>();
+            CreateMap<GetEmployeeExperienceResponseDTO, EmployeeExperience>();
+            
+            CreateMap<EmployeeExperience, EmployeeExperienceEditableFieldsDTO>();
+            CreateMap<EmployeeExperienceEditableFieldsDTO, EmployeeExperience>();
+
+
+
+
+
+            CreateMap<EmployeeLoginInfoDTO, LoginResponseDTO>().ForMember(dest => dest.EmployeeInfo, opt => opt.MapFrom(src => src));
                 CreateMap<Category, CategoryResponseDTO>();
             // Map Employee to EmployeeDTO
+            CreateMap<Employee, CreateEmployeeByTenantPermittedUserRequestDTO>();
+            CreateMap<CreateEmployeeByTenantPermittedUserRequestDTO, Employee>();
             CreateMap<Employee, EmployeeDTO>();
             CreateMap<EmployeeDTO, Employee>();
             CreateMap<Employee, EmployeeLoginInfoDTO>()
@@ -299,7 +334,7 @@ namespace ems.application.Mappings
     .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
     .ForMember(dest => dest.ModuleId, opt => opt.MapFrom(src => src.ModuleId))
     .ForMember(dest => dest.OperationIds, opt => opt.MapFrom(src => new List<int> { src.OperationId }))
-    .ForMember(dest => dest.DisplayName, opt => opt.MapFrom(src => src.DisplayName))
+   
     .ForMember(dest => dest.PageURL, opt => opt.MapFrom(src => src.PageUrl))
     .ForMember(dest => dest.IconURL, opt => opt.MapFrom(src => src.IconUrl))
     .ForMember(dest => dest.IsCommonItem, opt => opt.MapFrom(src => src.IsCommonItem ?? false))

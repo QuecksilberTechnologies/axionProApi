@@ -1,4 +1,5 @@
-﻿using ems.domain.Entity;
+﻿using ems.application.DTOs.Role;
+using ems.domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +15,10 @@ namespace ems.application.Interfaces.IRepositories
         // Create a new role
            Task<Role> CreateRoleAsync(Role role);
         
-            Task<Role> AutoCreatedForTenantRoleAsync(Role role);
-            Task<int> AutoCreateUserRoleAndAutomatedRolePermissionMappingAsync(long? TenantId, long employeeId, Role role);
+               Task<Role> AutoCreatedSingleTenantRoleAsync(Role role);
+               Task<int> AutoCreatedForTenantRoleAsync(List<Role> roles);
+
+        Task<int> AutoCreateUserRoleAndAutomatedRolePermissionMappingAsync(long? TenantId, long employeeId, int role);
 
         // Get a role by its Id
         Task<Role> GetRoleByIdAsync(int roleId);
@@ -25,6 +28,8 @@ namespace ems.application.Interfaces.IRepositories
         
         Task<List<Role>> GetAllRolesAsync(Role role);
         Task<List<Role>> GetAllActiveRolesAsync(Role role);
+     
+        Task<List<Role>> GetAllActiveRolesSummaryAsync(long? tenantId);
 
         // Update an existing role
          Task<Role> UpdateRoleAsync(Role role);

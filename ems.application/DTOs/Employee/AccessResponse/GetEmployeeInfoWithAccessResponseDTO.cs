@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.DTOs.Employee
+namespace ems.application.DTOs.Employee.AccessResponse
 {
     public class GetEmployeeInfoWithAccessResponseDTO
     {
@@ -29,7 +29,7 @@ namespace ems.application.DTOs.Employee
         public FieldWithAccess<string?> Remark { get; set; } = new();
 
         // Audit Fields
-        public FieldWithAccess<long?>AddedById { get; set; } = new();
+        public FieldWithAccess<long?> AddedById { get; set; } = new();
         public FieldWithAccess<DateTime?> AddedDateTime { get; set; } = new();
         public FieldWithAccess<long?> UpdatedById { get; set; } = new();
         public FieldWithAccess<DateTime?> UpdatedDateTime { get; set; } = new();

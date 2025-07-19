@@ -60,6 +60,7 @@ namespace ems.persistance.Repositories
                 .Select(x => new GetTenantSubscriptionDetailResponsDTO
                 {
                     TenantId = x.TenantId,
+                    TenantSubscriptionId =x.SubscriptionPlanId,
                     PlanName = x.SubscriptionPlan.PlanName,         // assuming navigation property exists
                     StartDate = x.SubscriptionStartDate,
                     EndDate = x.SubscriptionEndDate,

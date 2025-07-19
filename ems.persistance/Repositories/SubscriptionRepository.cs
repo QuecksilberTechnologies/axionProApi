@@ -78,6 +78,14 @@ namespace ems.persistance.Repositories
                     {
                         Id = plan.Id,
                         PlanName = plan.PlanName,
+                        IsMostPopular = plan.IsMostPopular,
+                        IsCustom = plan.IsCustom,
+                        MaxUsers = plan.MaxUsers,
+                        CurrencyKey = plan.CurrencyKey,
+                        PerDayPrice = plan.PerDayPrice,
+                        MonthlyPrice = plan.MonthlyPrice,
+                        YearlyPrice = plan.YearlyPrice,
+                        IsFree = plan.IsFree,
 
                         Modules = plan.PlanModuleMappings
                             .Where(pmm => pmm.IsActive ==true && pmm.Module.IsActive==true)
