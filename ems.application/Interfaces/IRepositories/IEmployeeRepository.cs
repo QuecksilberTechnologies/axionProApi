@@ -10,7 +10,7 @@ public interface IEmployeeRepository
 
   //  Task<bool> UpdateEmployeeFieldAsync(UpdateSingleFieldRequestDTO request);
     Task<Employee> GetEmployeeByIdAsync(long id);
-    Task<IEnumerable<Employee>> GetAllEmployeesAsync();
+    Task<List<Employee>> GetAllEmployeesAsync(long tenantId);
     Task<Employee?> GetEmployeeInfoForLoginByIdAsync(long employeeId);
     Task<EmployeeBankDetail?> GetEmployeeBankInfoByIdAsync( long employeeId);
     Task<EmployeePersonalDetail?> GetEmployeePersonalInfoByIdAsync(long employeeId);

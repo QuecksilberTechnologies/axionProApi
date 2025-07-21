@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Features.EmployeeCmd.Handlers
+namespace ems.application.DTOs.Employee
 {
-    internal class GetAllEmployeesQueryHandler
+    public class GetAllEmployeeRequestDTO
     {
+        public long TenantId {  get; set; }
     }
 }

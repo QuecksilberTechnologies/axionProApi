@@ -39,9 +39,28 @@ namespace ems.persistance.Repositories
             return entity;
         }
 
-        public Task<IEnumerable<Employee>> GetAllEmployeesAsync()
+        public async Task<List<Employee>> GetAllEmployeesAsync(long tenantId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                _logger?.LogInformation("Fetching employee basic details for tenantId: {TenantId}", tenantId);
+
+                List<Employee>? employeeList = await context.Employees
+                    .Where(e => e.TenantId == tenantId && e.IsActive==true && !e.IsSoftDeleted==true)
+                    .ToListAsync();
+
+                if (employeeList == null || !employeeList.Any())
+                {
+                    _logger?.LogWarning("No active employees found for TenantId: {TenantId}", tenantId);
+                }
+
+                return employeeList;
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "An error occurred while fetching employees for TenantId: {TenantId}", tenantId);
+                return new List<Employee>(); // या throw; अगर आप exception propagate करना चाहें
+            }
         }
 
         public async Task<Employee?> GetEmployeeInfoForLoginByIdAsync(long employeeId)

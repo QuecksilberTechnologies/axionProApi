@@ -10,10 +10,10 @@ namespace ems.application.DTOs.Employee
         [Required]
         public long TenantId { get; set; }
 
-        [Required]
+       // [Required]
         public int EmployeeDocumentId { get; set; }
 
-        [Required]
+       // [Required]
         [MaxLength(50)]
         public required string EmployementCode { get; set; }
 
@@ -77,4 +77,6 @@ namespace ems.application.DTOs.Employee
 
         public DateTime? DeletedDateTime { get; set; }
     }
+
+
 }

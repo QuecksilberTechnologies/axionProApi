@@ -232,7 +232,7 @@ namespace ems.application.Mappings
 
 
 
-
+            
             CreateMap<EmployeeLoginInfoDTO, LoginResponseDTO>().ForMember(dest => dest.EmployeeInfo, opt => opt.MapFrom(src => src));
                 CreateMap<Category, CategoryResponseDTO>();
             // Map Employee to EmployeeDTO

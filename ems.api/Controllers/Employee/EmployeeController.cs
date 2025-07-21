@@ -11,6 +11,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using System.Security.AccessControl;
@@ -42,7 +43,7 @@ public class EmployeeController : ControllerBase
     //}
 
     [HttpPost("create-employee-by-tenant-permitted-user")]
-    [Authorize]
+  //  [Authorize]
     public async Task<IActionResult> CreateByAdminEmployee([FromBody] CreateEmployeeByTenantPermittedUserRequestDTO employeeCreateDto)
     {
         var command = new CreateEmployeeByTenantAdminCommand(employeeCreateDto);
@@ -114,7 +115,34 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    
+    [HttpPost("get-all-employee-info-from-same-tenant")]
+    public async Task<IActionResult> GetAllEmployeeInfo([FromBody] GetAllEmployeeRequestDTO commandDto)
+    {
+
+        try
+        {
+            // ✅ Wrap DTO in the command class
+            //  var command = new GetEmployeeInfoCommand(commandDto);
+
+            var command = new GetAllEmployeeSameTenantCommand(commandDto);
+
+            // ✅ Send command instead of DTO
+            ApiResponse<List<GetEmployeeInfoResponseDTO>> result = await _mediator.Send(command);
+      
+            if (result.IsSucceeded)
+                return Ok(result);
+            else
+                return BadRequest(result);
+        }
+        catch (Exception ex)
+        {
+            var errorResponse = ApiResponse<bool>.Fail("An unexpected error occurred while updating employee info.",
+                new List<string> { ex.Message });
+            return StatusCode(500, errorResponse);
+        }
+    }
+
+
     [HttpPost("get-any-employee-info-by-tenant-user")]
     public async Task<IActionResult> GetAnyEmployeeInfo([FromBody] GetEmployeeInfoRequestDTO commandDto)
     {     
