@@ -4,6 +4,7 @@ using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,58 +16,159 @@ namespace ems.persistance.Repositories
 {
     public class UserLoginReopsitory : IUserLoginReopsitory
     {
-        private EmsDbContext context;
+        private readonly WorkforceDbContext _context;
+        private readonly ILogger<UserLoginReopsitory> _logger;
 
-        public UserLoginReopsitory(EmsDbContext context)
+        public UserLoginReopsitory(WorkforceDbContext context, ILogger<UserLoginReopsitory> logger)
         {
-            this.context = context;
+            _context = context;
+            _logger = logger;
         }
 
-        public async Task<LoginResponseDTO> AuthenticateUser(LoginRequestDTO loginRequest)
+        public async Task<LoginCredential?> AuthenticateUser(LoginRequestDTO loginRequest)
         {
-            // Fetch user details based on LoginId from the repository
-                var user = await context.LoginCredentials.FirstOrDefaultAsync(u => u.LoginId == loginRequest.LoginId);
-            // name _unitOfWork is not exist error aa rahi hai
-                       
-            var rr = user;
-
-                        // Check if user exists and if the password matches
-            if (user == null || !VerifyPassword(loginRequest.Password, user.Password))
+            try
             {
-                return new LoginResponseDTO
+                _logger.LogInformation("Authenticating user with LoginId: {LoginId}", loginRequest.LoginId);
+
+                LoginCredential? user = await _context.LoginCredentials
+                    .FirstOrDefaultAsync(u => u.LoginId == loginRequest.LoginId);
+
+                if (user == null)
                 {
-                    Success = ConstantValues.fail
+                    _logger.LogWarning("Login failed: User not found for LoginId: {LoginId}", loginRequest.LoginId);
+                    return null;
+                }
 
-                };
+                if (!VerifyPassword(loginRequest.Password, user.Password))
+                {
+                    _logger.LogWarning("Login failed: Incorrect password for LoginId: {LoginId}", loginRequest.LoginId);
+                    return null;
+                }
+
+                _logger.LogInformation("User authenticated successfully: {LoginId}", loginRequest.LoginId);
+                return user;
             }
-
-            // Generate token if needed (e.g., using JWT)
-            string token = GenerateJwtToken(user);
-
-            // Return success response with token
-            return new LoginResponseDTO
+            catch (Exception ex)
             {
-                Success = ConstantValues.isSucceeded,
-                Token = token,               
-                Id = user.EmployeeId
-
-            };
+                _logger.LogError(ex, "An error occurred while authenticating user with LoginId: {LoginId}", loginRequest.LoginId);
+                throw; // Rethrowing the exception to ensure proper handling at higher levels
+            }
         }
 
-        // This is a placeholder for the password verification logic
+        public async Task<long> CreateUser(LoginCredential loginRequest)
+        {
+            try
+            {
+                if (_context == null)
+                {
+                    _logger?.LogError("DbContext is null in CreateUser.");
+                    throw new ArgumentNullException(nameof(_context), "DbContext is not initialized.");
+                }
+
+               
+
+                await _context.LoginCredentials.AddAsync(loginRequest); // Add LoginCredential
+                await _context.SaveChangesAsync(); // Save changes
+
+                _logger?.LogInformation("User created successfully with ID: {UserId}", loginRequest.Id);
+
+                return loginRequest.Id; // Return auto-generated ID
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "An error occurred while creating user.");
+                throw;
+            }
+        }
+
+        public async Task<LoginCredential> GetEmployeeIdByUserLogin(string userLogin)
+        {
+            var login = await _context.LoginCredentials.FirstOrDefaultAsync(x => x.LoginId == userLogin && x.IsActive == true);
+
+            if (login == null)
+                return null;
+
+
+            return login;
+
+        }
+
+
+
+        public async Task<bool> UpdateNewPassword(LoginCredential setRequest)
+        {
+            try
+            {
+
+                var user = await _context.LoginCredentials
+                    .FirstOrDefaultAsync(x =>
+                        x.LoginId == setRequest.LoginId &&
+                        x.IsActive == true &&
+                        x.HasFirstLogin == true); // ✅ Only allow update if it's first login
+
+                if (user == null)
+                {
+                    return false; // User not found or first login already done
+                }
+
+                user.Password = setRequest.Password;
+                user.HasFirstLogin = false; // Mark as password updated
+                                            // user.UpdatedById = setRequest.UpdatedById;
+                                            // user.UpdatedDateTime = DateTime.UtcNow;
+
+                _context.LoginCredentials.Update(user);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while updating password for LoginId: {LoginId}", setRequest.LoginId);
+                return false;
+            }
+        }
+
+
+        public async Task<bool> SetNewPassword(LoginCredential setRequest)
+        {
+            try
+            {
+
+                var user = await _context.LoginCredentials
+                    .FirstOrDefaultAsync(x =>
+                        x.LoginId == setRequest.LoginId &&
+                        x.IsActive == true); // ✅ Only allow update if it's first login
+
+                if (user == null)
+                {
+                    return false; // User not found or first login already done
+                }
+
+                user.Password = setRequest.Password;
+                
+                                            // user.UpdatedById = setRequest.UpdatedById;
+                                            // user.UpdatedDateTime = DateTime.UtcNow;
+
+                _context.LoginCredentials.Update(user);
+                await _context.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while updating password for LoginId: {LoginId}", setRequest.LoginId);
+                return false;
+            }
+        }
+
+
+
         private bool VerifyPassword(string providedPassword, string storedPassword)
         {
-            // Here, you would hash the providedPassword and compare with storedPassword
-            // This is a basic example, assuming plain-text comparison (not secure for production)
+            // Secure hashing and comparison logic should be implemented here
             return providedPassword == storedPassword;
         }
-
-        // Placeholder for JWT token generation
-        private string GenerateJwtToken(LoginCredential user)
-        {
-            // Code to generate JWT token based on user information
-            return "GeneratedTokenHere"; // Replace with actual JWT generation logic
-        }
-
     }
+
 }

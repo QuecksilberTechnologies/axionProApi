@@ -8,6 +8,7 @@ public partial class Operation
     public int Id { get; set; }
 
     public string OperationName { get; set; } = null!;
+    public int OperationType { get; set; } 
 
     public string? Remark { get; set; }
 
@@ -20,4 +21,13 @@ public partial class Operation
     public long? UpdatedById { get; set; }
 
     public DateTime? UpdateDateTime { get; set; }
+
+    public string? IconImage { get; set; }
+
+    public virtual ICollection<ModuleOperationMapping> ModuleOperationMappings { get; set; } = new List<ModuleOperationMapping>();
+
+    public virtual ICollection<RoleModuleAndPermission> RoleModuleAndPermissions { get; set; } = new List<RoleModuleAndPermission>();
+
+    public virtual ICollection<TenantEnabledOperation> TenantEnabledOperations { get; set; } = new List<TenantEnabledOperation>();
 }
+ 

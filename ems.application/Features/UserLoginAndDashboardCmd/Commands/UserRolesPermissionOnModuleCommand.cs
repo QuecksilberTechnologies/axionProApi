@@ -1,4 +1,4 @@
-﻿using ems.application.DTOs.BasicAndRoleBaseMenuDTO;
+﻿using ems.application.DTOs.BasicAndRoleBaseMenu;
 using ems.application.DTOs.UserLogin;
 using ems.application.Wrappers;
 using MediatR;
@@ -12,7 +12,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Commands
 {
     public class UserRolesPermissionOnModuleCommand : IRequest<ApiResponse<IEnumerable<UserRolesPermissionOnModuleDTO>>>
     {
- //till completed
+        //till completed
         public AccessDetailRequestDTO AccessDetailDTO { get; set; }
         public UserRolesPermissionOnModuleCommand(AccessDetailRequestDTO accessRequestDTO)
         {

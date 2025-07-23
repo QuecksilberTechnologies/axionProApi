@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ems.application.Constants;
 using FluentValidation;
-using ems.application.DTOs.BasicAndRoleBaseMenuDTO;
+ 
 using Microsoft.Extensions.Logging;
 
 namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
@@ -51,7 +51,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
             // Construct the API response
             var apiResponse = new ApiResponse<AccessDetailResponseDTO>
             {
-                IsSuccecced = ConstantValues.isSucceeded,  // Indicating the operation succeeded
+                IsSucceeded = ConstantValues.isSucceeded,  // Indicating the operation succeeded
                 Message = "Menus fetched successfully.",
                 Data = accessDetailResponse // Bind the AccessDetailResponseDTO
             };

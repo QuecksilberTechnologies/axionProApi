@@ -11,9 +11,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ems.application.DTOs.BasicAndRoleBaseMenuDTO;
-using ems.application.DTOs.RoleDTO;
+
 using FluentValidation;
+using ems.application.DTOs.BasicAndRoleBaseMenu;
 
 namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
 {
@@ -39,7 +39,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 {
                     return new ApiResponse<IEnumerable<UserRolesPermissionOnModuleDTO>>
                     {
-                        IsSuccecced = false,
+                        IsSucceeded = false,
                         Message = "Invalid request or missing AccessDetailDTO."
                     };
                 }
@@ -51,7 +51,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 // Construct the API response
                 var apiResponse = new ApiResponse<IEnumerable<UserRolesPermissionOnModuleDTO>>
                 {
-                    IsSuccecced = ConstantValues.isSucceeded,  // Indicating the operation succeeded
+                    IsSucceeded = ConstantValues.isSucceeded,  // Indicating the operation succeeded
                     Message = "Menus fetched successfully.",
                     Data = userRolesPermissionOnModuleDTOs // Return the fetched data as IEnumerable
                 };
@@ -70,7 +70,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                 // Return a failure response
                 return new ApiResponse<IEnumerable<UserRolesPermissionOnModuleDTO>>
                 {
-                    IsSuccecced = false,
+                    IsSucceeded = false,
                     Message = "An error occurred while processing the request. Please try again later."
                 };
             }

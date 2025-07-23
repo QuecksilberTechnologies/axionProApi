@@ -15,12 +15,12 @@ namespace ems.persistance.Repositories
     {
        
         private ILogger _logger;
-        private EmsDbContext _context;
+        private WorkforceDbContext _context;
         private ILogger<EmployeeTypeRepository> logger;
 
       
 
-        public EmployeeTypeRepository(EmsDbContext context, ILogger<EmployeeTypeRepository> logger)
+        public EmployeeTypeRepository(WorkforceDbContext context, ILogger<EmployeeTypeRepository> logger)
         {
             this._context = context;
             this.logger = logger;
@@ -34,18 +34,19 @@ namespace ems.persistance.Repositories
             {
                 _logger?.LogInformation("Fetching employee type for ID: {EmployeeTypeId}", employeeTypeId);
 
-                var employeeType = await _context.EmployeeTypes
-                                         .Include(et => et.Role)          // Include Role entity
-                                         .Include(et => et.EmployeeTypeBasicMenus)    // Include CommonMenus collection
-                                         .FirstOrDefaultAsync(et => et.Id == employeeTypeId);
+                //var employeeType = nullawait _context.EmployeeTypes
+                //                         .Include(et => et.Role)          // Include Role entity
+                //                         .Include(et => et.EmployeeTypeBasicMenus)    // Include CommonMenus collection
+                //                         .FirstOrDefaultAsync(et => et.Id == employeeTypeId);
 
-                if (employeeType == null)
-                {
-                    _logger?.LogWarning("Employee type not found with ID: {EmployeeTypeId}", employeeTypeId);
-                    return null;
-                }
+                //if (employeeType == null)
+                //{
+                //    _logger?.LogWarning("Employee type not found with ID: {EmployeeTypeId}", employeeTypeId);
+                //    return null;
+                //}
 
-                return employeeType;
+              //  return employeeType;
+                return null;
             }
             catch (Exception ex)
             {

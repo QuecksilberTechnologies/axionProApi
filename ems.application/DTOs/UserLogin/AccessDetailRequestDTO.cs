@@ -1,4 +1,4 @@
-﻿using ems.application.DTOs.RoleDTO;
+﻿using ems.application.DTOs.Role;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -3,6 +3,7 @@ using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
  
 using ems.persistance.Data.Context;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -13,16 +14,16 @@ namespace ems.persistance.Repositories
 {
     public class UserRoleRepository : IUserRoleRepository
     {
-        private readonly EmsDbContext _context;
+        private readonly WorkforceDbContext _context;
         private readonly ILogger<UserRoleRepository>? _logger;
 
-        public UserRoleRepository(EmsDbContext context, ILogger<UserRoleRepository>? logger)
+        public UserRoleRepository(WorkforceDbContext context, ILogger<UserRoleRepository>? logger)
         {
             _context = context;
              _logger = logger;
         }
 
-        public async Task<IEnumerable<UserRole>> GetUsersRoleByIdAsync(long userId)
+        public async Task<List<UserRole>> GetUsersRoleByIdAsync(long userId)
         {
             try
             {
@@ -38,6 +39,8 @@ namespace ems.persistance.Repositories
                     _logger?.LogWarning("No roles found for user with ID: {UserId}", userId);
                     return null;
                 }
+
+
                 // Log the total number of roles fetched for the user
                  _logger?.LogInformation("Fetched {Count} roles for user with ID: {UserId}", userRoles.Count, userId);
                 return userRoles;
@@ -49,10 +52,11 @@ namespace ems.persistance.Repositories
             }
         }
 
-        public async Task AddUserRoleAsync(UserRole userRole)
+        public async Task<int?> AddUserRoleAsync(UserRole userRole)
         {
             await _context.UserRoles.AddAsync(userRole);
             await _context.SaveChangesAsync();
+            return userRole.RoleId;
         }
 
         public async Task DeleteUserRoleAsync(int id)
@@ -65,7 +69,7 @@ namespace ems.persistance.Repositories
             }
         }
 
-        public async Task<IEnumerable<UserRole>> GetAllUserRolesAsync()
+        public async Task<List<UserRole>> GetAllUserRolesAsync()
         {
             return await _context.UserRoles.ToListAsync();
         }
@@ -75,34 +79,47 @@ namespace ems.persistance.Repositories
             return await _context.UserRoles.FindAsync(id);
         }
 
-        public async Task UpdateUserRoleAsync(UserRole userRole)
+        public async Task<int?> UpdateUserRoleAsync(UserRole userRole)
         {
             _context.UserRoles.Update(userRole);
             await _context.SaveChangesAsync();
+            return userRole.RoleId;
         }
-
-        public async Task<IEnumerable<UserRole>> GetUsersRolesWithDetailsByIdAsync(long employeeId)
+        public async Task<List<UserRole>> GetEmployeeRolesWithDetailsByIdAsync(long employeeId, long? tenantId)
         {
-            _logger?.LogInformation("Fetching roles for user with ID: {EmployeeId}", employeeId);
-
-          
-            
-            var userRoles = await _context.UserRoles
-                                           .Where(ur => ur.EmployeeId == employeeId)
-                                           .Include(ur => ur.RoleId) // Role details ko include karte hain
-                                           .ToListAsync();
-
-            if (userRoles == null || userRoles.Count == 0)
+            try
             {
-                _logger?.LogWarning("No roles found for user with ID: {EmployeeId}", employeeId);
-                return Enumerable.Empty<UserRole>(); 
+                _logger?.LogInformation("Fetching active roles for EmployeeId: {EmployeeId}", employeeId);
+
+                var userRoles = await _context.UserRoles
+                    .Include(ur => ur.Role)
+                    .Where(ur =>
+                        ur.EmployeeId == employeeId &&
+                        ur.IsActive == ConstantValues.IsByDefaultTrue &&
+                        ur.IsSoftDeleted == ConstantValues.IsByDefaultFalse &&
+                        ur.Role != null &&
+                        ur.Role.IsActive == ConstantValues.IsByDefaultTrue &&
+                        ur.Role.IsSoftDeleted == ConstantValues.IsByDefaultFalse &&
+                        ur.Role.TenantId == tenantId)
+                    .ToListAsync();
+
+                if (userRoles.Count == 0)
+                {
+                    _logger?.LogWarning("No active roles found for EmployeeId: {EmployeeId}", employeeId);
+                    return new List<UserRole>();
+                }
+
+                _logger?.LogInformation("Fetched {Count} active roles for EmployeeId: {EmployeeId}", userRoles.Count, employeeId);
+                return userRoles;
             }
-
-
-            _logger?.LogInformation("Fetched {Count} roles for user with ID: {EmployeeId}", userRoles.Count, employeeId);
-
-            return userRoles;
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Error fetching user roles for EmployeeId: {EmployeeId}", employeeId);
+                return new List<UserRole>();
+            }
         }
+
+
 
     }
 }

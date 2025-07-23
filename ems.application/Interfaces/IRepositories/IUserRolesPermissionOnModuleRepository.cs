@@ -1,5 +1,5 @@
-﻿using ems.application.DTOs.BasicAndRoleBaseMenuDTO;
-using ems.application.DTOs.RoleDTO;
+﻿using ems.application.DTOs.BasicAndRoleBaseMenu;
+using ems.application.DTOs.Role;
 using System;
 using System.Collections.Generic;
 using System.Linq;

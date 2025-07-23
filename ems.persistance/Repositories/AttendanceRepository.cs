@@ -1,5 +1,5 @@
 ﻿using ems.application.Constants;
-using ems.application.DTOs.AttendanceDTO;
+using ems.application.DTOs.Attendance;
 using ems.application.DTOs.UserLogin;
 using ems.application.Interfaces.IRepositories;
 using ems.application.Wrappers;
@@ -17,9 +17,9 @@ namespace ems.persistance.Repositories
 {
     public class AttendanceRepository : IAttendanceRepository
     {
-        private readonly EmsDbContext? _context;
+        private readonly WorkforceDbContext? _context;
         private readonly ILogger? _logger;
-        public AttendanceRepository(EmsDbContext? context, ILogger<AttendanceRepository>? logger)
+        public AttendanceRepository(WorkforceDbContext? context, ILogger<AttendanceRepository>? logger)
         {
             _context = context;
             _logger = logger;

@@ -1,25 +1,28 @@
-﻿using System;
+﻿using ems.domain.Common;
+using System;
 using System.Collections.Generic;
 
 namespace ems.domain.Entity;
 
-public partial class Role
+public partial class Role :BaseEntity
 {
     public int Id { get; set; }
 
-    public string RoleName { get; set; } = null!;
+    public long? TenantId { get; set; }
 
+    public string? RoleName { get; set; }
+
+    public string? RoleType { get; set; }
+
+    public bool? IsSystemDefault { get; set; } =false;
     public string? Remark { get; set; }
+    public string? RoleCode { get; set; }
+  
+    public virtual Tenant Tenant { get; set; } = null!;
 
-    public bool IsActive { get; set; }
+    public virtual ICollection<RoleModuleAndPermission> RoleModuleAndPermissions { get; set; } = new List<RoleModuleAndPermission>();
 
-    public long? AddedById { get; set; }
+    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
 
-    public DateTime AddedDateTime { get; set; }
-
-    public long? UpdatedById { get; set; }
-
-    public DateTime? UpdatedDateTime { get; set; }
-
-    public virtual ICollection<EmployeeType> EmployeeTypes { get; set; } = new List<EmployeeType>();
 }
+

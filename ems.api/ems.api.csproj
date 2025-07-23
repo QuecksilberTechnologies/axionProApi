@@ -5,8 +5,14 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+		<!-- To suppress missing XML doc warnings -->
+	</PropertyGroup>
 
-  <ItemGroup>
+	<ItemGroup>
+    <PackageReference Include="Asp.Versioning.Mvc" Version="8.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
@@ -20,12 +26,19 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="8.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ems.application\ems.application.csproj" />
     <ProjectReference Include="..\ems.infrastructure\ems.infrastructure.csproj" />
     <ProjectReference Include="..\ems.persistance\ems.persistance.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\VerifyTenantEmail\" />
+    <Folder Include="logs\" />
+    <Folder Include="Properties\PublishProfiles\" />
   </ItemGroup>
 
 </Project>
