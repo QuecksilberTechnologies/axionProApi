@@ -222,6 +222,11 @@ namespace ems.persistance.Repositories
 
         public async Task<long> AddEmployeeByAdminAsync(Employee entity, long addedId)
         {
+            entity.AddedById = addedId; 
+            entity.AddedDateTime = DateTime.Now;
+            entity.IsActive = true;
+            entity.HasPermanent = true;
+
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity), "Employee entity cannot be null.");
 

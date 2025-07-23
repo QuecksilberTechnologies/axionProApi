@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.OperationCmd.Handlers
 {
-    public class GetAllOperationQueryHandler : IRequestHandler<GetAllOperationCommand, ApiResponse<List<GetAllOperationDTO>>>
+    public class GetAllOperationQueryHandler : IRequestHandler<GetAllOperationCommand, ApiResponse<List<GetOperationResponseDTO>>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -28,7 +28,7 @@ namespace ems.application.Features.OperationCmd.Handlers
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
-        public async Task<ApiResponse<List<GetAllOperationDTO>>> Handle(GetAllOperationCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<GetOperationResponseDTO>>> Handle(GetAllOperationCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -43,10 +43,10 @@ namespace ems.application.Features.OperationCmd.Handlers
                 //}
 
                 //// ✅ Map Role entities to DTOs
-                var getAllOperationDTOs = _mapper.Map<List<GetAllOperationDTO>>(operationDTOs);
-
+                var getAllOperationDTOs = _mapper.Map<List<GetOperationResponseDTO>>(operationDTOs);
+                 
                 _logger.LogInformation("Successfully retrieved {Count} Operations.", getAllOperationDTOs.Count);
-                return new ApiResponse<List<GetAllOperationDTO>>
+                return new ApiResponse<List<GetOperationResponseDTO>>
                 {
                     IsSucceeded = true,
                     Message = "Operations fetched successfully.",
@@ -56,7 +56,7 @@ namespace ems.application.Features.OperationCmd.Handlers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while fetching Operations.");
-                return new ApiResponse<List<GetAllOperationDTO>>
+                return new ApiResponse<List<GetOperationResponseDTO>>
                 {
                     IsSucceeded = false,
                     Message = "Operations fetched successfully.",

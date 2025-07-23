@@ -1,6 +1,6 @@
 ﻿using ems.application.DTOs.Asset;
 using ems.application.Features.AssetCmd.Commands;
-using ems.application.Features.AssetCmd.Queries;
+ 
 using ems.application.Interfaces.ILogger;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -8,8 +8,14 @@ using System.Threading.Tasks;
 
 namespace ems.api.Controllers.Asset
 {
+    /// <summary>
+    /// handled-asset-related-operations.
+    /// </summary>
+
     [ApiController]
     [Route("api/[controller]")]
+
+ 
     public class AssetController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -87,7 +93,12 @@ namespace ems.api.Controllers.Asset
             return Ok(result);
         }
 
-        [HttpPost("get-all-asset-status-by-tenant-user")]
+         /// <summary>
+        /// Get all asset status that belongs to asset current postion (avilable/unavilable/hold).
+        /// </summary>
+        [HttpPost("get-status")]
+       
+ 
         public async Task<IActionResult> GetAllAssetStatus([FromBody] AssetStatusRequestDTO? assetStatusRequestDTO)
         {
             if (assetStatusRequestDTO == null)
@@ -98,7 +109,7 @@ namespace ems.api.Controllers.Asset
 
             // _logger.LogInformation("Received request to get Assets for userId: {LoginId}", AssetRequestDTO.Id);
 
-            var query = new GetAllAssetStatusByFieldQuery(assetStatusRequestDTO);  //  Fix: No parameter needed in GetAllAssetQuery
+            var query = new GetAllAssetStatusByFieldCommand(assetStatusRequestDTO);  //  Fix: No parameter needed in GetAllAssetQuery
             var result = await _mediator.Send(query);
 
             if (!result.IsSucceeded)
@@ -141,7 +152,7 @@ namespace ems.api.Controllers.Asset
 
             // _logger.LogInformation("Received request to get Assets for userId: {LoginId}", AssetRequestDTO.Id);
 
-            var query = new GetAllAssetStatusByFieldQuery(assetStatusRequestDTO);  //  Fix: No parameter needed in GetAllAssetQuery
+            var query = new GetAllAssetStatusByFieldCommand(assetStatusRequestDTO);  //  Fix: No parameter needed in GetAllAssetQuery
             var result = await _mediator.Send(query);
 
             if (!result.IsSucceeded)

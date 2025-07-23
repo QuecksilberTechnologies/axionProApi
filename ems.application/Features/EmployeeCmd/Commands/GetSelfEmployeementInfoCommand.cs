@@ -11,9 +11,9 @@ namespace ems.application.Features.EmployeeCmd.Commands
 {
     public class GetSelfEmployeementInfoCommand : IRequest<ApiResponse<GetEmployeeInfoResponseDTO>>
     {
-        public GetSelfEmployeeInfoRequestDTO Dto { get; set; }
+        public GetProfileInfoRequestDTO Dto { get; set; }
 
-        public GetSelfEmployeementInfoCommand(GetSelfEmployeeInfoRequestDTO dto)
+        public GetSelfEmployeementInfoCommand(GetProfileInfoRequestDTO dto)
         {
             Dto = dto;
         }

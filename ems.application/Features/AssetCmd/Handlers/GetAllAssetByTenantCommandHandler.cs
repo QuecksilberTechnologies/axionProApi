@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using ems.application.DTOs.Asset;
 using ems.application.Features.AssetCmd.Commands;
-using ems.application.Features.AssetCmd.Queries;
+ 
 using ems.application.Interfaces;
 using ems.application.Wrappers;
 using ems.domain.Entity;

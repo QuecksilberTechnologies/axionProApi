@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+   <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  <NoWarn>1591</NoWarn> <!-- Optional: XML comment warning suppress -->
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,8 +14,8 @@
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.0" />
   </ItemGroup>
-
-  <ItemGroup>
+	 
+	<ItemGroup>
     <Folder Include="Security\NewFolder\" />
   </ItemGroup>
 

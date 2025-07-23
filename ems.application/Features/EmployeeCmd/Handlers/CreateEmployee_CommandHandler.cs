@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 namespace ems.application.Features.EmployeeCmd.Handlers
 {
 
-    public class CreateEmployeeCommandHandler : IRequestHandler<CreateEmployeeCommand, EmployeeDTO>
+    public class CreateEmployee_CommandHandler : IRequestHandler<CreateEmployee_Command, EmployeeDTO>
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CreateEmployeeCommandHandler(IEmployeeRepository employeeRepository, IMapper mapper, IUnitOfWork unitOfWork)
+        public CreateEmployee_CommandHandler(IEmployeeRepository employeeRepository, IMapper mapper, IUnitOfWork unitOfWork)
         {
             _employeeRepository = employeeRepository;
             _mapper = mapper;
@@ -28,7 +28,7 @@ namespace ems.application.Features.EmployeeCmd.Handlers
         }
 
         
-        public async Task<EmployeeDTO> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
+        public async Task<EmployeeDTO> Handle(CreateEmployee_Command request, CancellationToken cancellationToken)
         {
            try
             {

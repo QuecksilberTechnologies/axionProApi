@@ -1,30 +1,61 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Module
 {
+    /// <summary>
+    /// post-request to create sub-module 
+    /// </summary>
     public class CreateSubModuleRequestDTO
-    {
-        public long ParentModuleId { get; set; }
+    {   
 
-        public string? ModuleCode { get; set; }
+           /// <summary> ProductOwnerId Required</summary>
+            public required int ProductOwnerId { get; set; }
 
-        public string ModuleName { get; set; } = null!;
+            [MaxLength(50)]
+            public required string ModuleCode { get; set; }
 
-        public string? SubModuleURL { get; set; }
+            /// <summary> Module name Required</summary>
 
-        public bool IsModuleDisplayInUI { get; set; }
 
-        public bool IsActive { get; set; }
+            public required string ModuleName { get; set; }
 
-        public string? ImageIconWeb { get; set; }
+            /// <summary> Display Name Required</summary>
+            public required bool IsCommonMenu { get; set; } = false;
 
-        public string? ImageIconMobile { get; set; }
+            public required string DisplayName { get; set; }
 
-        public string? Remark { get; set; }
- 
+            /// <summary> path Required</summary>
+
+            public required string Path { get; set; }
+
+            public string? SubModuleURL { get; set; }
+            /// <summary> path Required</summary>
+           public required int ParentModuleId { get; set; }       
+
+           public bool IsModuleDisplayInUI { get; set; } = false;
+
+            public bool IsActive { get; set; } = true;
+
+            [MaxLength(200)]
+            public string? ImageIconWeb { get; set; }
+
+            [MaxLength(200)]
+            public string? ImageIconMobile { get; set; }
+
+            public int? ItemPriority { get; set; }
+
+            [MaxLength(500)]
+            public string? Remark { get; set; }
+
+
+
+
+       
+
     }
 }

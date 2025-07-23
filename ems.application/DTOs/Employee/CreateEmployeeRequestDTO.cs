@@ -4,18 +4,23 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ems.application.DTOs.Employee
 {
-    public class CreateEmployeeByTenantPermittedUserRequestDTO
+    /// <summary>
+    /// Employee create request
+    /// </summary>
+    public class CreateEmployeeRequestDTO
     {
-        // ✅ Required Fields
+        /// <summary> TenantId Required</summary>
+
         [Required]
         public long TenantId { get; set; }
 
-       // [Required]
+        
+          // [Required]
         public int EmployeeDocumentId { get; set; }
 
        // [Required]
         [MaxLength(50)]
-        public required string EmployementCode { get; set; }
+        public  string? EmployementCode { get; set; }
 
         [Required]
         [MaxLength(100)]
@@ -37,10 +42,10 @@ namespace ems.application.DTOs.Employee
         [Required]
         public int? EmployeeTypeId { get; set; }
 
-        [Required]
+        //[Required]
         public required bool HasPermanent { get; set; }
 
-        [Required]
+        //[Required]
         public required bool IsActive { get; set; }
 
         [Required]

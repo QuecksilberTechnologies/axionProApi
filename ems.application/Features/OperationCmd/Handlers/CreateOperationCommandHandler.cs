@@ -16,7 +16,7 @@ using ems.application.DTOs.Operation;
 
 namespace ems.application.Features.OperationCmd.Handlers
 {
-    public class CreateOperationCommandHandler :  IRequestHandler<CreateOperationCommand, ApiResponse<List<GetAllOperationDTO>>>
+    public class CreateOperationCommandHandler :  IRequestHandler<CreateOperationCommand, ApiResponse<List<GetOperationResponseDTO>>>
     {
         private readonly IOperationRepository _operationRepository;
         private readonly IMapper _mapper;
@@ -28,26 +28,27 @@ namespace ems.application.Features.OperationCmd.Handlers
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
-        public async Task<ApiResponse<List<GetAllOperationDTO>>> Handle(CreateOperationCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<GetOperationResponseDTO>>> Handle(CreateOperationCommand request, CancellationToken cancellationToken)
         {
             try
             {
                 Operation operationEntity = _mapper.Map<Operation>(request.createOperationDTO);
+
                 List<Operation> operations = await _operationRepository.CreateOperationAsync(operationEntity);
 
                 if (operations == null || !operations.Any())
                 {
-                    return new ApiResponse<List<GetAllOperationDTO>>
+                    return new ApiResponse<List<GetOperationResponseDTO>>
                     {
                         IsSucceeded = false,
                         Message = "No Operation were created.",
-                        Data = new List<GetAllOperationDTO>()
+                        Data = new List<GetOperationResponseDTO>()
                     };
                 }
 
-                List<GetAllOperationDTO> operationDTOs = _mapper.Map<List<GetAllOperationDTO>>(operations);
+                List<GetOperationResponseDTO> operationDTOs = _mapper.Map<List<GetOperationResponseDTO>>(operations);
 
-                return new ApiResponse<List<GetAllOperationDTO>>
+                return new ApiResponse<List<GetOperationResponseDTO>>
                 {
                     IsSucceeded = true,
                     Message = " Operation created successfully",
@@ -57,7 +58,7 @@ namespace ems.application.Features.OperationCmd.Handlers
             catch (Exception ex)
             {
                 //  _logger.LogError(ex, "Error occurred while creating role.");
-                return new ApiResponse<List<GetAllOperationDTO>>
+                return new ApiResponse<List<GetOperationResponseDTO>>
 
                 {
                     IsSucceeded = false,

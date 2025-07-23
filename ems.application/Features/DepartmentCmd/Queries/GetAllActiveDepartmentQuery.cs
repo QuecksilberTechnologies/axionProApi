@@ -12,9 +12,9 @@ namespace ems.application.Features.DepartmentCmd.Queries
 {
     public class GetAllActiveDepartmentQuery : IRequest<ApiResponse<List<GetAllDepartmentResponseDTO>>>
     {
-        public GetAllDepartmentRequestDTO Dto { get; set; }
+        public DepartmentRequestDTO Dto { get; set; }
 
-        public GetAllActiveDepartmentQuery(GetAllDepartmentRequestDTO dto)
+        public GetAllActiveDepartmentQuery(DepartmentRequestDTO dto)
         {
             this.Dto = dto;
         }

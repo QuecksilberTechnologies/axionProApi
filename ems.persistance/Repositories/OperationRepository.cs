@@ -82,24 +82,44 @@ namespace ems.persistance.Repositories
                 var existingOperation = await _context.Operations.FirstOrDefaultAsync(l => l.Id == operation.Id);
                 if (existingOperation == null)
                 {
-                    _logger.LogWarning("operation type with ID {operation} not found.", operation.Id);
+                    _logger.LogWarning("Operation with ID {operation} not found.", operation.Id);
                     return await GetAllOperationAsync();
                 }
 
-                existingOperation.OperationName = operation.OperationName;
-                existingOperation.Remark = operation.Remark;
+                // ✅ String: null or whitespace check
+                if (!string.IsNullOrWhiteSpace(operation.OperationName))
+                    existingOperation.OperationName = operation.OperationName;
+
+                if (!string.IsNullOrWhiteSpace(operation.IconImage))
+                    existingOperation.IconImage = operation.IconImage;
+
+                if (!string.IsNullOrWhiteSpace(operation.Remark))
+                    existingOperation.Remark = operation.Remark;
+
+                // ✅ long / int: null + > 0 check
+                if (operation.UpdatedById != null && operation.UpdatedById > 0)
+                    existingOperation.UpdatedById = operation.UpdatedById;
+
+                if (operation.OperationType != null && operation.OperationType > 0)
+                    existingOperation.OperationType = operation.OperationType;
+
+                // ✅ DateTime: null + default check
+                if (operation.UpdateDateTime != null && operation.UpdateDateTime != default(DateTime))
+                    existingOperation.UpdateDateTime = operation.UpdateDateTime;
+
+                // ✅ Bool: Always update, kyunki false bhi valid ho sakta hai
                 existingOperation.IsActive = operation.IsActive;
 
                 await _context.SaveChangesAsync();
-                _logger.LogInformation("operation type with ID {operation} updated successfully.", operation.Id);
+                _logger.LogInformation("Operation with ID {operation} updated successfully.", operation.Id);
                 return await GetAllOperationAsync();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while updating operation type with ID {operation}.", operation.Id);
+                _logger.LogError(ex, "Error while updating operation with ID {operation}.", operation.Id);
                 throw;
             }
-
         }
+
     }
 }

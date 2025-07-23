@@ -135,7 +135,7 @@ public class NewTokenRepository : INewTokenRepository
 
             // Parse the TokenLifetime from the config (in TimeSpan format)
             var tokenLifetime = TimeSpan.Parse(_configuration["JWTSettings:TokenLifetime"]);
-
+          
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -143,6 +143,7 @@ public class NewTokenRepository : INewTokenRepository
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                 // Add any other claims here as needed
             }),
+
                 Expires = DateTime.UtcNow.Add(tokenLifetime), // Set token expiry
                 Issuer = issuer, // Set issuer
                 Audience = audience, // Set audience

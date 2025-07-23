@@ -16,7 +16,7 @@ using ems.application.DTOs.Operation;
 
 namespace ems.application.Features.OperationCmd.Handlers
 {
-    public class UpdateOperationCommandHandler : IRequestHandler<UpdateOperationCommand, ApiResponse<List<GetAllOperationDTO>>>
+    public class UpdateOperationCommandHandler : IRequestHandler<UpdateOperationCommand, ApiResponse<List<GetOperationResponseDTO>>>
     {
         private readonly IOperationRepository operationRepository;
         private readonly IMapper _mapper;
@@ -29,28 +29,30 @@ namespace ems.application.Features.OperationCmd.Handlers
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ApiResponse<List<GetAllOperationDTO>>> Handle(UpdateOperationCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<GetOperationResponseDTO>>> Handle(UpdateOperationCommand request, CancellationToken cancellationToken)
         {
 
             try
             {
 
                 Operation operation = _mapper.Map<Operation>(request.updateOperationDTO);
+                operation.UpdatedById = (long)request.updateOperationDTO.ProductOwnerId;
+                operation.UpdateDateTime = DateTime.UtcNow;
                 List<Operation> operations = await operationRepository.UpdateOperationAsync(operation);
 
                 if (operations == null || !operations.Any())
                 {
-                    return new ApiResponse<List<GetAllOperationDTO>>
+                    return new ApiResponse<List<GetOperationResponseDTO>>
                     {
                         IsSucceeded = false,
                         Message = "No operation were updated.",
-                        Data = new List<GetAllOperationDTO>()
+                        Data = new List<GetOperationResponseDTO>()
                     };
                 }
 
-                List<GetAllOperationDTO> getAllOperationDTOs = _mapper.Map<List<GetAllOperationDTO>>(operations);
+                List<GetOperationResponseDTO> getAllOperationDTOs = _mapper.Map<List<GetOperationResponseDTO>>(operations);
 
-                return new ApiResponse<List<GetAllOperationDTO>>
+                return new ApiResponse<List<GetOperationResponseDTO>>
                 {
                     IsSucceeded = true,
                     Message = "Travel created successfully",
@@ -60,7 +62,7 @@ namespace ems.application.Features.OperationCmd.Handlers
             catch (Exception ex)
             {
                 //  _logger.LogError(ex, "Error occurred while Updatiing Operation.");
-                return new ApiResponse<List<GetAllOperationDTO>>
+                return new ApiResponse<List<GetOperationResponseDTO>>
 
                 {
                     IsSucceeded = false,

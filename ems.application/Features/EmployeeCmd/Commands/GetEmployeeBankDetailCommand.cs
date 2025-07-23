@@ -12,9 +12,9 @@ namespace ems.application.Features.EmployeeCmd.Commands
 {
     public class GetEmployeeBankDetailCommand : IRequest<ApiResponse<GetEmployeeBankResponseDTO>>
     {
-        public GetEmployeeInfoRequestDTO DTO { get; set; }
+        public EmployeeInfoRequestDTO DTO { get; set; }
 
-        public GetEmployeeBankDetailCommand(GetEmployeeInfoRequestDTO dTO)
+        public GetEmployeeBankDetailCommand(EmployeeInfoRequestDTO dTO)
         {
             DTO = dTO;
         }

@@ -12,6 +12,7 @@ using ems.application.DTOs.Employee.AccessControlType;
 using ems.application.DTOs.Employee.AccessResponse;
 using ems.application.DTOs.Leave;
 using ems.application.DTOs.Module;
+using ems.application.DTOs.Module.NewFolder;
 using ems.application.DTOs.Operation;
 using ems.application.DTOs.Region;
 using ems.application.DTOs.Registration;
@@ -115,27 +116,55 @@ namespace ems.application.Mappings
             CreateMap<UpdateDesignationDTO, Designation>();
 
             CreateMap<CreateDepartmentDTO, Department>();
-            CreateMap<Department, GetAllDepartmentRequestDTO>();
+            CreateMap<Department, DepartmentRequestDTO>();
             CreateMap<UpdateDepartmentDTO, Department>();
 
 
 
-            CreateMap<CreateSubModuleRequestDTO, domain.Entity.Module>();
-            CreateMap<CreateModuleRequestDTO, domain.Entity.Module>().ReverseMap();
+            
             CreateMap<ModuleResponseDTO, domain.Entity.Module>();
+            
+            
+            CreateMap<MainModuleResponseDTO, domain.Entity.Module>();         
+            CreateMap<domain.Entity.Module, MainModuleResponseDTO>();
+
+            
+            CreateMap<CreateMainModuleRequestDTO, domain.Entity.Module>();
+            CreateMap<domain.Entity.Module, CreateMainModuleRequestDTO>();
+
+
+            CreateMap<CreateSubModuleRequestDTO, domain.Entity.Module>();
+            CreateMap<domain.Entity.Module, CreateSubModuleRequestDTO>();
 
 
 
 
 
+            CreateMap<domain.Entity.Operation, CreateOperationRequestDTO>()
+                .ForMember(dest => dest.ProductOwnerId, opt => opt.MapFrom(src => (long)src.AddedById));
 
-            //CreateMap<CreateOperationByProductOwnerRequestDTO, Operation>();
-            //CreateMap<Operation, GetAllOperationDTO>();
-            //CreateMap<UpdateOperationByProductOwnerRequestDTO, Operation>();
 
+
+            CreateMap<CreateOperationRequestDTO, domain.Entity.Operation>()
+             .ForMember(dest => dest.AddedById, opt => opt.MapFrom(src => (long)src.ProductOwnerId));
+
+
+            CreateMap<domain.Entity.Operation, CreateOperationRequestDTO>();
           
+            
+            CreateMap<domain.Entity.Operation, GetOperationResponseDTO>();
+            CreateMap<GetOperationResponseDTO, domain.Entity.Operation>();
+         
+            
+            CreateMap<UpdateOperationRequestDTO, domain.Entity.Operation>();
 
-        CreateMap<CreateClientTypeDTO, ClientType>();
+
+            CreateMap<domain.Entity.Operation, UpdateOperationRequestDTO>();
+            
+
+
+
+            CreateMap<CreateClientTypeDTO, ClientType>();
             CreateMap<ClientType, GetAllClientTypeDTO>();
             CreateMap<UpdateClientTypeDTO, ClientType>();  // ✅ Yeh likhna hoga!
 
@@ -197,8 +226,8 @@ namespace ems.application.Mappings
 
             
             // Agar reverse mapping chahiye toh, isse bhi add kar sakte hain
-                CreateMap<Employee, CreateEmployeeByTenantPermittedUserRequestDTO>();
-                CreateMap<CreateEmployeeByTenantPermittedUserRequestDTO,Employee > ();
+                CreateMap<Employee, CreateEmployeeRequestDTO>();
+                CreateMap<CreateEmployeeRequestDTO,Employee > ();
                 CreateMap<GetEmployeeInfoResponseDTO, Employee> ();
                 CreateMap<Employee, GetEmployeeInfoResponseDTO> ();
 
@@ -236,8 +265,8 @@ namespace ems.application.Mappings
             CreateMap<EmployeeLoginInfoDTO, LoginResponseDTO>().ForMember(dest => dest.EmployeeInfo, opt => opt.MapFrom(src => src));
                 CreateMap<Category, CategoryResponseDTO>();
             // Map Employee to EmployeeDTO
-            CreateMap<Employee, CreateEmployeeByTenantPermittedUserRequestDTO>();
-            CreateMap<CreateEmployeeByTenantPermittedUserRequestDTO, Employee>();
+            CreateMap<Employee, CreateEmployeeRequestDTO>();
+            CreateMap<CreateEmployeeRequestDTO, Employee>();
             CreateMap<Employee, EmployeeDTO>();
             CreateMap<EmployeeDTO, Employee>();
             CreateMap<Employee, EmployeeLoginInfoDTO>()

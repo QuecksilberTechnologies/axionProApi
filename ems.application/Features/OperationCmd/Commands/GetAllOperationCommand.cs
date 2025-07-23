@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.OperationCmd.Commands
 {
-    public class GetAllOperationCommand : IRequest<ApiResponse<List<GetAllOperationDTO>>>
+    public class GetAllOperationCommand : IRequest<ApiResponse<List<GetOperationResponseDTO>>>
     {
-        public GetAllOperationRequestByProductAdminDTO? operationRequestDTO { get; set; }
+        public GetOperationRequestDTO? Dto { get; set; }
 
-        public GetAllOperationCommand(GetAllOperationRequestByProductAdminDTO operationRequestDTO)
+        public GetAllOperationCommand(GetOperationRequestDTO dto)
         {
-            this.operationRequestDTO = operationRequestDTO;
+            this.Dto = dto;
         }
     }
 }

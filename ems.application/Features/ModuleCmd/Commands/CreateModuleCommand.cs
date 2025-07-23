@@ -5,19 +5,23 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+ 
 using System.Text;
 using System.Threading.Tasks;
+ 
 
+using ems.domain.Entity;
+using ems.application.DTOs.Module.NewFolder;
 namespace ems.application.Features.ModuleCmd.Commands
 {
-    public class CreateModuleCommand : IRequest<ApiResponse<ModuleResponseDTO>>
+    public class CreateModuleCommand : IRequest<ApiResponse<MainModuleResponseDTO>>
     {
 
-        public CreateModuleRequestDTO createModuleRequestDTO { get; set; }
+        public CreateMainModuleRequestDTO DTO { get; set; }
 
-        public CreateModuleCommand(CreateModuleRequestDTO createModuleRequestDTO)
+        public CreateModuleCommand(CreateMainModuleRequestDTO dTO)
         {
-            this.createModuleRequestDTO = createModuleRequestDTO;
+            this.DTO = dTO;
         }
 
     }

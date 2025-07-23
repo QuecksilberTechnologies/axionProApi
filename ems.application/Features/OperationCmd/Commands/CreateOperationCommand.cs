@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.OperationCmd.Commands
 {
-    public class CreateOperationCommand : IRequest<ApiResponse<List<GetAllOperationDTO>>>
+    public class CreateOperationCommand : IRequest<ApiResponse<List<GetOperationResponseDTO>>>
     {
 
-        public CreateOperationByProductOwnerRequestDTO createOperationDTO { get; set; }
+        public CreateOperationRequestDTO createOperationDTO { get; set; }
 
-        public CreateOperationCommand(CreateOperationByProductOwnerRequestDTO createOperationDTO)
+        public CreateOperationCommand(CreateOperationRequestDTO createOperationDTO)
         {
             this.createOperationDTO = createOperationDTO;
         }

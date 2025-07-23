@@ -1,7 +1,7 @@
 ﻿using ems.application.DTOs.Asset;
 using ems.application.DTOs.Module;
 using ems.application.Features.AssetCmd.Commands;
-using ems.application.Features.AssetCmd.Queries;
+ 
 using ems.application.Features.ModuleCmd.Commands;
 using ems.application.Interfaces.ILogger;
 using MediatR;
@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ems.api.Controllers.Module
 {
+    /// <summary>
+    /// handled-module-related-operations.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class ModuleController :ControllerBase
@@ -23,8 +26,11 @@ namespace ems.api.Controllers.Module
         }
         #region Create Module
 
-        [HttpPost("add-module")]
-        public async Task<IActionResult> AddModule([FromBody] CreateModuleRequestDTO? createModuleRequestDTO)
+        /// <summary>
+        /// create a new module.
+        /// </summary>
+        [HttpPost("create-module")]
+        public async Task<IActionResult> AddModule([FromBody] CreateMainModuleRequestDTO? createModuleRequestDTO)
         {
             if (createModuleRequestDTO == null)
             {
@@ -44,7 +50,7 @@ namespace ems.api.Controllers.Module
 
             return Ok(result);
         }
-        [HttpPost("add-sub-module")]
+        [HttpPost("create-sub-module")]
         public async Task<IActionResult> AddSubModule([FromBody] CreateSubModuleRequestDTO? createSubModuleRequestDTO)
         {
             if (createSubModuleRequestDTO == null)

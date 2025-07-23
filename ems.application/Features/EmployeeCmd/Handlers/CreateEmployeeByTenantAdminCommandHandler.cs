@@ -16,7 +16,7 @@ using ems.application.Interfaces.IEmail;
 
 namespace ems.application.Features.EmployeeCmd.Handlers
 {
-    public class CreateEmployeeByTenantAdminCommandHandler : IRequestHandler<CreateEmployeeByTenantAdminCommand, ApiResponse<long>>
+    public class CreateEmployeeByTenantAdminCommandHandler : IRequestHandler<CreateEmployeeCommand, ApiResponse<long>>
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IMapper _mapper;
@@ -45,7 +45,7 @@ namespace ems.application.Features.EmployeeCmd.Handlers
             _emailService = emailService;
         }
 
-        public async Task<ApiResponse<long>> Handle(CreateEmployeeByTenantAdminCommand request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<long>> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
         {
             try
             {
@@ -72,7 +72,14 @@ namespace ems.application.Features.EmployeeCmd.Handlers
                 // 🏗️ Map DTO to Entity
                 var employeeEntity = _mapper.Map<Employee>(request.Dto);
                 employeeEntity.AddedById = empId;
+                var datePart = DateTime.UtcNow.ToString("yyyyMMdd"); // Format: YYYYMMDD
+                var timePart = DateTime.UtcNow.ToString("HHmmss"); // Format: HHMMSS
+                var randomSuffix = Path.GetRandomFileName()
+                .Replace(".", "")
+                .Substring(0, 4)
+                .ToUpper(); // Random 4-char uppercase string
 
+                employeeEntity.EmployementCode = $"{request.Dto.TenantId}/{datePart}/{timePart}-{randomSuffix}";
                 long employeeId = await _employeeRepository.AddEmployeeByAdminAsync(employeeEntity, empId);
 
 

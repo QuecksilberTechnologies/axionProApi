@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ems.application.DTOs.Asset;
-using ems.application.Features.AssetCmd.Queries;
+using ems.application.Features.AssetCmd.Commands;
 using ems.application.Interfaces;
 using ems.application.Wrappers;
 using ems.domain.Entity;
@@ -14,20 +14,20 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.AssetCmd.Handlers
 {
-    public class GetAllAssetStatusByFieldQueryHandler : IRequestHandler<GetAllAssetStatusByFieldQuery, ApiResponse<List<AssetStatusResponseDTO>>>
+    public class GetAllAssetStatusByFieldCommandHandler : IRequestHandler<GetAllAssetStatusByFieldCommand, ApiResponse<List<AssetStatusResponseDTO>>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<GetAllAssetStatusByFieldQueryHandler> _logger;
+        private readonly ILogger<GetAllAssetStatusByFieldCommandHandler> _logger;
 
-        public GetAllAssetStatusByFieldQueryHandler(IMapper mapper, IUnitOfWork unitOfWork, ILogger<GetAllAssetStatusByFieldQueryHandler> logger)
+        public GetAllAssetStatusByFieldCommandHandler(IMapper mapper, IUnitOfWork unitOfWork, ILogger<GetAllAssetStatusByFieldCommandHandler> logger)
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
             _logger = logger;
         }
 
-        public async Task<ApiResponse<List<AssetStatusResponseDTO>>> Handle(GetAllAssetStatusByFieldQuery request, CancellationToken cancellationToken)
+        public async Task<ApiResponse<List<AssetStatusResponseDTO>>> Handle(GetAllAssetStatusByFieldCommand request, CancellationToken cancellationToken)
         {
             try
             {

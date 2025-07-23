@@ -6,9 +6,9 @@ namespace ems.application.Common.Commands
 {
     public class GetBasicEmployeeInfoCommand : IRequest<ApiResponse<GetEmployeeInfoResponseDTO>>
     {
-        public GetEmployeeInfoRequestDTO DTO { get; }
+        public EmployeeInfoRequestDTO DTO { get; }
 
-        public GetBasicEmployeeInfoCommand(GetEmployeeInfoRequestDTO dTO)
+        public GetBasicEmployeeInfoCommand(EmployeeInfoRequestDTO dTO)
         {
             DTO = dTO;
         }

@@ -12,7 +12,7 @@ namespace ems.application.DTOs.Module
         public int ModuleId { get; set; }
         public int? ParentModuleId { get; set; }
         public string? ModuleName { get; set; }
-    //    public List<ModuleOperationResponseDTO> ModuleOperations { get; set; } = new()  ;
+         public List<ModuleOperationResponseDTO> ModuleOperations { get; set; } = new()  ;
            
 
 

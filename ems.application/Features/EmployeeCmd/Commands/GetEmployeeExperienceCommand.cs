@@ -11,9 +11,9 @@ namespace ems.application.Features.EmployeeCmd.Commands
 {
     public class GetEmployeeExperienceCommand : IRequest<ApiResponse<GetEmployeeExperienceResponseDTO>>
     {
-        public GetEmployeeInfoRequestDTO DTO { get; set; }
+        public EmployeeInfoRequestDTO DTO { get; set; }
 
-        public GetEmployeeExperienceCommand(GetEmployeeInfoRequestDTO dTO)
+        public GetEmployeeExperienceCommand(EmployeeInfoRequestDTO dTO)
         {
             DTO = dTO;
         }

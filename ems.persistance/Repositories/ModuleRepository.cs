@@ -117,8 +117,8 @@ namespace ems.persistance.Repositories
             {
                 await using var context = await _contextFactory.CreateDbContextAsync();
 
-                module.AddedDateTime = DateTime.Now;
-                module.IsActive = true;
+                //module.AddedDateTime = DateTime.Now;
+                //module.IsActive = true;
 
                 await context.Modules.AddAsync(module);
                 await context.SaveChangesAsync();

@@ -3,7 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+	  <GenerateDocumentationFile>true</GenerateDocumentationFile>
+	  <NoWarn>1591</NoWarn>
+	  <!-- Optional: XML comment warning suppress -->
     <Nullable>enable</Nullable>
+	  
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,12 +20,13 @@
     <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
   </ItemGroup>
-
-  <ItemGroup>
+	 
+	<ItemGroup>
     <Folder Include="DTOs\BasicMenu\" />
     <Folder Include="DTOs\NewFolder1\" />
     <Folder Include="DTOs\NewFolder\" />
     <Folder Include="Enums\" />
+    <Folder Include="Features\AssetCmd\Queries\" />
     <Folder Include="Features\Cmd - Copy\Commands\" />
     <Folder Include="Features\Cmd - Copy\Handlers\" />
     <Folder Include="Features\Cmd - Copy\Queries\" />

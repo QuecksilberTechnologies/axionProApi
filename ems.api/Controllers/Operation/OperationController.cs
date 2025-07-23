@@ -13,6 +13,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ems.api.Controllers.Operation
 {
+    /// <summary>
+    /// handled-operation-related-actions.
+    /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class OperationController : ControllerBase
@@ -26,11 +29,13 @@ namespace ems.api.Controllers.Operation
             _logger = logger;
         }
 
-
-        [HttpGet("get-all-operation-by-product-owner")]
-        public async Task<IActionResult> GetAllOperationAsyc([FromQuery] GetAllOperationRequestByProductAdminDTO operationRequestDTO)
+        /// <summary>
+        /// Get all operations.
+        /// </summary>
+        [HttpGet("get-operations")]
+        public async Task<IActionResult> GetAllOperationAsyc([FromQuery] GetOperationRequestDTO operationRequestDTO)
         {
-            _logger.LogInfo($"Received request to get operationRequestDTO from userId: {operationRequestDTO.ProductOwnerId}");
+            _logger.LogInfo($"Received request to get operationRequestDTO from userId: {operationRequestDTO.EmployeeId}");
 
             var command = new GetAllOperationCommand(operationRequestDTO);
             var result = await _mediator.Send(command);
@@ -41,8 +46,14 @@ namespace ems.api.Controllers.Operation
             }
             return Ok(result);
         }
-        [HttpPost("add-operation-by-product-owner")]
-        public async Task<IActionResult> CreateTravelModeType([FromBody] CreateOperationByProductOwnerRequestDTO createOperationDTO)
+
+
+
+        /// <summary>
+        /// Get insert operation.
+        /// </summary>
+        [HttpPost("create")]
+        public async Task<IActionResult> CreateOperation([FromBody] CreateOperationRequestDTO createOperationDTO)
         {
             if (createOperationDTO == null)
             {
@@ -63,8 +74,11 @@ namespace ems.api.Controllers.Operation
             return Ok(result);
         }
 
-        [HttpPost("update-operation-by-product-owner")]
-        public async Task<IActionResult> UpdateOperation([FromBody] UpdateOperationByProductOwnerRequestDTO updateOperationDTO)
+        /// <summary>
+        /// Update Operation.
+        /// </summary>
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateOperation([FromBody] UpdateOperationRequestDTO updateOperationDTO)
         {
             _logger.LogInfo("Received request for update a leave" + updateOperationDTO.ToString());
             var command = new UpdateOperationCommand(updateOperationDTO);

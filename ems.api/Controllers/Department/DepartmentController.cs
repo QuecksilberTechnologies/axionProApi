@@ -11,6 +11,10 @@ namespace ems.api.Controllers.Department
 {
     [ApiController]
     [Route("api/[controller]")]
+
+    /// <summary>
+    /// handled-department-related-operations.
+    /// </summary>
     public class DepartmentController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -22,9 +26,11 @@ namespace ems.api.Controllers.Department
             _logger = logger;
         }
 
-
-        [HttpGet("get-all-department-by-permitted-user")]
-        public async Task<IActionResult> GetAllDesignationAsyc([FromQuery] GetAllDepartmentRequestDTO departmentRequestDTO)
+        /// <summary>
+        /// Get all department that belong to the specified tenant.
+        /// </summary>
+        [HttpGet("get-department")]
+        public async Task<IActionResult> GetAllDesignationAsyc([FromQuery] DepartmentRequestDTO departmentRequestDTO)
         {
             _logger.LogInfo($"Received request to get department from userId: {departmentRequestDTO.TenantId}");
 

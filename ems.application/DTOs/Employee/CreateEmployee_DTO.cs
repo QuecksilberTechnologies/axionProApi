@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ems.application.DTOs.Employee
 {
 
-    public class CreateEmployeeRequestDTO
+    public class CreateEmployee_RequestDTO
     {
         public required long TenantId { get; set; }
 

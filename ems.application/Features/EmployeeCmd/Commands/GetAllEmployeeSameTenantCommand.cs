@@ -12,9 +12,9 @@ namespace ems.application.Features.EmployeeCmd.Commands
  
     public class GetAllEmployeeSameTenantCommand : IRequest<ApiResponse<List<GetEmployeeInfoResponseDTO>>>
     {
-        public GetAllEmployeeRequestDTO DTO { get; set; }
+        public EmployeeByTenantRequestDTO DTO { get; set; }
 
-        public GetAllEmployeeSameTenantCommand(GetAllEmployeeRequestDTO dTO)
+        public GetAllEmployeeSameTenantCommand(EmployeeByTenantRequestDTO dTO)
         {
             DTO = dTO;
         }

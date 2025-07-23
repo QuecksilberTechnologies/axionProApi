@@ -5,22 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.DTOs.Department
+namespace ems.application.DTOs.Employee
 {
     /// <summary>
-    /// post-request to fetch all department 
+    /// post-request to fetch all employee 
     /// </summary>
-
-    public class DepartmentRequestDTO
+     
+    public class EmployeeByTenantRequestDTO
     {
-
         /// <summary> TenantId Required</summary>
-       
+        // ✅ Required Fields
         [Required]
-        public long? TenantId { get; set; }
-        public long? RoleId { get; set; }
-
-
-        
+        public long TenantId {  get; set; }
     }
 }
