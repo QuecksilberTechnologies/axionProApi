@@ -70,20 +70,19 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
-    // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
+    
         app.UseSwagger();
         app.UseSwaggerUI();
-    }
+   
 
     app.UseHttpsRedirection();
     app.UseAuthentication();
     app.UseAuthorization();
     app.UseMiddleware<ErrorHandlerMiddleware>();
-    var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
-    app.Urls.Add($"http://*:{port}");
+ 
     app.MapControllers();
+    var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+    app.Urls.Add($"http://*:{port}");
 
     app.Run();
 }
