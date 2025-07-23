@@ -12,7 +12,6 @@ using ems.domain.Entity;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
 using FluentValidation;
-using ems.application.Interfaces.Repositories;
 public class UnitOfWork  : IUnitOfWork
 {
 

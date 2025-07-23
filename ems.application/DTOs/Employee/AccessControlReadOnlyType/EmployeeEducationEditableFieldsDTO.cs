@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System;
 using ems.application.Common.Attributes;
 
-namespace ems.application.DTOs.Employee.AccessControlType
+namespace ems.application.DTOs.Employee.AccessControlReadOnlyType
 {
     public class EmployeeEducationEditableFieldsDTO
     {

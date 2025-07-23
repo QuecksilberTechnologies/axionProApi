@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Features.RoleCmd.Commands
+namespace ems.application.Features.TenantCmd.Commands
 {
 
     public class TenantEnabledModuleOperationsUpdateCommand : IRequest<ApiResponse<bool>>
@@ -21,4 +21,3 @@ namespace ems.application.Features.RoleCmd.Commands
     }
 
 }
- 

@@ -11,10 +11,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ems.application.Features.RoleCmd.Commands;
 using ems.application.DTOs.Tenant;
+using ems.application.Features.TenantCmd.Commands;
 
-namespace ems.application.Features.RoleCmd.Handlers
+namespace ems.application.Features.TenantCmd.Handlers
 {
 
     public class GetAllTenantTrueEnabledModuleOperationByTenantIdCommandHandler : IRequestHandler<GetAllTenantTrueEnabledModuleOperationByTenantIdCommand, ApiResponse<TenantEnabledModuleOperationsResponseDTO>>
@@ -71,7 +71,7 @@ namespace ems.application.Features.RoleCmd.Handlers
                 var responseDTO = await _unitOfWork.TenantModuleConfigurationRepository
                     .GetAllEnabledTrueModulesWithOperationsByTenantIdAsync
                     (request.TenantEnabledModuleOperationsRequestDTO);
-                   
+
 
                 return new ApiResponse<TenantEnabledModuleOperationsResponseDTO>
                 {

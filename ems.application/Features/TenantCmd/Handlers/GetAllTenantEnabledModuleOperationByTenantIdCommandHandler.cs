@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using ems.application.DTOs.Tenant;
-using ems.application.Features.RoleCmd.Commands;
 using ems.application.Interfaces.IRepositories;
 using ems.application.Interfaces;
 using ems.application.Wrappers;
@@ -11,8 +10,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ems.application.Features.TenantCmd.Commands;
 
-namespace ems.application.Features.RoleCmd.Handlers
+namespace ems.application.Features.TenantCmd.Handlers
 {
     public class GetAllTenantEnabledModuleOperationByTenantIdCommandHandler : IRequestHandler<GetAllTenantEnabledModuleOperationByTenantIdCommand, ApiResponse<TenantEnabledModuleOperationsResponseDTO>>
     {
@@ -65,8 +65,8 @@ namespace ems.application.Features.RoleCmd.Handlers
                 }
 
                 // ✅ Get data from repository
-                  var responseDTO = await _unitOfWork.TenantModuleConfigurationRepository.GetAllEnabledModulesWithOperationsByTenantIdAsync(request.dto);
-                     
+                var responseDTO = await _unitOfWork.TenantModuleConfigurationRepository.GetAllEnabledModulesWithOperationsByTenantIdAsync(request.dto);
+
 
                 return new ApiResponse<TenantEnabledModuleOperationsResponseDTO>
                 {

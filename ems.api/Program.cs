@@ -57,12 +57,12 @@ try
                   .AllowAnyMethod();
         });
     });
-   
+
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
-    builder.Services.AddPersistance(builder.Configuration);
+    builder.Services.AddPersistence(builder.Configuration);
     builder.Services.AddHttpContextAccessor();
 
     var app = builder.Build();
@@ -70,18 +70,18 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
-    
-        app.UseSwagger();
-        app.UseSwaggerUI();
-   
+
+    app.UseSwagger();
+    app.UseSwaggerUI();
+
 
     app.UseHttpsRedirection();
     app.UseAuthentication();
     app.UseAuthorization();
     app.UseMiddleware<ErrorHandlerMiddleware>();
- 
+
     app.MapControllers();
-    var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+     var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
     app.Urls.Add($"http://*:{port}");
 
     app.Run();
@@ -97,4 +97,3 @@ finally
 
 
 
- 

@@ -8,7 +8,6 @@ using ems.application.DTOs.Designation;
 using ems.application.DTOs.EmailTemplate;
 using ems.application.DTOs.Employee;
 using ems.application.DTOs.Employee.AccessControlReadOnlyType;
-using ems.application.DTOs.Employee.AccessControlType;
 using ems.application.DTOs.Employee.AccessResponse;
 using ems.application.DTOs.Leave;
 using ems.application.DTOs.Module;

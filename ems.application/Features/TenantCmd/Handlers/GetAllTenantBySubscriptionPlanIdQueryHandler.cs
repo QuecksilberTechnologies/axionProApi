@@ -4,7 +4,7 @@ using ems.application.DTOs.Region;
 using ems.application.DTOs.Registration;
 using ems.application.DTOs.Tenant;
 using ems.application.Features.RegistrationCmd.Commands;
-using ems.application.Features.RoleCmd.Queries;
+using ems.application.Features.TenantCmd.Queries;
 using ems.application.Interfaces;
 using ems.application.Interfaces.IRepositories;
 using ems.application.Wrappers;
@@ -17,7 +17,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ems.application.Features.RoleCmd.Handlers
+namespace ems.application.Features.TenantCmd.Handlers
 {
 
     public class GetAllTenantBySubscriptionPlanIdQueryHandler : IRequestHandler<GetAllTenantBySubscriptionPlanIdQuery, ApiResponse<List<TenantResponseDTO>>>

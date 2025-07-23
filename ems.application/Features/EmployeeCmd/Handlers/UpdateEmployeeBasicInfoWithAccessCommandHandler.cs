@@ -9,7 +9,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using AutoMapper;
 using ems.application.DTOs.Employee.AccessResponse;
-using ems.application.DTOs.Employee.AccessControlType;
+using ems.application.DTOs.Employee.AccessControlReadOnlyType;
 
 namespace ems.application.Features.EmployeeCmd.Handlers
 {

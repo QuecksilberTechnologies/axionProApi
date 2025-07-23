@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using ems.application.Common.Helpers;
-using ems.application.DTOs.Employee.AccessControlType;
 using ems.application.DTOs.Employee.AccessResponse;
 using ems.application.Features.EmployeeCmd.Commands;
 using ems.application.Interfaces.IRepositories;
@@ -15,6 +14,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using ems.application.DTOs.Employee.AccessControlReadOnlyType;
 
 namespace ems.application.Features.EmployeeCmd.Handlers
 {

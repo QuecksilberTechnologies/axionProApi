@@ -2,7 +2,7 @@
 using ems.application.Wrappers;
 using MediatR;
 
-namespace ems.application.Common.Commands
+namespace ems.application.Features.EmployeeCmd.Commands
 {
     public class GetBasicEmployeeInfoCommand : IRequest<ApiResponse<GetEmployeeInfoResponseDTO>>
     {

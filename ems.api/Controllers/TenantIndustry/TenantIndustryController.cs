@@ -1,11 +1,10 @@
 ﻿using ems.application.DTOs.Tenant;
-using ems.application.Features.RegistrationCmd.Commands;
-using ems.application.Features.RoleCmd.Queries;
+using ems.application.Features.TenantCmd.Queries;
 using ems.application.Features.TenantIndustryCmd.Queries;
 using ems.application.Interfaces.ILogger;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
+ 
 
 namespace ems.api.Controllers.TenantIndustry
 {

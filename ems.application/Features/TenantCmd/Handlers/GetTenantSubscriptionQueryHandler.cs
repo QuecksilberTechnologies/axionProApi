@@ -11,9 +11,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ems.application.Features.RoleCmd.Queries;
+using ems.application.Features.TenantCmd.Queries;
 
-namespace ems.application.Features.RoleCmd.Handlers
+namespace ems.application.Features.TenantCmd.Handlers
 {
     public class GetTenantSubscriptionQueryHandler : IRequestHandler<GetTenantSubscriptionQuery, ApiResponse<TenantSubscriptionPlanResponseDTO>>
     {
