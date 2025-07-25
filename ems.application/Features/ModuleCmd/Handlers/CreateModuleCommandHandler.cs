@@ -38,7 +38,7 @@ namespace ems.application.Features.ModuleCmd.Handlers
                 var moduleEntity = _mapper.Map<Module>(request.DTO);
 
                 // ✅ Set default values
-
+                moduleEntity.IsLeafNode = false;
                 moduleEntity.AddedById = request.DTO.ProductOwnerId;               
                 moduleEntity.ParentModuleId = null;
                 moduleEntity.AddedDateTime = DateTime.Now;

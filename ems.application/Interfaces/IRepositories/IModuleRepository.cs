@@ -1,4 +1,5 @@
-﻿using ems.domain.Entity;
+﻿using ems.application.DTOs.Module;
+using ems.domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace ems.application.Interfaces.IRepositories
         /// <summary>
         /// Sare modules laata hai (optionally filterable)
         /// </summary>
-        Task<List<Module>> GetAllModulesAsync();
+        Task<List<GetModuleDDLResponseDTO>> GetAllModulesDDLAsync(bool IsLeafNode);
 
         /// <summary>
         /// Naya module insert karta hai

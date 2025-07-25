@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Module
 {
-    internal class SubModuleRequestDTO
+    public class GetModuleDDLRequestDTO
     {
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ems.application.DTOs;
+using ems.application.DTOs.Module;
 using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
@@ -94,20 +95,27 @@ namespace ems.persistance.Repositories
                 .ToList();
         }
 
-        public async Task<List<Module>> GetAllModulesAsync()
+        public async Task<List<GetModuleDDLResponseDTO>> GetAllModulesDDLAsync(bool IsLeafNode)
         {
             try
             {
                 await using var context = await _contextFactory.CreateDbContextAsync();
                 return await context.Modules
-                    .Where(m => m.IsActive == true)
-                    .OrderBy(m => m.ModuleName)
-                    .ToListAsync();
+                       .Where(m => m.IsActive == true                            
+                                && m.IsLeafNode == IsLeafNode
+                                && m.IsModuleDisplayInUi == true)
+                       .OrderBy(m => m.ModuleName)
+                       .Select(m => new GetModuleDDLResponseDTO
+                       {
+                           Id = m.Id,
+                           ModuleName = m.ModuleName
+                       })
+                       .ToListAsync();
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in GetAllModulesAsync");
-                return new List<Module>();
+                return new List<GetModuleDDLResponseDTO>();
             }
         }
 
