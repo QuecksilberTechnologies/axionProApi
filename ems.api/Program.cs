@@ -1,5 +1,6 @@
 
 using ems.api.Common;
+using ems.api.Common.Swagger;
 using ems.api.Middlewares;
 using ems.application;
 using ems.infrastructure;
@@ -111,7 +112,7 @@ try
     });
 
     builder.Services.AddEndpointsApiExplorer();
-v
+
     builder.Services.AddSwaggerGen(c =>
     {
         // ✅ Automatically include all .xml files from build output
