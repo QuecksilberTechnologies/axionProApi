@@ -131,7 +131,7 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
     app.UseMiddleware<ErrorHandlerMiddleware>();
-
+    //Dev
     app.MapControllers();
       var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
      app.Urls.Add($"http://*:{port}");
