@@ -1,4 +1,5 @@
 ﻿using ems.application.DTOs.Module;
+using ems.application.DTOs.ModuleOperation;
 using ems.application.Wrappers;
 using MediatR;
 using System;
@@ -11,9 +12,9 @@ namespace ems.application.Features.ModuleCmd.Commands
 {
     public class CreateModuleOperationMappingByProductOwnerCommand : IRequest<ApiResponse<ModuleOperationMappingByProductOwnerResponseDTO>>
     {
-        public ModuleOperationMappingByProductOwnerRequestDTO dto { get; set; }
+        public ModuleOperationMappingRequestDTO dto { get; set; }
 
-        public CreateModuleOperationMappingByProductOwnerCommand(ModuleOperationMappingByProductOwnerRequestDTO dto)
+        public CreateModuleOperationMappingByProductOwnerCommand(ModuleOperationMappingRequestDTO dto)
         {
             this.dto = dto;
         }

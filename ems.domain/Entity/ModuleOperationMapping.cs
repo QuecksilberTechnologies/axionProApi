@@ -9,9 +9,10 @@ public partial class ModuleOperationMapping
     public int? ModuleId { get; set; }
 
     public int OperationId { get; set; }
+    public int DataViewStructureId { get; set; }
 
   //  public string? DisplayName { get; set; }
-
+    public int PageTypeId { get; set; }  
     public string? PageUrl { get; set; }
 
     public string? IconUrl { get; set; }
@@ -36,7 +37,10 @@ public partial class ModuleOperationMapping
  
     public virtual Operation Operation { get; set; } = null!;
     public virtual Module? Module { get; set; }
-    public virtual PageTypeEnum? PageTypeEnum { get; set; }
+ 
+    public virtual DataViewStructure? DataViewStructure { get; set; }
+    public virtual PageTypeEnum? PageType { get; set; }
+    
 
 
 

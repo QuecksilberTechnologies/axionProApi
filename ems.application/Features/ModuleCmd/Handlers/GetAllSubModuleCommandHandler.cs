@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.ModuleCmd.Handlers
 {
-    internal class GetAllSubModuleCommandHandler
+    public class GetAllSubModuleCommandHandler
     {
     }
 }

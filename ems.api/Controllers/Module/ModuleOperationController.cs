@@ -1,5 +1,6 @@
 ﻿using ems.application.DTOs.Asset;
 using ems.application.DTOs.Module;
+using ems.application.DTOs.ModuleOperation;
 using ems.application.Features.AssetCmd.Commands;
 using ems.application.Features.ModuleCmd.Commands;
 using ems.application.Interfaces.ILogger;
@@ -22,8 +23,8 @@ namespace ems.api.Controllers.Module
         }
         #region Create Module
 
-        [HttpPost("insert-module-operation-mapping-by-product-owner")]
-        public async Task<IActionResult> UpdateModuleOperation([FromBody] ModuleOperationMappingByProductOwnerRequestDTO? dto)
+        [HttpPost("create")]
+        public async Task<IActionResult> UpdateModuleOperation([FromBody] ModuleOperationMappingRequestDTO? dto)
         {
             if (dto == null)
             {
@@ -44,7 +45,7 @@ namespace ems.api.Controllers.Module
             return Ok(result);
         }
 
-        [HttpPost("update-module-operation-mapping-by-product-owner")]
+        [HttpPost("update")]
         public async Task<IActionResult> AddModuleOperation([FromBody] UpdateModuleOperationMappingByProductOwnerRequestDTO? dto)
         {
             if (dto == null)

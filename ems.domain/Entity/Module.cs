@@ -20,6 +20,7 @@ public partial class Module
 
     public int? ParentModuleId { get; set; }
 
+    public bool IsLeafNode { get; set; }
     public bool IsModuleDisplayInUi { get; set; }
 
     public bool IsCommonMenu { get; set; }

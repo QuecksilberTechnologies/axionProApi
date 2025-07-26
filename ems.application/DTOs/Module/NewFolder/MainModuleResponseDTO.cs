@@ -22,6 +22,9 @@ namespace ems.application.DTOs.Module.NewFolder
 
         public int? ParentModuleId { get; set; }
 
+        
+        public  bool IsLeafNode { get; set; }
+
         public bool? IsModuleDisplayInUI { get; set; }
 
         public bool? IsCommonMenu { get; set; }

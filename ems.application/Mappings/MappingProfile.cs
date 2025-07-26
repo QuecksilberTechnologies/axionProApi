@@ -236,8 +236,8 @@ namespace ems.application.Mappings
             CreateMap<GetEmployeeBankResponseDTO, EmployeeBankDetail>();
              CreateMap<EmployeeBankDetail, GetEmployeeBankResponseDTO>();
 
-            
-
+              
+                     
 
                 CreateMap<EmployeePersonalDetail,GetEmployeePersonalDetailResponseDTO> ();
                 CreateMap<GetEmployeePersonalDetailResponseDTO,EmployeePersonalDetail> ();
@@ -254,10 +254,25 @@ namespace ems.application.Mappings
             CreateMap<EmployeeExperience, GetEmployeeExperienceResponseDTO>();
             CreateMap<GetEmployeeExperienceResponseDTO, EmployeeExperience>();
             
-            CreateMap<EmployeeExperience, EmployeeExperienceEditableFieldsDTO>();
+            CreateMap<EmployeeExperience, EmployeeExperienceEditableFieldsDTO>();             
             CreateMap<EmployeeExperienceEditableFieldsDTO, EmployeeExperience>();
 
 
+               CreateMap<Employee, EmployeeInfoEditableFieldsDTO>();             
+            CreateMap<EmployeeInfoEditableFieldsDTO, Employee>();
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 
 
             

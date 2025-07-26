@@ -99,13 +99,64 @@ namespace ems.api.Controllers.Module
             return Ok(result);
         }
 
-      
 
-      
+
+
         #endregion
 
-        
-        
+
+        /// <summary>
+        ///  Get non-operational module list
+        /// </summary>
+        [HttpPost("get-parent-modules")]
+        public async Task<IActionResult> GetModule([FromBody] GetModuleDDLRequestDTO? getModuleDDLRequestDTO)
+        {
+            if (getModuleDDLRequestDTO == null)
+            {
+                // _logger.LogWarning("Received null request for getting Assets.");
+                // return BadRequest(new ApiResponse<List<GetAllAssetDTO>>(false, "Invalid request", null));
+            }
+
+            // _logger.LogInformation("Received request to get Assets for userId: {LoginId}", AssetRequestDTO.Id);
+
+            var query = new GetModulesDLLCommand(getModuleDDLRequestDTO);  //  Fix: No parameter needed in GetAllAssetQuery
+            var result = await _mediator.Send(query);
+
+            if (!result.IsSucceeded)
+            {
+                return Unauthorized(result);
+            }
+
+            return Ok(result);
+        }
+
+
+        /// <summary>
+        ///  Get operational module list (leafe nodes for binding operations)
+        /// </summary>
+        [HttpPost("get-operational-modules")]
+        public async Task<IActionResult> GetOperationalModule([FromBody] GetModuleDDLRequestDTO? getModuleDDLRequestDTO)
+        {
+            if (getModuleDDLRequestDTO == null)
+            {
+                // _logger.LogWarning("Received null request for getting Assets.");
+                // return BadRequest(new ApiResponse<List<GetAllAssetDTO>>(false, "Invalid request", null));
+            }
+
+            // _logger.LogInformation("Received request to get Assets for userId: {LoginId}", AssetRequestDTO.Id);
+
+            var query = new GetOperationalModulesDLLCommand(getModuleDDLRequestDTO);  //  Fix: No parameter needed in GetAllAssetQuery
+            var result = await _mediator.Send(query);
+
+            if (!result.IsSucceeded)
+            {
+                return Unauthorized(result);
+            }
+
+            return Ok(result);
+        }
+
+
 
     }
 }

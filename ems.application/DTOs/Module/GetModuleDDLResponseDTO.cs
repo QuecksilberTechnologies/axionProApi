@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace ems.application.DTOs.Module
 {
-    internal class SubModuleResponseDTO
+    public class GetModuleDDLResponseDTO
     {
+        public int Id { get; set; }
+        public string? ModuleName { get; set; }
+
     }
 }

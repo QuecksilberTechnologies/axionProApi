@@ -9,9 +9,15 @@ using System.Threading.Tasks;
 
 namespace ems.application.Features.ModuleCmd.Commands
 {
-    public class GetAllSubModuleCommand
+    public class GetModulesDLLCommand : IRequest<ApiResponse<List<GetModuleDDLResponseDTO>>>
     {
 
+        public GetModuleDDLRequestDTO DTO { get; set; }
+
+        public GetModulesDLLCommand(GetModuleDDLRequestDTO dTO)
+        {
+            this.DTO = dTO;
+        }
+
     }
-}
- 
+    }

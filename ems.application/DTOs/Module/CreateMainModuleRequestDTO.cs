@@ -12,18 +12,18 @@ namespace ems.application.DTOs.Module
     /// </summary>
     public class CreateMainModuleRequestDTO
     {
-
-
        /// <summary> ProductOwnerId Required</summary>
         public required int ProductOwnerId { get; set; }
 
         [MaxLength(50)]
             public required string ModuleCode { get; set; }
 
-        /// <summary> Module name Required</summary>
+            /// <summary> Module name Required</summary>
 
        
             public required string ModuleName { get; set; }
+
+       
 
         /// <summary> Display Name Required</summary>
         public required bool IsCommonMenu { get; set; } = false;

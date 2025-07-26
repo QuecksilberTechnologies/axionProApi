@@ -23,9 +23,12 @@ namespace ems.application.DTOs.Module
 
 
             public required string ModuleName { get; set; }
+        /// <summary> IsLeafNode  Required</summary>
+        public required bool IsLeafNode { get; set; }
 
-            /// <summary> Display Name Required</summary>
-            public required bool IsCommonMenu { get; set; } = false;
+
+        /// <summary> Display Name Required</summary>
+        public required bool IsCommonMenu { get; set; } = false;
 
             public required string DisplayName { get; set; }
 

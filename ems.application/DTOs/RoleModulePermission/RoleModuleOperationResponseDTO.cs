@@ -34,7 +34,7 @@ namespace ems.application.DTOs.RoleModulePermission
    
 
         public int? DataViewStructureId { get; set; }
-        public string? DataViewStructureName { get; set; }
+        public string? DisplayOn { get; set; }
     }
 
     public class MainModuleDto
@@ -65,7 +65,7 @@ namespace ems.application.DTOs.RoleModulePermission
         public string? IconURL { get; set; }
 
         public int? DataViewStructureId { get; set; }
-        public string? DataViewStructureName { get; set; }
+        public string? DisplayOn { get; set; }
 
         public List<OperationDto>? Operations { get; set; }
     }
