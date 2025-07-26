@@ -76,7 +76,7 @@ try
 
 
 
-        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Axion-Pro API", Version = "1.0" });
+ 
 
         c.SchemaFilter<NullSchemaFilter>();
 
