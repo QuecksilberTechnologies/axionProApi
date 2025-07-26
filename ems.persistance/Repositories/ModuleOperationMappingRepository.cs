@@ -1,7 +1,9 @@
 ﻿using ems.application.DTOs.Module;
+using ems.application.DTOs.ModuleOperation;
 using ems.application.Interfaces.IRepositories;
 using ems.domain.Entity;
 using ems.persistance.Data.Context;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -69,50 +71,46 @@ namespace ems.persistance.Repositories
             }
         }
 
-        public async Task<ModuleOperationMappingByProductOwnerResponseDTO> SaveModuleOperationMappingsAsync(ModuleOperationMappingByProductOwnerRequestDTO dto)
+        public async Task<ModuleOperationMappingResponseDTO> SaveModuleOperationMappingsAsync(ModuleOperationMappingRequestDTO dto)
+
         {
             try
             {
-                // 🔍 Basic Validation
-                if (dto == null || dto.Operation == null || !dto.Operation.Any()
-                    || dto.ModuleId <= 0 || dto.ProductOwnerId <= 0 || dto.ProductOwnerRoleId <= 0)
-                {
-                    _logger.LogWarning("Invalid mapping request. DTO or required fields are missing.");
-                    return null;
-                }
+                if (dto == null || dto.Operation == null || !dto.Operation.Any(o => o.IsSelected))
+                    throw new ArgumentException("At least one operation must be selected.");
 
-                // 🔁 Prepare list of entities to insert
-                var mappings = dto.Operation.Select(op => new ModuleOperationMapping
+                var selectedOperationIds = dto.Operation
+                    .Where(o => o.IsSelected)
+                    .Select(o => o.Id)
+                    .ToList();
+
+                var mappings = selectedOperationIds.Select(opId => new ModuleOperationMapping
                 {
-                  //  ProductOwnerId = dto.ProductOwnerId,
-                   // ProductOwnerRoleId = dto.ProductOwnerRoleId,
                     ModuleId = dto.ModuleId,
-                    OperationId = op.Id,
-                    IsActive = true,
-                    AddedById = dto.ProductOwnerId, // or dto.AddedById if present
+                    OperationId = opId,
+                    DataViewStructureId = dto.DataViewStructureId,
+                    PageTypeId = dto.PageTypeId,
+                    PageUrl = dto.PageURL,
+                    IconUrl = dto.IconURL,
+                    IsCommonItem = dto.IsCommonItem,
+                    IsOperational = dto.IsOperational,
+                    Priority = dto.Priority,
+                    Remark = dto.Remark,
+                    IsActive = dto.IsActive,
+                    AddedById = dto.AddedById,
                     AddedDateTime = DateTime.UtcNow
                 }).ToList();
-
-                if (!mappings.Any())
-                {
-                    _logger.LogWarning("No valid operation mappings to insert.");
-                    return null;
-                }
-
+            
                 await _context.ModuleOperationMappings.AddRangeAsync(mappings);
                 int result = await _context.SaveChangesAsync();
 
-                // ✅ Build and return a response DTO only if something was saved
                 if (result > 0)
                 {
-                    return new ModuleOperationMappingByProductOwnerResponseDTO
+                    return new ModuleOperationMappingResponseDTO
                     {
-                      //  ProductOwnerId = dto.ProductOwnerId,
-                      //  ProductOwnerRoleId = dto.ProductOwnerRoleId,
                         ModuleId = dto.ModuleId,
-                        OperationIds = dto.Operation.Select(o => o.Id).ToList(),
-                     //   Remark = "Mappings saved successfully",
-                        
+                        OperationIds = selectedOperationIds,
+                        Message = "Module operation mappings saved successfully."
                     };
                 }
 
@@ -124,6 +122,7 @@ namespace ems.persistance.Repositories
                 return null;
             }
         }
+
 
         public async Task<ModuleOperationMappingByProductOwnerResponseDTO?> GetModuleOperationMappingsByIdAsync(int id, int moduleId)
         {

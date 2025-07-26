@@ -54,7 +54,7 @@ namespace ems.application.Features.ModuleCmd.Handlers
                 {
                     IsSucceeded = true,
                     Message = "Module mapping created successfully.",
-                    Data = addedModule
+                    Data = null
                 };
             }
             catch (Exception ex)

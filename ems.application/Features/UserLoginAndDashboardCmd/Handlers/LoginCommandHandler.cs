@@ -256,7 +256,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                                  mod.SubModuleURL,                  // ✅ From ModuleOperationMapping
                                                  // ✅ From ModuleOperationMapping
                                  mod.DataViewStructureId,
-                                 mod.DataViewStructureName
+                                 mod.DisplayOn
                              })
                              .Select(mod => new ModuleDto
                              {
@@ -269,7 +269,7 @@ namespace ems.application.Features.UserLoginAndDashboardCmd.Handlers
                                  Path = mod.Key.Path,                        // ✅
                                                   
                                  DataViewStructureId = mod.Key.DataViewStructureId,
-                                 DataViewStructureName = mod.Key.DataViewStructureName,
+                                 DisplayOn = mod.Key.DisplayOn,
 
                                  Operations = mod
                                      .Select(op => new OperationDto

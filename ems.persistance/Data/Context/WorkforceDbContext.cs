@@ -927,7 +927,6 @@ namespace ems.persistance.Data.Context
                   });
 
 
-
             modelBuilder.Entity<ModuleOperationMapping>(entity =>
             {
                 entity.HasKey(e => e.Id).HasName("PK__ModuleOp__3214EC07BF86A196");
@@ -937,7 +936,6 @@ namespace ems.persistance.Data.Context
                 entity.Property(e => e.AddedDateTime)
                     .HasDefaultValueSql("(getdate())")
                     .HasColumnType("datetime");
-              
                 entity.Property(e => e.IconUrl)
                     .HasMaxLength(255)
                     .IsUnicode(false)
@@ -955,6 +953,10 @@ namespace ems.persistance.Data.Context
                     .IsUnicode(false);
                 entity.Property(e => e.UpdatedDateTime).HasColumnType("datetime");
 
+                entity.HasOne(d => d.DataViewStructure).WithMany(p => p.ModuleOperationMappings)
+                    .HasForeignKey(d => d.DataViewStructureId)
+                    .HasConstraintName("FK_ModuleOperationMapping_DataViewStructure");
+
                 entity.HasOne(d => d.Module).WithMany(p => p.ModuleOperationMappings)
                     .HasForeignKey(d => d.ModuleId)
                     .HasConstraintName("FK_ModuleOperationMapping_Module");
@@ -964,11 +966,10 @@ namespace ems.persistance.Data.Context
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ModuleOperation_Operation");
 
-                entity.HasOne(d => d.PageTypeEnum).WithMany(p => p.ModuleOperationMappings)
-                    .HasForeignKey(d => d.Id)
+                entity.HasOne(d => d.PageType).WithMany(p => p.ModuleOperationMappings)
+                    .HasForeignKey(d => d.PageTypeId)
                     .HasConstraintName("FK_ModuleOperationMapping_PageTypeEnum");
             });
-
 
             modelBuilder.Entity<PageTypeEnum>(entity =>
             {
