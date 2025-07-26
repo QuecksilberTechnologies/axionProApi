@@ -80,16 +80,7 @@ try
 
         c.SchemaFilter<NullSchemaFilter>();
 
-        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-        {
-            Name = "Authorization",
-            Type = SecuritySchemeType.ApiKey,
-            Scheme = "Bearer",
-            BearerFormat = "JWT",
-            In = ParameterLocation.Header,
-            Description = "Enter 'Bearer' followed by space and your JWT token.\n\nExample: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6..."
-        });
-
+   
 
 
         //    c.AddSecurityRequirement(new OpenApiSecurityRequirement
