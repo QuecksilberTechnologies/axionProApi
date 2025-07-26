@@ -1,4 +1,4 @@
-using ems.api.Common.Swagger;
+
 using ems.api.Common;
 using ems.api.Middlewares;
 using ems.application;
@@ -111,7 +111,54 @@ try
     });
 
     builder.Services.AddEndpointsApiExplorer();
-     
+v
+    builder.Services.AddSwaggerGen(c =>
+    {
+        // ✅ Automatically include all .xml files from build output
+        var xmlFiles = Directory.GetFiles(AppContext.BaseDirectory, "*.xml", SearchOption.TopDirectoryOnly);
+
+        foreach (var xml in xmlFiles)
+        {
+            c.IncludeXmlComments(xml, includeControllerXmlComments: true);
+        }
+
+
+
+        c.SwaggerDoc("v1", new OpenApiInfo { Title = "Axion-Pro API", Version = "1.0" });
+
+        c.SchemaFilter<NullSchemaFilter>();
+
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.ApiKey,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Enter 'Bearer' followed by space and your JWT token.\n\nExample: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+        });
+
+
+
+        //    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+        //{
+        //    {
+        //        new OpenApiSecurityScheme
+        //        {
+        //            Reference = new OpenApiReference
+        //            {
+        //                Type = ReferenceType.SecurityScheme,
+        //                Id = "Bearer"
+        //            }
+        //        },
+        //        new string[] { }
+        //    }
+        //});
+
+        // ✅ Yeh line add karo!
+        c.OperationFilter<AuthorizeCheckOperationFilter>();
+    });
+ 
     builder.Services.AddApplication();
     builder.Services.AddInfrastructure(builder.Configuration);
     builder.Services.AddPersistence(builder.Configuration);
@@ -133,8 +180,11 @@ try
     app.UseMiddleware<ErrorHandlerMiddleware>();
     //Dev
     app.MapControllers();
+ 
       var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
      app.Urls.Add($"http://*:{port}");
+ 
+ 
 
     app.Run();
 }
